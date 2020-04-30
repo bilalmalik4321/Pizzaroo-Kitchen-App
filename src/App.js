@@ -1,31 +1,35 @@
-import React from "react";
-import { Link } from "react-router-dom";
-import { Nav, Navbar, NavItem } from "react-bootstrap";
+import React, { Component } from "react";
 import "./App.css";
-import Routes from "./Routes";
-import { LinkContainer } from "react-router-bootstrap";
-
-function App() {
-  return (
-    <div className="App container">
-      <Navbar fluid collapseOnSelect>
-        <Navbar.Header>
-          <Navbar.Brand>
-            <Link to="/">Pizzaroo</Link>
-          </Navbar.Brand>
-          <Navbar.Toggle />
-        </Navbar.Header>
-        <Navbar.Collapse>
-          <Nav pullRight>
-            <LinkContainer to="/login">
-              <NavItem>Login</NavItem>
-            </LinkContainer>
-          </Nav>
-        </Navbar.Collapse>
-      </Navbar>
-      <Routes />
-    </div>
-  );
+import firebase from "./firebase";
+import Main from "./containers/Main"
+import Orders from "./containers/Orders"
+class App extends Component {
+  constructor() {
+    super();
+    this.state = ({
+      user: null,
+    });
+    this.authListener = this.authListener.bind(this);
+  }
+  componentDidMount() {
+    this.authListener();
+  }
+  authListener() {
+    firebase.auth().onAuthStateChanged((user) => {
+      console.log(user);
+      if (user) {
+        this.setState({ user });
+        localStorage.setItem('user', user.uid);
+      } else {
+        this.setState({ user: null });
+        localStorage.removeItem('user');
+      }
+    });
+  }
+  render() {
+    return (
+     <div>{this.state.user ? (<Orders/>) : (<Main/>)}</div>
+    );
+    }
 }
-
 export default App;
