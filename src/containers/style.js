@@ -15,9 +15,11 @@ export default {
     borderColor: "#eaeaea",
     backgroundColor: "#fafafa",
     paddingLeft: 10,
+    marginLeft:"35%",
     marginRight: "15%",
     marginTop: 20,
     marginBottom: 20,
+    width:320,
   },
   loginButton: {
     color: "white",
@@ -25,7 +27,7 @@ export default {
     borderRadius: 25,
     height: 45,
     width: 95,
-    marginLeft: "35%",
+    marginLeft: "45%",
     marginTop: 20,
   },
   errorInput: {

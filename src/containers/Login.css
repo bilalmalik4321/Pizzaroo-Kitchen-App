@@ -2,7 +2,7 @@
   .Login {
     border-radius: 50px;
   }
-  .Login form {
+  .form-group {
     margin: 0 auto;
     max-width: 320px;
   }
