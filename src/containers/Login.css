@@ -1,9 +1,0 @@
-@media all and (min-width: 480px) {
-  .Login {
-    border-radius: 50px;
-  }
-  .form-group {
-    margin: 0 auto;
-    max-width: 320px;
-  }
-}
