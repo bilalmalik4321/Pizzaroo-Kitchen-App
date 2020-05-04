@@ -1,33 +1,35 @@
-import React from "react";
-
-import { Route, Switch } from "react-router-dom";
-import { connect } from "react-redux";
-
-import ProtectedRoute from "./components/ProtectedRoute";
-import Home from "./components/Home";
-import Login from "./components/Login";
-import 'bootstrap/dist/css/bootstrap.min.css';
-function App(props) {
-  const { isAuthenticated, isVerifying } = props;
-  return (
-    <Switch>
-      <ProtectedRoute
-        exact
-        path="/"
-        component={Home}
-        isAuthenticated={isAuthenticated}
-        isVerifying={isVerifying}
-      />
-      <Route path="/login" component={Login} />
-    </Switch>
-  );
+import React, { Component } from "react";
+import "./App.css";
+import firebase from "./firebase";
+import Main from "./containers/Main";
+import Orders from "./containers/Orders";
+import history from "./containers/History";
+import 'typeface-roboto';
+class App extends Component {
+  constructor() {
+    super();
+    this.state = {
+      user: null,
+    };
+    this.authListener = this.authListener.bind(this);
+  }
+  componentDidMount() {
+    this.authListener();
+  }
+  authListener() {
+    firebase.auth().onAuthStateChanged((user) => {
+      console.log(user);
+      if (user) {
+        this.setState({ user });
+        localStorage.setItem("user", user.uid);
+      } else {
+        this.setState({ user: null });
+        localStorage.removeItem("user");
+      }
+    });
+  }
+  render() {
+    return <div>{this.state.user ? <Orders /> : <Main />}</div>;
+  }
 }
-
-function mapStateToProps(state) {
-  return {
-    isAuthenticated: state.auth.isAuthenticated,
-    isVerifying: state.auth.isVerifying
-  };
-}
-
-export default connect(mapStateToProps)(App);
+export default App;
