@@ -13,67 +13,45 @@ import MenuIcon from '@material-ui/icons/Menu';
 import { LinkContainer } from "react-router-bootstrap";
 import Routes from "../Routes";
 
-const useStyles = makeStyles((theme) => ({
-  root: {
-    flexGrow: 1,
-  },
-  menuButton: {
-    marginRight: theme.spacing(2),
-  },
-  title: {
-    flexGrow: 1,
-  },
-AppBar: {
-    backgroundColor:"purple",
-},
-}));
+
+const useStyles = makeStyles(
+	(theme) => ({
+		root: {
+			flexGrow: 1,
+		},
+		menuButton: {
+			marginRight: theme.spacing(2),
+		},
+		title: {
+			flexGrow: 1,
+		},
+		AppBar: {
+			backgroundColor:"purple",
+		},
+	})
+);
 
 export default function ButtonAppBar() {
-  const classes = useStyles();
+	const classes = useStyles();
 
-  return (
-    <div className={classes.root}>
-      <AppBar position="static" className={classes.AppBar}>
-        <Toolbar>
-	<LinkContainer to="/">
-          <Typography variant="h4" className={classes.title}>
-            Pizzaroo
-          </Typography>
-	</LinkContainer>
+	return (
+		<div className = {classes.root}>
+			<AppBar position = "static" className = {classes.AppBar}>
+				<Toolbar>
+					<LinkContainer to = "/">
+						<Typography variant="h4" className = {classes.title}>
+							Pizzaroo
+						</Typography>
+					</LinkContainer>
           
-        <Button variant="contained" color="primary" href="/login">
-	<Typography variant="h6">
-      Login
-	</Typography>
-    </Button>
-
-        </Toolbar>
-      </AppBar>
-<Routes />
-    </div>
-  );
+					<Button variant = "contained" color = "primary" href = "/login">
+						<Typography variant = "h6">
+							Login
+						</Typography>
+					</Button>
+				</Toolbar>
+			</AppBar>
+			<Routes />
+		</div>
+	);
 }
-/**
-import React from 'react';
-import { LinkContainer } from "react-router-bootstrap";
-import { Link } from "react-router-dom";
-import Routes from "../Routes";
-
-import Button from '@material-ui/core/Button';
-
-
-export default function main() {
-  
-
-  return (
-    <div>
-          <LinkContainer to="/login">
-        <Button variant="contained" color="primary">
-      Login
-    </Button>
-</LinkContainer>
-<Routes />
-</div>
-  );
-}
-**/
