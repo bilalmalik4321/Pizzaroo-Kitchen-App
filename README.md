@@ -1,4 +1,4 @@
-
+API keys to be pasted in src/firebase/firebase.js
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
 ## Available Scripts
