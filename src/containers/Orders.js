@@ -357,42 +357,45 @@ export default function Orders() {
 							</ExpansionPanelSummary>
 							<ExpansionPanelDetails>
 								<Typography>
-                <TableContainer component={Paper}>
-    <Table aria-label="collapsible table" style={{ width: 1200 }}>
-      <TableHead>
-        <TableRow>
-          <TableCell />
-          <TableCell>
-            <Typography variant = "h5">
-              Order Number
-            </Typography>
-          </TableCell>
-          <TableCell align="right">
-            <Typography variant = "h5">
-              No. of Items
-            </Typography>
-          </TableCell>
-          <TableCell align="right">
-            <Typography variant = "h5">
-              Time of order
-            </Typography>
-          </TableCell>
-          <TableCell align="right"></TableCell>
-          <TableCell align="right"></TableCell>
-
-        </TableRow>
-      </TableHead>
-      <TableBody>
-        {rows.map((row) => (
-          <Row key={row.orderId} row={row} />
-        ))}
-      </TableBody>
-    </Table>
-  </TableContainer>
+									<TableContainer component={Paper}>
+										<Table aria-label="collapsible table" style={{ width: 1200 }}>
+											<TableHead>
+												<TableRow>
+													<TableCell />
+														<TableCell>
+															<Typography variant = "h5">
+																Order Number
+															</Typography>
+														</TableCell>
+														<TableCell align="right">
+															<Typography variant = "h5">
+																No. of Items
+															</Typography>
+														</TableCell>
+														<TableCell align="right">
+															<Typography variant = "h5">
+																Time of order
+															</Typography>
+														</TableCell>
+														<TableCell align="right">
+														</TableCell>
+														<TableCell align="right">
+														</TableCell>
+													
+												</TableRow>
+											</TableHead>
+											<TableBody>
+												{rows.map((row) => (
+													<Row key={row.orderId} row={row} />
+													))
+												}
+											</TableBody>
+										</Table>
+									</TableContainer>
 								</Typography>
 							</ExpansionPanelDetails>
 						</ExpansionPanel>
-            <ExpansionPanel square onChange = {handleChange('panel3')}>
+						<ExpansionPanel square onChange = {handleChange('panel3')}>
 							<ExpansionPanelSummary aria-controls = "panel3d-content" id = "panel3d-header">
 								<Typography variant = "h4">
 									Completed Orders
