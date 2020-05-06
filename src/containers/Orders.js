@@ -21,16 +21,37 @@ import ExpansionPanel from '@material-ui/core/ExpansionPanel';
 import ExpansionPanelSummary from '@material-ui/core/ExpansionPanelSummary';
 import ExpansionPanelDetails from '@material-ui/core/ExpansionPanelDetails';
 import Divider from '@material-ui/core/Divider';
-
-
+import PropTypes from 'prop-types';
+import Box from '@material-ui/core/Box';
+import Collapse from '@material-ui/core/Collapse';
+import Table from '@material-ui/core/Table';
+import TableBody from '@material-ui/core/TableBody';
+import TableCell from '@material-ui/core/TableCell';
+import TableContainer from '@material-ui/core/TableContainer';
+import TableHead from '@material-ui/core/TableHead';
+import TableRow from '@material-ui/core/TableRow';
+import Paper from '@material-ui/core/Paper';
+import KeyboardArrowDownIcon from '@material-ui/icons/KeyboardArrowDown';
+import KeyboardArrowUpIcon from '@material-ui/icons/KeyboardArrowUp';
 function logout() {
     fire.auth().signOut();
   }
-  
+
 function direct() {
     history.push("Login");
   }
-  
+function createData(orderId, totalQuantity, timeOfOrder, carbs) {
+  return {
+      orderId,
+      totalQuantity,
+      timeOfOrder,
+      carbs,
+      history: [
+        { itemId: '1', itemName: 'Cheese pizza (XL)', amount: 3, instruction:"Well done",price:12.20 },
+        { itemId: '2', itemName: 'Pepperoni pizza (L)', amount: 1, instruction:"Easy on the cheese please", price:14.50 },
+      ],
+    };
+}
 const useStyles = makeStyles(
 	(theme) => ({
 		root: {
@@ -44,9 +65,146 @@ const useStyles = makeStyles(
 		},
 	})
 );
+function Row(props) {
+  const { row } = props;
+  const [open, setOpen] = React.useState(false);
 
+
+  return (
+    <React.Fragment>
+      <TableRow >
+        <TableCell>
+          <IconButton aria-label="expand row" size="small" onClick={() => setOpen(!open)}>
+            {open ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
+          </IconButton>
+        </TableCell>
+        <TableCell align="left">
+        <Typography variant="h6" >
+          {row.orderId}
+          </Typography>
+        </TableCell>
+        <TableCell align="right">
+          <Typography variant="h6" >
+            {row.totalQuantity}
+          </Typography>
+        </TableCell>
+        <TableCell align="right">
+          <Typography variant="h6" >
+            {row.timeOfOrder}
+          </Typography>
+        </TableCell>
+        <TableCell align="right">
+          <Button variant="contained" color="primary">
+            <Typography variant="h6" >
+            Being prepared
+            </Typography>
+          </Button>
+        </TableCell>
+      </TableRow>
+      <TableRow>
+        <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={6}>
+          <Collapse in={open} timeout="auto" unmountOnExit>
+            <Box margin={1}>
+              <Typography variant="h5" gutterBottom component="div">
+                Order details
+              </Typography>
+              <Table size="small" aria-label="purchases">
+                <TableHead>
+                  <TableRow>
+                    <TableCell>
+                      <Typography variant = "h5">
+                        ID
+                      </Typography>
+                    </TableCell>
+                    <TableCell>
+                      <Typography variant = "h5">
+                        Item
+                      </Typography>
+                    </TableCell>
+                    <TableCell>
+                      <Typography variant = "h5">
+                        Quantity
+                      </Typography>
+                    </TableCell>
+                    <TableCell align="right">
+                      <Typography variant = "h5">
+                        Special instructions
+                      </Typography>
+                    </TableCell>
+                    <TableCell align="right">
+                      <Typography variant = "h5">
+                        Total price ($)
+                      </Typography>
+                    </TableCell>
+                  </TableRow>
+                </TableHead>
+                <TableBody>
+                  {row.history.map((historyRow) => (
+                    <TableRow key={historyRow.itemId}>
+                      <TableCell component="th" scope="row">
+                        <Typography variant = "h5">
+                        {historyRow.itemId}
+                        </Typography>
+                      </TableCell>
+                      <TableCell>
+                        <Typography variant = "h5">
+                          {historyRow.itemName}
+                        </Typography>
+                      </TableCell>
+                      <TableCell>
+                        <Typography variant = "h5">
+                          {historyRow.amount}
+                        </Typography>
+                      </TableCell>
+                      <TableCell align="right">
+                        <Typography variant = "h5">
+                        {historyRow.instruction}
+                        </Typography>
+                      </TableCell>
+                      <TableCell align="right">
+                        <Typography variant = "h5">
+                          {(historyRow.amount * historyRow.price).toFixed(2) }
+                        </Typography>
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </Box>
+          </Collapse>
+        </TableCell>
+      </TableRow>
+    </React.Fragment>
+  );
+}
+
+Row.propTypes = {
+  row: PropTypes.shape({
+    totalQuantity: PropTypes.number.isRequired,
+    carbs: PropTypes.number.isRequired,
+    timeOfOrder: PropTypes.number.isRequired,
+    history: PropTypes.arrayOf(
+      PropTypes.shape({
+        amount: PropTypes.number.isRequired,
+        itemName: PropTypes.string.isRequired,
+        itemId: PropTypes.string.isRequired,
+      }),
+    ).isRequired,
+    itemId: PropTypes.string.isRequired,
+    price: PropTypes.number.isRequired,
+    protein: PropTypes.number.isRequired,
+  }).isRequired,
+};
+var count=1;
+const rows = [
+  createData(count, 2, '11am'),
+  createData(++count, 2, '11.15am'),
+  createData(++count, 2, '11.20am'),
+  createData(++count, 2, '11.25am'),
+  createData(++count, 2, '11.30am'),
+];
 export default function Orders() {
-	
+
 	const [expanded, setExpanded] = React.useState('panel1');
 
 	const handleChange = (panel) => (event, newExpanded) => {
@@ -55,7 +213,7 @@ export default function Orders() {
 	const classes = useStyles();
 	logout = logout.bind(this);
 	history.push("Orders");
-	
+
 	const [anchorEl, setAnchorEl] = React.useState(null);
 	const open = Boolean(anchorEl);
 
@@ -76,7 +234,7 @@ export default function Orders() {
 						<Typography variant = "h4" className = {classes.title}>
 							Pizzaroo
 						</Typography>
-          
+
 							<div>
 								<IconButton
 									style = {{width: 64, height: 64, padding: 0,}}
@@ -88,19 +246,19 @@ export default function Orders() {
 								>
 									<AccountCircle style = {{ width: 32, height: 32,}}  />
 								</IconButton>
-			
+
 								<Menu
 									id = "menu-appbar"
 									anchorEl = {anchorEl}
 									anchorOrigin = {{
 										vertical: 'top',
 										horizontal: 'right',
-									}}							
+									}}
 									keepMounted
 									transformOrigin = {{
 										vertical: 'top',
 										horizontal: 'right',
-									}}							
+									}}
 									open = {open}
 									onClose = {handleClose}
 								>
@@ -109,7 +267,7 @@ export default function Orders() {
 											Profile
 										</Typography>
 									</MenuItem>
-									<MenuItem 
+									<MenuItem
 										onClick = {
 											() => {
 												logout();
@@ -121,17 +279,17 @@ export default function Orders() {
 										Logout
 										</Typography>
 									</MenuItem>
-									
+
 								</Menu>
 							</div>
-          
+
 					</Toolbar>
 				</AppBar>
 			</div>
 			<div>
 				<Container maxWidth = "lg" style = {{marginTop:20}}>
 					<Grid container spacing = {3}>
-					
+
 						<Grid item xs = {4}>
 							<Card variant = "outlined">
 								<CardContent>
@@ -139,12 +297,12 @@ export default function Orders() {
 										Pending Orders
 									</Typography>
 									<Typography variant = "h5">
-										4
+										5
 									</Typography>
 								</CardContent>
 							</Card>
 						</Grid>
-						
+
 						<Grid item xs = {4}>
 							<Card variant = "outlined">
 								<CardContent>
@@ -157,7 +315,7 @@ export default function Orders() {
 								</CardContent>
 							</Card>
 						</Grid>
-						
+
 						<Grid item xs = {4}>
 							<Card variant = "outlined">
 								<CardContent>
@@ -170,13 +328,13 @@ export default function Orders() {
 								</CardContent>
 							</Card>
 						</Grid>
-						
+
 					</Grid>
-					
-					
-					
+
+
+
 					<Divider style = {{marginTop:25, marginBottom:25}} />
-					
+
 						<ExpansionPanel square onChange = {handleChange('panel1')}>
 							<ExpansionPanelSummary aria-controls = "panel1d-content" id = "panel1d-header">
 								<Typography variant = "h4">
@@ -185,14 +343,12 @@ export default function Orders() {
 							</ExpansionPanelSummary>
 							<ExpansionPanelDetails>
 								<Typography>
-									Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse malesuada lacus ex,
-									sit amet blandit leo lobortis eget. Lorem ipsum dolor sit amet, consectetur adipiscing
-									elit. Suspendisse malesuada lacus ex, sit amet blandit leo lobortis eget.
+									Orders moved from pending appear here
 								</Typography>
 							</ExpansionPanelDetails>
 						</ExpansionPanel>
-						
-						
+
+
 						<ExpansionPanel square onChange = {handleChange('panel2')}>
 							<ExpansionPanelSummary aria-controls = "panel2d-content" id = "panel2d-header">
 								<Typography variant = "h4">
@@ -201,15 +357,42 @@ export default function Orders() {
 							</ExpansionPanelSummary>
 							<ExpansionPanelDetails>
 								<Typography>
-									Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse malesuada lacus ex,
-									sit amet blandit leo lobortis eget. Lorem ipsum dolor sit amet, consectetur adipiscing
-									elit. Suspendisse malesuada lacus ex, sit amet blandit leo lobortis eget.
+                <TableContainer component={Paper}>
+    <Table aria-label="collapsible table" style={{ width: 1200 }}>
+      <TableHead>
+        <TableRow>
+          <TableCell />
+          <TableCell>
+            <Typography variant = "h5">
+              Order Number
+            </Typography>
+          </TableCell>
+          <TableCell align="right">
+            <Typography variant = "h5">
+              No. of Items
+            </Typography>
+          </TableCell>
+          <TableCell align="right">
+            <Typography variant = "h5">
+              Time of order
+            </Typography>
+          </TableCell>
+          <TableCell align="right"></TableCell>
+          <TableCell align="right"></TableCell>
+
+        </TableRow>
+      </TableHead>
+      <TableBody>
+        {rows.map((row) => (
+          <Row key={row.orderId} row={row} />
+        ))}
+      </TableBody>
+    </Table>
+  </TableContainer>
 								</Typography>
 							</ExpansionPanelDetails>
 						</ExpansionPanel>
-						
-						
-						<ExpansionPanel square onChange = {handleChange('panel3')}>
+            <ExpansionPanel square onChange = {handleChange('panel3')}>
 							<ExpansionPanelSummary aria-controls = "panel3d-content" id = "panel3d-header">
 								<Typography variant = "h4">
 									Completed Orders
@@ -217,13 +400,11 @@ export default function Orders() {
 							</ExpansionPanelSummary>
 							<ExpansionPanelDetails>
 								<Typography>
-									Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse malesuada lacus ex,
-									sit amet blandit leo lobortis eget. Lorem ipsum dolor sit amet, consectetur adipiscing
-									elit. Suspendisse malesuada lacus ex, sit amet blandit leo lobortis eget.
+									orders moved from preparing appear here
 								</Typography>
 							</ExpansionPanelDetails>
 						</ExpansionPanel>
-						
+
 				</Container>
 			</div>
 		</div>
