@@ -4,18 +4,15 @@ import Home from "./containers/Home";
 import NotFound from "./containers/NotFound";
 import Login from "./containers/Login";
 import Orders from "./containers/Orders";
+import { ProtectedRoute } from "./ProtectedRoute";
 export default function Routes() {
   return (
     <Switch>
       <Route exact path="/">
         <Home />
       </Route>
-      <Route exact path="/login">
-        <Login />
-      </Route>
-      <Route exact path="/Orders" component={Orders}>
-        <Orders />
-      </Route>
+      <Route exact path="/login" component={Login} />
+      <ProtectedRoute exact path="/Orders" component={Orders} />
       {/* Finally, catch all unmatched routes */}
       <Route>
         <NotFound />
