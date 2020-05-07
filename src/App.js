@@ -29,7 +29,7 @@ class App extends Component {
     });
   }
   render() {
-    return <div>{this.state.user ? <Orders /> : <Main />}</div>;
+    return <div>{this.state.user ? <Orders />: <Main />}</div>;
   }
 }
 export default App;

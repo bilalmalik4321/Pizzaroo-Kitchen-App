@@ -1,5 +1,5 @@
 import React from 'react';
-import { Link } from "react-router-dom";
+import { Link, Redirect } from "react-router-dom";
 import fire from "../firebase";
 import history from "./History";
 import Login from "./Login";
@@ -33,6 +33,7 @@ import TableRow from '@material-ui/core/TableRow';
 import Paper from '@material-ui/core/Paper';
 import KeyboardArrowDownIcon from '@material-ui/icons/KeyboardArrowDown';
 import KeyboardArrowUpIcon from '@material-ui/icons/KeyboardArrowUp';
+import Profile from './profile';
 function logout() {
     fire.auth().signOut();
   }
@@ -262,11 +263,9 @@ export default function Orders() {
 									open = {open}
 									onClose = {handleClose}
 								>
-									<MenuItem onClick = {handleClose}>
-										<Typography variant = "h5">
-											Profile
-										</Typography>
-									</MenuItem>
+									
+										<Profile />
+
 									<MenuItem
 										onClick = {
 											() => {
@@ -381,7 +380,7 @@ export default function Orders() {
 														</TableCell>
 														<TableCell align="right">
 														</TableCell>
-													
+
 												</TableRow>
 											</TableHead>
 											<TableBody>
