@@ -54,6 +54,7 @@ class Login extends Component {
 
             <div>
               <input
+
                 style={styles.loginFormTextInput}
                 value={this.state.password}
                 onChange={this.handleChange}

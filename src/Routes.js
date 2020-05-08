@@ -12,7 +12,9 @@ export default function Routes() {
         <Home />
       </Route>
       <Route exact path="/login" component={Login} />
+
       <ProtectedRoute exact path="/Orders" component={Orders} />
+
       {/* Finally, catch all unmatched routes */}
       <Route>
         <NotFound />
