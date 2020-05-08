@@ -5,8 +5,14 @@ import { Link } from "react-router-dom";
 import history from "./History";
 import Container from "@material-ui/core/Container";
 import firebase from "../firebase";
-//const [errorMsg, setErrorMsg] = useState(false);
+import Snackbar from '@material-ui/core/Snackbar';
+import MuiAlert from '@material-ui/lab/Alert';
+import Typography from '@material-ui/core/Typography';
+function Alert(props) {
+  return <MuiAlert elevation={6} variant="filled" {...props} />;
+}
 class Login extends Component {
+
   constructor(props) {
     super(props);
     this.login = this.login.bind(this);
@@ -16,6 +22,7 @@ class Login extends Component {
       password: "",
       errorMessage: "",
     };
+
   }
 
   handleChange(e) {
@@ -32,6 +39,7 @@ class Login extends Component {
         this.setState({ errorMessage: error.message });
       });
   }
+
   render() {
     return (
       <div className="Login">
@@ -54,7 +62,6 @@ class Login extends Component {
 
             <div>
               <input
-
                 style={styles.loginFormTextInput}
                 value={this.state.password}
                 onChange={this.handleChange}
@@ -67,9 +74,14 @@ class Login extends Component {
             </div>
             <div style={{ textAlign: "center" }}>
               {this.state.errorMessage && (
-                <p style={styles.errorInput} className="error">
-                  {this.state.errorMessage}
-                </p>
+                <Snackbar open={true} autoHideDuration={1000}>
+        <Alert severity="error">
+          <Typography variant="h6">
+            {this.state.errorMessage}
+            </Typography>
+        </Alert>
+      </Snackbar>
+
               )}
               <button
                 style={styles.loginButton}
