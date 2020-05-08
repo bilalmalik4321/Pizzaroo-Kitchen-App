@@ -1,15 +1,13 @@
 import React, { Component } from "react";
 import fire from "../firebase";
 import styles from "./style";
-import { Link } from "react-router-dom";
-import history from "./History";
 import Container from '@material-ui/core/Container';
 
 
 class Login extends Component {
-	
+
   constructor(props) {
-	  
+
     super(props);
     this.login = this.login.bind(this);
     this.handleChange = this.handleChange.bind(this);
@@ -17,19 +15,19 @@ class Login extends Component {
       email: "",
       password: "",
     };
-	
+
   }
 
   handleChange(e) {
-	  
+
     this.setState({ [e.target.name]: e.target.value });
-	
+
   }
 
   login(e) {
-	  
+
     e.preventDefault();
-	
+
     fire
       .auth()
       .signInWithEmailAndPassword(this.state.email, this.state.password)
@@ -39,19 +37,19 @@ class Login extends Component {
           console.log(error);
         }
       );
-	  
+
   }
-  
+
   render() {
     return (
-	
+
       <div className="Login">
         <form>
-		
+
           <h1 style = {styles.logoText}>
             Welcome
           </h1>
-		  
+
           <Container maxWidth = "sm">
             <div className = "form-group">
               <input
@@ -66,7 +64,7 @@ class Login extends Component {
               placeholder="username"
               />
             </div>
-      
+
             <div>
               <input
               style={styles.loginFormTextInput}
@@ -79,7 +77,7 @@ class Login extends Component {
               placeholder="Password"
               />
             </div>
-            
+
             <div style={{textAlign:"center"}}>
               <button
               style={styles.loginButton}
@@ -94,7 +92,7 @@ class Login extends Component {
                 Login
               </button>
             </div>
-            
+
           </Container>
         </form>
       </div>

@@ -1,8 +1,6 @@
 import React from 'react';
-import { Link, Redirect } from "react-router-dom";
 import fire from "../firebase";
 import history from "./History";
-import Login from "./Login";
 import { makeStyles } from '@material-ui/core/styles';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
@@ -13,7 +11,6 @@ import MenuItem from '@material-ui/core/MenuItem';
 import Menu from '@material-ui/core/Menu';
 import Container from '@material-ui/core/Container';
 import Card from '@material-ui/core/Card';
-import CardActions from '@material-ui/core/CardActions';
 import CardContent from '@material-ui/core/CardContent';
 import Button from '@material-ui/core/Button';
 import Grid from '@material-ui/core/Grid';
@@ -42,13 +39,12 @@ function logout() {
 function direct() {
     history.push("Login");
   }
-  
+
 function createData(orderId, totalQuantity, timeOfOrder, carbs) {
   return {
     orderId,
     totalQuantity,
     timeOfOrder,
-    carbs,
     history: [
       { itemId: '1', itemName: 'Cheese pizza (XL)', amount: 3, instruction:"Well done",price:12.20 },
       { itemId: '2', itemName: 'Pepperoni pizza (L)', amount: 1, instruction:"Easy on the cheese please", price:14.50 },
@@ -78,39 +74,43 @@ function Row(props) {
   return (
     <React.Fragment>
       <TableRow >
-	  
+
         <TableCell>
           <IconButton aria-label="expand row" size="small" onClick={() => setOpen(!open)}>
             {open ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
           </IconButton>
         </TableCell>
-		
+
         <TableCell align="left">
           <Typography variant="h6" >
             {row.orderId}
           </Typography>
         </TableCell>
-		
+
         <TableCell align="right">
           <Typography variant="h6" >
             {row.totalQuantity}
           </Typography>
         </TableCell>
-		
+
         <TableCell align="right">
           <Typography variant="h6" >
             {row.timeOfOrder}
           </Typography>
         </TableCell>
-		
+
         <TableCell align="right">
-          <Button variant="contained" color="primary">
+
+        <Button variant="contained" color="primary"
+          onClick={() => {rowsPrep.push(row); rows.splice(rows.indexOf(row),1);}}
+            >
             <Typography variant="h6" >
               Being prepared
             </Typography>
           </Button>
+
         </TableCell>
-		
+
       </TableRow>
       <TableRow>
         <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={6}>
@@ -122,73 +122,73 @@ function Row(props) {
               <Table size="small" aria-label="purchases">
                 <TableHead>
                   <TableRow>
-				  
+
                     <TableCell>
                       <Typography variant = "h5">
                         ID
                       </Typography>
                     </TableCell>
-					
+
                     <TableCell>
                       <Typography variant = "h5">
                         Item
                       </Typography>
                     </TableCell>
-					
+
                     <TableCell>
                       <Typography variant = "h5">
                         Quantity
                       </Typography>
                     </TableCell>
-					
+
                     <TableCell align="right">
                       <Typography variant = "h5">
                         Special instructions
                       </Typography>
                     </TableCell>
-					
+
                     <TableCell align="right">
                       <Typography variant = "h5">
                         Total price ($)
                       </Typography>
                     </TableCell>
-					
+
                   </TableRow>
                 </TableHead>
                 <TableBody>
                   {row.history.map((historyRow) => (
                     <TableRow key={historyRow.itemId}>
-					
+
                       <TableCell component="th" scope="row">
                         <Typography variant = "h5">
                         {historyRow.itemId}
                         </Typography>
                       </TableCell>
-					  
+
                       <TableCell>
                         <Typography variant = "h5">
                           {historyRow.itemName}
                         </Typography>
                       </TableCell>
-					  
+
                       <TableCell>
                         <Typography variant = "h5">
                           {historyRow.amount}
                         </Typography>
                       </TableCell>
-					  
+
                       <TableCell align="right">
                         <Typography variant = "h5">
                         {historyRow.instruction}
                         </Typography>
                       </TableCell>
-					  
+
                       <TableCell align="right">
                         <Typography variant = "h5">
                           {(historyRow.amount * historyRow.price).toFixed(2) }
                         </Typography>
                       </TableCell>
-					  
+
                     </TableRow>
                   ))}
                 </TableBody>
@@ -200,43 +200,315 @@ function Row(props) {
     </React.Fragment>
   );
 }
+function RowTwo(props) {
+  const { row } = props;
+  const [open, setOpen] = React.useState(false);
 
+
+  return (
+    <React.Fragment>
+      <TableRow >
+
+        <TableCell>
+          <IconButton aria-label="expand row" size="small" onClick={() => setOpen(!open)}>
+            {open ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
+          </IconButton>
+        </TableCell>
+
+        <TableCell align="left">
+          <Typography variant="h6" >
+            {row.orderId}
+          </Typography>
+        </TableCell>
+
+        <TableCell align="right">
+          <Typography variant="h6" >
+            {row.totalQuantity}
+          </Typography>
+        </TableCell>
+
+        <TableCell align="right">
+          <Typography variant="h6" >
+            {row.timeOfOrder}
+          </Typography>
+        </TableCell>
+
+        <TableCell align="right">
+
+        <Button variant="contained" color="secondary"
+          onClick={() => {rows.push(row); rowsPrep.splice(rowsPrep.indexOf(row),1);}}
+            >
+            <Typography variant="h6" >
+              Still pending
+            </Typography>
+          </Button>
+          <Button variant="contained" color="default"
+            onClick={() => {rowsCompleted.push(row); rowsPrep.splice(rowsPrep.indexOf(row),1);}}
+              >
+              <Typography variant="h6" >
+                Completed
+              </Typography>
+            </Button>
+        </TableCell>
+
+      </TableRow>
+      <TableRow>
+        <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={6}>
+          <Collapse in={open} timeout="auto" unmountOnExit>
+            <Box margin={1}>
+              <Typography variant="h5" gutterBottom component="div">
+                Order details
+              </Typography>
+              <Table size="small" aria-label="purchases">
+                <TableHead>
+                  <TableRow>
+
+                    <TableCell>
+                      <Typography variant = "h5">
+                        ID
+                      </Typography>
+                    </TableCell>
+
+                    <TableCell>
+                      <Typography variant = "h5">
+                        Item
+                      </Typography>
+                    </TableCell>
+
+                    <TableCell>
+                      <Typography variant = "h5">
+                        Quantity
+                      </Typography>
+                    </TableCell>
+
+                    <TableCell align="right">
+                      <Typography variant = "h5">
+                        Special instructions
+                      </Typography>
+                    </TableCell>
+
+                    <TableCell align="right">
+                      <Typography variant = "h5">
+                        Total price ($)
+                      </Typography>
+                    </TableCell>
+
+                  </TableRow>
+                </TableHead>
+                <TableBody>
+                  {row.history.map((historyRow) => (
+                    <TableRow key={historyRow.itemId}>
+
+                      <TableCell component="th" scope="row">
+                        <Typography variant = "h5">
+                        {historyRow.itemId}
+                        </Typography>
+                      </TableCell>
+
+                      <TableCell>
+                        <Typography variant = "h5">
+                          {historyRow.itemName}
+                        </Typography>
+                      </TableCell>
+
+                      <TableCell>
+                        <Typography variant = "h5">
+                          {historyRow.amount}
+                        </Typography>
+                      </TableCell>
+
+                      <TableCell align="right">
+                        <Typography variant = "h5">
+                        {historyRow.instruction}
+                        </Typography>
+                      </TableCell>
+
+                      <TableCell align="right">
+                        <Typography variant = "h5">
+                          {(historyRow.amount * historyRow.price).toFixed(2) }
+                        </Typography>
+                      </TableCell>
+
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </Box>
+          </Collapse>
+        </TableCell>
+      </TableRow>
+    </React.Fragment>
+  );
+}
+function RowThree(props) {
+  const { row } = props;
+  const [open, setOpen] = React.useState(false);
+
+
+  return (
+    <React.Fragment>
+      <TableRow >
+
+        <TableCell>
+          <IconButton aria-label="expand row" size="small" onClick={() => setOpen(!open)}>
+            {open ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
+          </IconButton>
+        </TableCell>
+
+        <TableCell align="left">
+          <Typography variant="h6" >
+            {row.orderId}
+          </Typography>
+        </TableCell>
+
+        <TableCell align="right">
+          <Typography variant="h6" >
+            {row.totalQuantity}
+          </Typography>
+        </TableCell>
+
+        <TableCell align="right">
+          <Typography variant="h6" >
+            {row.timeOfOrder}
+          </Typography>
+        </TableCell>
+
+        <TableCell align="right">
+
+        <Button variant="contained" disabled>
+            <Typography variant="h6" >
+              Out the door
+            </Typography>
+          </Button>
+
+        </TableCell>
+
+      </TableRow>
+      <TableRow>
+        <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={6}>
+          <Collapse in={open} timeout="auto" unmountOnExit>
+            <Box margin={1}>
+              <Typography variant="h5" gutterBottom component="div">
+                Order details
+              </Typography>
+              <Table size="small" aria-label="purchases">
+                <TableHead>
+                  <TableRow>
+
+                    <TableCell>
+                      <Typography variant = "h5">
+                        ID
+                      </Typography>
+                    </TableCell>
+
+                    <TableCell>
+                      <Typography variant = "h5">
+                        Item
+                      </Typography>
+                    </TableCell>
+
+                    <TableCell>
+                      <Typography variant = "h5">
+                        Quantity
+                      </Typography>
+                    </TableCell>
+
+                    <TableCell align="right">
+                      <Typography variant = "h5">
+                        Special instructions
+                      </Typography>
+                    </TableCell>
+
+                    <TableCell align="right">
+                      <Typography variant = "h5">
+                        Total price ($)
+                      </Typography>
+                    </TableCell>
+
+                  </TableRow>
+                </TableHead>
+                <TableBody>
+                  {row.history.map((historyRow) => (
+                    <TableRow key={historyRow.itemId}>
+
+                      <TableCell component="th" scope="row">
+                        <Typography variant = "h5">
+                        {historyRow.itemId}
+                        </Typography>
+                      </TableCell>
+
+                      <TableCell>
+                        <Typography variant = "h5">
+                          {historyRow.itemName}
+                        </Typography>
+                      </TableCell>
+
+                      <TableCell>
+                        <Typography variant = "h5">
+                          {historyRow.amount}
+                        </Typography>
+                      </TableCell>
+
+                      <TableCell align="right">
+                        <Typography variant = "h5">
+                        {historyRow.instruction}
+                        </Typography>
+                      </TableCell>
+
+                      <TableCell align="right">
+                        <Typography variant = "h5">
+                          {(historyRow.amount * historyRow.price).toFixed(2) }
+                        </Typography>
+                      </TableCell>
+
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </Box>
+          </Collapse>
+        </TableCell>
+      </TableRow>
+    </React.Fragment>
+  );
+}
 Row.propTypes = {
-	
+
   row: PropTypes.shape({
     totalQuantity: PropTypes.number.isRequired,
     carbs: PropTypes.number.isRequired,
     timeOfOrder: PropTypes.number.isRequired,
-	
+
     history: PropTypes.arrayOf(
-	
+
       PropTypes.shape({
         amount: PropTypes.number.isRequired,
         itemName: PropTypes.string.isRequired,
         itemId: PropTypes.string.isRequired,
       }),
-	  
+
     ).isRequired,
-	
+
     itemId: PropTypes.string.isRequired,
     price: PropTypes.number.isRequired,
     protein: PropTypes.number.isRequired,
   }).isRequired,
-  
+
 };
 
 var count=1;
 
-const rows = [
+var rows = [
 
   createData(count, 2, '11am'),
   createData(++count, 2, '11.15am'),
   createData(++count, 2, '11.20am'),
   createData(++count, 2, '11.25am'),
   createData(++count, 2, '11.30am'),
-  
-];
 
+];
+var rowsPrep=[];
+var rowsCompleted=[];
 export default function Orders() {
 
   const [expanded, setExpanded] = React.useState('panel1');
@@ -296,7 +568,7 @@ export default function Orders() {
                   open = {open}
                   onClose = {handleClose}
                 >
-                  
+
                     <Profile />
 
                   <MenuItem
@@ -375,7 +647,41 @@ export default function Orders() {
               </ExpansionPanelSummary>
               <ExpansionPanelDetails>
                 <Typography>
-                  Orders moved from pending appear here
+                <TableContainer component={Paper}>
+                  <Table aria-label="collapsible table" style={{ width: 1200 }}>
+                    <TableHead>
+                      <TableRow>
+                        <TableCell />
+                          <TableCell>
+                            <Typography variant = "h5">
+                              Order Number
+                            </Typography>
+                          </TableCell>
+                          <TableCell align="right">
+                            <Typography variant = "h5">
+                              No. of Items
+                            </Typography>
+                          </TableCell>
+                          <TableCell align="right">
+                            <Typography variant = "h5">
+                              Time of order
+                            </Typography>
+                          </TableCell>
+                          <TableCell align="right">
+                          </TableCell>
+                          <TableCell align="right">
+                          </TableCell>
+
+                      </TableRow>
+                    </TableHead>
+                    <TableBody>
+                      {rowsPrep.map((rowsPrep) => (
+                        <RowTwo key={rowsPrep.orderId} row={rowsPrep} />
+                        ))
+                      }
+                    </TableBody>
+                  </Table>
+                </TableContainer>
                 </Typography>
               </ExpansionPanelDetails>
             </ExpansionPanel>
@@ -435,7 +741,41 @@ export default function Orders() {
               </ExpansionPanelSummary>
               <ExpansionPanelDetails>
                 <Typography>
-                  orders moved from preparing appear here
+                <TableContainer component={Paper}>
+                  <Table aria-label="collapsible table" style={{ width: 1200 }}>
+                    <TableHead>
+                      <TableRow>
+                        <TableCell />
+                          <TableCell>
+                            <Typography variant = "h5">
+                              Order Number
+                            </Typography>
+                          </TableCell>
+                          <TableCell align="right">
+                            <Typography variant = "h5">
+                              No. of Items
+                            </Typography>
+                          </TableCell>
+                          <TableCell align="right">
+                            <Typography variant = "h5">
+                              Time of order
+                            </Typography>
+                          </TableCell>
+                          <TableCell align="right">
+                          </TableCell>
+                          <TableCell align="right">
+                          </TableCell>
+
+                      </TableRow>
+                    </TableHead>
+                    <TableBody>
+                      {rowsCompleted.map((row) => (
+                        <RowThree key={row.orderId} row={row} />
+                        ))
+                      }
+                    </TableBody>
+                  </Table>
+                </TableContainer>
                 </Typography>
               </ExpansionPanelDetails>
             </ExpansionPanel>
