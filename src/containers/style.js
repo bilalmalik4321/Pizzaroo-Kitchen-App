@@ -14,10 +14,10 @@ export default {
     borderWidth: 1,
     borderColor: "purple",
     backgroundColor: "#fafafa",
-     
+
     marginTop: 20,
     marginBottom: 20,
-    width:"100%",
+    width: "100%",
   },
   loginButton: {
     color: "white",
@@ -26,9 +26,10 @@ export default {
     height: 45,
     width: 95,
     marginTop: 20,
-    
   },
   errorInput: {
     textAlign: "center",
+    color: "red",
+    fontSize: 18,
   },
 };
