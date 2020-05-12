@@ -25,7 +25,7 @@ import TableRow from "@material-ui/core/TableRow";
 import Paper from "@material-ui/core/Paper";
 import KeyboardArrowDownIcon from "@material-ui/icons/KeyboardArrowDown";
 import KeyboardArrowUpIcon from "@material-ui/icons/KeyboardArrowUp";
-import OrdersNav from "../layout/ordersNav";
+import OrdersNav from "../app/layout/ordersNav";
 
 function createData(orderId, totalQuantity, timeOfOrder, carbs) {
   return {

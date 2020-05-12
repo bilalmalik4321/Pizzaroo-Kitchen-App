@@ -1,7 +1,17 @@
 import React, { Component } from "react";
-import firebase from "./firebase";
+import firebase from "../firebase";
 import "typeface-roboto";
-import Routes from "./route";
+import Routes from "./routes";
+
+
+// const App = props => {
+
+
+
+//   return (
+//     <Routes />
+//   )
+// }
 class App extends Component {
   constructor() {
     super();
