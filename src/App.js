@@ -3,7 +3,6 @@ import "./App.css";
 import firebase from "./firebase";
 import Main from "./containers/Main";
 import Orders from "./containers/Orders";
-import history from "./containers/History";
 import "typeface-roboto";
 class App extends Component {
   constructor() {

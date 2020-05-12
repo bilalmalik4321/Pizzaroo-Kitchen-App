@@ -12,7 +12,7 @@ export default {
     fontSize: 14,
     borderRadius: 20,
     borderWidth: 1,
-    borderColor: "purple",
+    borderColor: "#2D2A32",
     backgroundColor: "#fafafa",
 
     marginTop: 20,
@@ -20,8 +20,9 @@ export default {
     width: "100%",
   },
   loginButton: {
-    color: "white",
-    backgroundColor: "purple",
+    color: "#2D2A32",
+    backgroundColor: "#13AA52",
+    fontWeight: "600",
     borderRadius: 25,
     height: 45,
     width: 95,
