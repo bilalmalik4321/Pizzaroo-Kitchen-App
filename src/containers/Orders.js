@@ -2,13 +2,8 @@ import React from 'react';
 import fire from "../firebase";
 import history from "./History";
 import { makeStyles } from '@material-ui/core/styles';
-import AppBar from '@material-ui/core/AppBar';
-import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
 import IconButton from '@material-ui/core/IconButton';
-import AccountCircle from '@material-ui/icons/AccountCircle';
-import MenuItem from '@material-ui/core/MenuItem';
-import Menu from '@material-ui/core/Menu';
 import Container from '@material-ui/core/Container';
 import Card from '@material-ui/core/Card';
 import CardContent from '@material-ui/core/CardContent';
@@ -18,7 +13,6 @@ import ExpansionPanel from '@material-ui/core/ExpansionPanel';
 import ExpansionPanelSummary from '@material-ui/core/ExpansionPanelSummary';
 import ExpansionPanelDetails from '@material-ui/core/ExpansionPanelDetails';
 import Divider from '@material-ui/core/Divider';
-import PropTypes from 'prop-types';
 import Box from '@material-ui/core/Box';
 import Collapse from '@material-ui/core/Collapse';
 import Table from '@material-ui/core/Table';
@@ -30,15 +24,7 @@ import TableRow from '@material-ui/core/TableRow';
 import Paper from '@material-ui/core/Paper';
 import KeyboardArrowDownIcon from '@material-ui/icons/KeyboardArrowDown';
 import KeyboardArrowUpIcon from '@material-ui/icons/KeyboardArrowUp';
-import Profile from './profile';
-
-function logout() {
-    fire.auth().signOut();
-  }
-
-function direct() {
-    history.push("Login");
-  }
+import OrdersNav from './ordersComponents/ordersNav'
 
 function createData(orderId, totalQuantity, timeOfOrder, carbs) {
   return {
@@ -56,13 +42,7 @@ const useStyles = makeStyles(
   (theme) => ({
     root: {
       flexGrow: 1,
-    },
-    title: {
-      flexGrow: 1,
-    },
-    AppBar: {
-      backgroundColor:"purple",
-    },
+    }
   })
 );
 
@@ -74,7 +54,6 @@ function Row(props) {
   return (
     <React.Fragment>
       <TableRow >
-
         <TableCell>
           <IconButton aria-label="expand row" size="small" onClick={() => setOpen(!open)}>
             {open ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
@@ -472,43 +451,19 @@ function RowThree(props) {
     </React.Fragment>
   );
 }
-Row.propTypes = {
-
-  row: PropTypes.shape({
-    totalQuantity: PropTypes.number.isRequired,
-    carbs: PropTypes.number.isRequired,
-    timeOfOrder: PropTypes.number.isRequired,
-
-    history: PropTypes.arrayOf(
-
-      PropTypes.shape({
-        amount: PropTypes.number.isRequired,
-        itemName: PropTypes.string.isRequired,
-        itemId: PropTypes.string.isRequired,
-      }),
-
-    ).isRequired,
-
-    itemId: PropTypes.string.isRequired,
-    price: PropTypes.number.isRequired,
-    protein: PropTypes.number.isRequired,
-  }).isRequired,
-
-};
 
 var count=1;
-
-var rows = [
-
-  createData(count, 2, '11am'),
-  createData(++count, 2, '11.15am'),
-  createData(++count, 2, '11.20am'),
-  createData(++count, 2, '11.25am'),
-  createData(++count, 2, '11.30am'),
-
-];
+var rows = [];
+var rowsIncoming=[createData(count, 2, '11am'),
+                  createData(++count, 2, '11.15am'),
+                  createData(++count, 2, '11.20am'),
+                  createData(++count, 2, '11.25am'),
+                  createData(++count, 2, '11.30am'),];
 var rowsPrep=[];
 var rowsCompleted=[];
+function logout() {
+    fire.auth().signOut();
+  }
 export default function Orders() {
 
   const [expanded, setExpanded] = React.useState('panel1');
@@ -520,80 +475,89 @@ export default function Orders() {
   logout = logout.bind(this);
   history.push("Orders");
 
-  const [anchorEl, setAnchorEl] = React.useState(null);
-  const open = Boolean(anchorEl);
 
-  const handleMenu = (event) => {
-    setAnchorEl(event.currentTarget);
-  };
-
-  const handleClose = () => {
-    setAnchorEl(null);
-  };
 
   return (
     <div className = {classes.root}>
       <div>
-        <AppBar position = "static" className = {classes.AppBar}>
-          <Toolbar>
-
-            <Typography variant = "h4" className = {classes.title}>
-              Pizzaroo
-            </Typography>
-
-              <div>
-                <IconButton
-                  style = {{width: 64, height: 64, padding: 0,}}
-                  aria-label = "account of current user"
-                  aria-controls = "menu-appbar"
-                  aria-haspopup = "true"
-                  onClick = {handleMenu}
-                  color = "inherit"
-                >
-                  <AccountCircle style = {{ width: 32, height: 32,}}  />
-                </IconButton>
-
-                <Menu
-                  id = "menu-appbar"
-                  anchorEl = {anchorEl}
-                  anchorOrigin = {{
-                    vertical: 'top',
-                    horizontal: 'right',
-                  }}
-                  keepMounted
-                  transformOrigin = {{
-                    vertical: 'top',
-                    horizontal: 'right',
-                  }}
-                  open = {open}
-                  onClose = {handleClose}
-                >
-
-                    <Profile />
-
-                  <MenuItem
-                    onClick = {
-                      () => {
-                        logout();
-                        direct();
-                      }
-                    }
-                  >
-                    <Typography variant = "h5">
-                    Logout
-                    </Typography>
-                  </MenuItem>
-
-                </Menu>
-              </div>
-
-          </Toolbar>
-        </AppBar>
+      <OrdersNav />
       </div>
       <div>
+      <Grid container spacing = {2}>
+        <Grid item xs = {4}>
+        <Container maxWidth="lg" style={{marginTop:20}}>
+          <Card variant ="outlined">
+            <CardContent>
+            <Typography color = "textSecondary" variant = "h4" gutterBottom>
+              Incoming Orders
+            </Typography>
+            <Divider style = {{marginTop:20, marginBottom:20}} />
+              <div>
+              {rowsIncoming.map((row) => (
+                //<RowTwo key={rowsPrep.orderId} row={rowsPrep} />
+                <Card key={rowsIncoming.orderId} style={{marginBottom:10}}>
+                  <CardContent>
+                    <Typography color="textSecondary" gutterBottom>
+                      Order #{row.orderId}
+                    </Typography>
+
+                    <Typography color="textSecondary">
+                      Payment: Cash
+                    </Typography>
+                    <Typography variant="body2" component="p">
+                    {row.history.map((historyRow) => (
+                      <TableRow key={historyRow.itemId}>
+
+                        <TableCell>
+                          <Typography variant = "h6">
+                            {historyRow.itemName} X {historyRow.amount}
+                          </Typography>
+                        </TableCell>
+
+                        <TableCell align="right">
+                          <Typography variant = "p">
+                          {historyRow.instruction}
+                          </Typography>
+                        </TableCell>
+
+                        <TableCell align="right">
+                          <Typography variant = "p">
+                          $ {(historyRow.amount * historyRow.price).toFixed(2) }
+                          </Typography>
+                        </TableCell>
+
+                      </TableRow>
+
+
+                    ))}
+                    </Typography>
+                  </CardContent>
+                  <Button variant="contained" color="secondary"
+                    onClick={() => { rowsIncoming.splice(rowsIncoming.indexOf(row),1);}}
+                      >
+                      <Typography variant="h6" >
+                        Reject
+                      </Typography>
+                    </Button>
+                  <Button variant="contained" color="primary"
+                    onClick={() => {rows.push(row); rowsIncoming.splice(rowsIncoming.indexOf(row),1);}}
+                      >
+                      <Typography variant="h6" >
+                        Accept
+                      </Typography>
+                    </Button>
+
+                </Card>
+                ))
+              }
+              </div>
+            </CardContent>
+          </Card>
+          </Container>
+        </Grid>
+        <Grid item xs = {8}>
         <Container maxWidth = "lg" style = {{marginTop:20}}>
           <Grid container spacing = {3}>
-
             <Grid item xs = {4}>
               <Card variant = "outlined">
                 <CardContent>
@@ -648,7 +612,7 @@ export default function Orders() {
               <ExpansionPanelDetails>
                 <Typography>
                 <TableContainer component={Paper}>
-                  <Table aria-label="collapsible table" style={{ width: 1200 }}>
+                  <Table aria-label="collapsible table" style={{ width: 800 }}>
                     <TableHead>
                       <TableRow>
                         <TableCell />
@@ -696,7 +660,7 @@ export default function Orders() {
               <ExpansionPanelDetails>
                 <Typography>
                   <TableContainer component={Paper}>
-                    <Table aria-label="collapsible table" style={{ width: 1200 }}>
+                    <Table aria-label="collapsible table" style={{ width: 800 }}>
                       <TableHead>
                         <TableRow>
                           <TableCell />
@@ -742,7 +706,7 @@ export default function Orders() {
               <ExpansionPanelDetails>
                 <Typography>
                 <TableContainer component={Paper}>
-                  <Table aria-label="collapsible table" style={{ width: 1200 }}>
+                  <Table aria-label="collapsible table" style={{ width: 800 }}>
                     <TableHead>
                       <TableRow>
                         <TableCell />
@@ -781,6 +745,8 @@ export default function Orders() {
             </ExpansionPanel>
 
         </Container>
+        </Grid>
+        </Grid>
       </div>
     </div>
   );

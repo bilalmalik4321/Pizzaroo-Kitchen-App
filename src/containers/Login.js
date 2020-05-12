@@ -1,10 +1,7 @@
-import React, { Component, useState } from "react";
+import React, { Component } from "react";
 import fire from "../firebase";
 import styles from "./style";
-import { Link } from "react-router-dom";
-import history from "./History";
 import Container from "@material-ui/core/Container";
-import firebase from "../firebase";
 import Snackbar from '@material-ui/core/Snackbar';
 import MuiAlert from '@material-ui/lab/Alert';
 import Typography from '@material-ui/core/Typography';
