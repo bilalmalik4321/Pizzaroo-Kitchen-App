@@ -1,15 +1,17 @@
 import React, { Component } from "react";
 import fire from "../firebase";
 import styles from "./style";
+import Orders from "./Orders";
+import Main from "./Main";
 import Container from "@material-ui/core/Container";
-import Snackbar from '@material-ui/core/Snackbar';
-import MuiAlert from '@material-ui/lab/Alert';
-import Typography from '@material-ui/core/Typography';
+import Snackbar from "@material-ui/core/Snackbar";
+import MuiAlert from "@material-ui/lab/Alert";
+import Typography from "@material-ui/core/Typography";
+import store from "store";
 function Alert(props) {
   return <MuiAlert elevation={6} variant="filled" {...props} />;
 }
 class Login extends Component {
-
   constructor(props) {
     super(props);
     this.login = this.login.bind(this);
@@ -19,7 +21,6 @@ class Login extends Component {
       password: "",
       errorMessage: "",
     };
-
   }
 
   handleChange(e) {
@@ -28,18 +29,22 @@ class Login extends Component {
 
   login(e) {
     e.preventDefault();
+    const { history } = this.props;
     fire
       .auth()
       .signInWithEmailAndPassword(this.state.email, this.state.password)
-      .then((u) => {})
+      .then((u) => {
+        history.push("/Orders");
+      })
       .catch((error) => {
         this.setState({ errorMessage: error.message });
       });
+    store.set("loggedIn", true);
   }
-
   render() {
     return (
       <div className="Login">
+        <Main />
         <form>
           <h1 style={styles.logoText}>Welcome</h1>
           <Container maxWidth="sm">
@@ -72,13 +77,12 @@ class Login extends Component {
             <div style={{ textAlign: "center" }}>
               {this.state.errorMessage && (
                 <Snackbar open={true} autoHideDuration={1000}>
-        <Alert severity="error">
-          <Typography variant="h6">
-            {this.state.errorMessage}
-            </Typography>
-        </Alert>
-      </Snackbar>
-
+                  <Alert severity="error">
+                    <Typography variant="h6">
+                      {this.state.errorMessage}
+                    </Typography>
+                  </Alert>
+                </Snackbar>
               )}
               <button
                 style={styles.loginButton}

@@ -27,6 +27,7 @@ export default {
     height: 45,
     width: 95,
     marginTop: 20,
+    outline: 0,
   },
   errorInput: {
     textAlign: "center",

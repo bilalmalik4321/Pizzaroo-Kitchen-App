@@ -8,13 +8,9 @@ import { ProtectedRoute } from "./ProtectedRoute";
 export default function Routes() {
   return (
     <Switch>
-      <Route exact path="/">
-        <Home />
-      </Route>
+      <Route exact path="/" component={Home} />
       <Route exact path="/login" component={Login} />
-
       <ProtectedRoute exact path="/Orders" component={Orders} />
-
       {/* Finally, catch all unmatched routes */}
       <Route>
         <NotFound />

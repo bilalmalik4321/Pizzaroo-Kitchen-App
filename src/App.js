@@ -1,9 +1,8 @@
 import React, { Component } from "react";
 import "./App.css";
 import firebase from "./firebase";
-import Main from "./containers/Main";
-import Orders from "./containers/Orders";
 import "typeface-roboto";
+import Routes from "./Routes";
 class App extends Component {
   constructor() {
     super();
@@ -28,7 +27,7 @@ class App extends Component {
     });
   }
   render() {
-    return <div>{this.state.user ? <Orders />: <Main />}</div>;
+    return <Routes />;
   }
 }
 export default App;
