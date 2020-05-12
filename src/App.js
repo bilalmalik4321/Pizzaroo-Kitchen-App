@@ -1,8 +1,7 @@
 import React, { Component } from "react";
-import "./App.css";
 import firebase from "./firebase";
 import "typeface-roboto";
-import Routes from "./Routes";
+import Routes from "./route";
 class App extends Component {
   constructor() {
     super();

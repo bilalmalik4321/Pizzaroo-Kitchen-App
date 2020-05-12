@@ -1,6 +1,6 @@
 import React from "react";
 import fire from "../firebase";
-import history from "./History";
+import history from "../account/History";
 import store from "store";
 import { makeStyles } from "@material-ui/core/styles";
 import Typography from "@material-ui/core/Typography";
@@ -25,7 +25,7 @@ import TableRow from "@material-ui/core/TableRow";
 import Paper from "@material-ui/core/Paper";
 import KeyboardArrowDownIcon from "@material-ui/icons/KeyboardArrowDown";
 import KeyboardArrowUpIcon from "@material-ui/icons/KeyboardArrowUp";
-import OrdersNav from "./ordersComponents/ordersNav";
+import OrdersNav from "../layout/ordersNav";
 
 function createData(orderId, totalQuantity, timeOfOrder, carbs) {
   return {

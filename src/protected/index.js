@@ -1,6 +1,7 @@
 import React from "react";
 import { Route } from "react-router-dom";
-import isLoggedIn from "./containers/localStore/isLoggedIn";
+import isLoggedIn from "../containers/localStore/isLoggedIn";
+
 export const ProtectedRoute = ({ component: Component, ...rest }) => {
   return (
     <Route

@@ -1,8 +1,8 @@
 import React, { Component } from "react";
-import fire from "../firebase";
-import styles from "./style";
-import Orders from "./Orders";
-import Main from "./Main";
+import fire from "../../firebase";
+import styles from "../style";
+import Orders from "../../orders/Orders";
+import Main from "../Main";
 import Container from "@material-ui/core/Container";
 import Snackbar from "@material-ui/core/Snackbar";
 import MuiAlert from "@material-ui/lab/Alert";
