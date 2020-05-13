@@ -8,7 +8,7 @@ import OrdersSSS from "../orders";
 import Signup from '../account/signup';
 import Auth from './auth';
 import Protected from './protected';
-
+import Wrapper from './layout';
 
 const App = () => {
 
@@ -24,6 +24,6 @@ const App = () => {
   if(!Routes)
     return <NotFound/>
 
-  return <Auth>{Routes}</Auth> 
+  return <Auth><Wrapper>{Routes}</Wrapper></Auth> 
 }
 export default App;

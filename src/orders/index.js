@@ -119,9 +119,9 @@ const Orders = subscribe()((props) =>  {
   }
   return (
     <div className={classes.root}>
-      <div>
+      {/* <div>
         <OrdersNav />
-      </div>
+      </div> */}
       <div>
         <Grid container spacing={2}>
           <Grid item xs={4}>

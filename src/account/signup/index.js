@@ -19,7 +19,7 @@ const Signup = props => {
 
   console.log("props", props);
   const [errors, setErrors] = useState(null);
-  
+
   async function login(e) {
     e.preventDefault();
     const { email, password, description, firstName, lastName, storeName, phone, website, street, province, city, postalCode, country, registrationCode } = props.restaurant;
@@ -50,7 +50,7 @@ const Signup = props => {
 
     return (
       <div >
-        <Main />
+        {/* <Main /> */}
         <form>
           <h1 style={styles.logoText}>Welcome</h1>
           <Container maxWidth={'sm'}>

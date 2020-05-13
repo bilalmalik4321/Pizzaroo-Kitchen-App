@@ -43,8 +43,8 @@ const Login = (props) => {
   }
     return (
       <div className="Login">
-        <Main />
-        <form>
+      
+        <form> 
           <h1 style={styles.logoText}>Welcome</h1>
           <Container maxWidth="sm">
             <div className="form-group">
