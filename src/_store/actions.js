@@ -1,3 +1,5 @@
+import { getOrders } from '../api';
+
 export const updateStore = (key, value) => state => {
   let restaurant = {};
 
@@ -48,3 +50,51 @@ export const clearMenu = () => state => {
   };
 };
 
+/**
+ * This functions retrieve order from the firestore 
+ **/
+
+export const getCustomerOrders = () => async (state) => {
+  try {
+  // console.log("cannot find user-----", state.user)
+  state.setState({
+    orders: {
+      ...state.orders,
+      loading: true
+    }
+  });
+	// console.log("cannot find user", state.user)
+  await getOrders(
+    async (incomings) => {
+      state.setState({
+        orders: {
+          ...state.orders,
+          incomings,
+          loading: false
+        }
+      })
+    }
+  )} catch (err) {
+    console.log("***", err)
+  }
+}
+export const updateOrders = (key, value) => state => {
+  let orders = {};
+
+  if (typeof key === 'object') {
+    const dataToAppend = key;
+    orders = {
+      ...state.orders,
+      ...dataToAppend
+    };
+  } else {
+    orders = {
+      ...state.orders,
+      [key]: value
+    };
+  }
+
+  return {
+    orders
+  };
+};

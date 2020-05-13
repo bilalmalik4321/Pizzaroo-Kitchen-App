@@ -1,5 +1,4 @@
-import React from "react";
-import firebase from "firebase";
+import React, { useEffect, useState } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import Typography from "@material-ui/core/Typography";
 import IconButton from "@material-ui/core/IconButton";
@@ -25,6 +24,414 @@ import KeyboardArrowDownIcon from "@material-ui/icons/KeyboardArrowDown";
 import KeyboardArrowUpIcon from "@material-ui/icons/KeyboardArrowUp";
 import OrdersNav from "../app/layout/ordersNav";
 import { navigate } from 'hookrouter';
+import { subscribe } from 'react-contextual';
+import moment from 'moment';
+
+import { updateOrder } from '../api';
+import firebase from '../firebase';
+// customerName: props.user.name,
+// customerPhone: props.user.phone,
+// customerEmail: props.user.email,
+// items,
+// address,
+// instruction,
+// payment,
+// storeId: store.id,
+// store,
+// numberOfItems,
+// total: total(items)
+const convertDate = (time) => moment(time,'YYYY-MM-DD hh:mm:ss a').add(1,'day').format('LLL');
+var count = 1;
+var rows = [];
+var rowsIncoming = [
+  createData(count, 2, "11am"),
+  createData(++count, 2, "11.15am"),
+  createData(++count, 2, "11.20am"),
+  createData(++count, 2, "11.25am"),
+  createData(++count, 2, "11.30am"),
+  createData(++count, 2, "11.15am"),
+  createData(++count, 2, "11.20am"),
+  createData(++count, 2, "11.25am"),
+  createData(++count, 2, "11.30am"),
+];
+var rowsPrep = [];
+var rowsCompleted = [];
+
+const Orders = subscribe()((props) =>  {
+
+
+  console.log("today",moment().format('MMMM-Do-YYYY'));
+  const [expanded, setExpanded] = React.useState("panel1");
+  const handleChange = (panel) => (event, newExpanded) => {
+    setExpanded(newExpanded ? panel : false);
+  };
+  const classes = useStyles();
+
+  const { loading } = props.orders;
+
+  // new work
+
+  // get all the orders from firestore
+  const fetchData =  async ()=>{
+    try {
+      await firebase.firestore()
+        .collection('orders')
+        .where('status', '==', 'open')
+        .onSnapshot(querySnapshot => {
+          querySnapshot.docChanges().forEach(change => {
+          if (change.type === 'modified') {
+            console.log("changed----", change.doc.data());
+            // props.updateOrders({ incomings: change.doc.data(), loading: false})
+          }
+        })
+      })
+  } catch (err) {
+    console.log("error", err);
+  }}
+  useEffect(() => {
+    props.getCustomerOrders();
+    fetchData();
+  }, [props.getCustomerOrders])
+
+  const { incomings } = props.orders;
+  const list = {
+    hi: [1,2,3],
+    hello: [3,4,5]
+  }
+  
+  console.log("incomings", props.orders);
+
+  const onRejectOrder = async (pushId) => {
+    await updateOrder(pushId,'confirmed', 'closed');
+  }
+
+  const onAcceptOrder = async (pushId) => {
+    console.log("accept the order")
+    await updateOrder(pushId,'confirmed', 'open');
+  }
+
+  const onPrepareOrder = async (pushId) => {
+    await updateOrder(pushId, 'preparing', 'open');
+  }
+
+  const onCompleteOrder = async (pushId) => {
+    await updateOrder(pushId, 'enroute', 'open');
+  }
+  return (
+    <div className={classes.root}>
+      <div>
+        <OrdersNav />
+      </div>
+      <div>
+        <Grid container spacing={2}>
+          <Grid item xs={4}>
+            <Container maxWidth="lg" style={{ marginTop: 20 }}>
+              <Card variant="outlined">
+                <CardContent>
+                  <Typography color="textSecondary" variant="h4" gutterBottom>
+                    Incoming Orders
+                  </Typography>
+                  <Divider style={{ marginTop: 20, marginBottom: 20 }} />
+                  <div>
+                  {!loading && incomings && incomings.length !== 0 && incomings.sort((a,b)=> a.createdAt < b.createdAt).map((order,index) => {
+
+                    if(order.progressStep === 'waiting'){
+                      return(
+                        <Card
+                      key={index}
+                      style={{ marginBottom: 10 }}
+                    >
+                      <CardContent>
+                        <Typography color="textSecondary" >
+                          Order #{order.id}
+                        </Typography>
+                        <Typography color="textSecondary">
+                          Ordered At: {convertDate(order.createdAt)}
+                        </Typography>
+                        <Typography color="textSecondary">
+                          Customer: {order.customerName}
+                        </Typography>
+                        <Typography color="textSecondary">
+                          Email: {order.customerEmail}
+                        </Typography>
+                        <Typography color="textSecondary" gutterBottom>
+                          Phone: {order.customerPhone}
+                        </Typography>
+                        <Typography color="textSecondary">
+                          Payment: {order.payment}
+                        </Typography>
+                        <Typography color="textSecondary">
+                          Status: {order.status}
+                        </Typography>
+                        <Typography color="textSecondary">
+                          Number of Item: {order.numberOfItems}
+                        </Typography>
+                        <Typography color="textSecondary" gutterBottom>
+                          Total: {order.total.toFixed(2)}
+                        </Typography>
+                        <Typography color="textSecondary">
+                          Delivery Instruction: {order.instruction? order.instruction : "N/A"}
+                        </Typography>
+
+
+                        <Typography color="textSecondary">
+                          Address: { `${order.address.apt? " " : "Apt/Unit: " + order.address.apt}`  + " " + order.address.street +" "+ order.address.city+ " " + order.address.postalCode }
+                        </Typography>
+                     
+
+                          <div>
+                          <Typography variant="body2" component="p">
+                            { order.items && Object.keys(order.items).map((typeOfFood, i)=>(
+                              <div key={i}>
+                              {order.items[typeOfFood].map((anItem, ii ) => (
+                                <div key={ii}>
+                                  <TableRow key={ii}>
+                                      <TableCell>
+                                        <Typography variant="h6">
+                                        {anItem.quantity} x {anItem.name}
+                                        </Typography>
+                                      </TableCell>
+
+                                      <TableCell align="right">
+                                        <Typography >
+                                          {anItem.instruction}
+                                        </Typography>
+                                      </TableCell>
+
+                                      <TableCell align="right">
+                                        <Typography >
+                                          ${anItem.price}
+                                        </Typography>
+                                      </TableCell>
+                                    </TableRow>
+                                </div>
+                                  
+                                ))} 
+                        
+                              </div>
+
+                            ))}
+
+                          </Typography>
+                          </div>
+                         
+                        </CardContent>
+                        <Button
+                          variant="contained"
+                          color="secondary"
+                          onClick={() => {
+                            onRejectOrder(order.id)
+                          }}
+                        >
+                          <Typography variant="h6">Contact Customer to Reject</Typography>
+                        </Button>
+
+                        <Button
+                          variant="contained"
+                          color="primary"
+                          onClick={() => {
+                            onAcceptOrder(order.id)
+                          }}
+                        >
+                          <Typography variant="h6">Accept</Typography>
+                        </Button>
+                      </Card>
+                      )
+                    }
+                  })}
+                  </div>
+                </CardContent>
+              </Card>
+            </Container>
+          </Grid>
+          <Grid item xs={8}>
+            <Container maxWidth="lg" style={{ marginTop: 20 }}>
+              <Grid container spacing={3}>
+                <Grid item xs={4}>
+                  <Card variant="outlined">
+                    <CardContent>
+                      <Typography
+                        color="textSecondary"
+                        variant="h4"
+                        gutterBottom
+                      >
+                        Pending Orders
+                      </Typography>
+                      <Typography variant="h5">5</Typography>
+                    </CardContent>
+                  </Card>
+                </Grid>
+
+                <Grid item xs={4}>
+                  <Card variant="outlined">
+                    <CardContent>
+                      <Typography
+                        color="textSecondary"
+                        variant="h4"
+                        gutterBottom
+                      >
+                        Preparing Orders
+                      </Typography>
+                      <Typography variant="h5">2</Typography>
+                    </CardContent>
+                  </Card>
+                </Grid>
+
+                <Grid item xs={4}>
+                  <Card variant="outlined">
+                    <CardContent>
+                      <Typography
+                        color="textSecondary"
+                        variant="h4"
+                        gutterBottom
+                      >
+                        Completed Orders
+                      </Typography>
+                      <Typography variant="h5">8</Typography>
+                    </CardContent>
+                  </Card>
+                </Grid>
+              </Grid>
+
+              <Divider style={{ marginTop: 25, marginBottom: 25 }} />
+
+              <ExpansionPanel square onChange={handleChange("panel1")}>
+                <ExpansionPanelSummary
+                  aria-controls="panel1d-content"
+                  id="panel1d-header"
+                >
+                  <Typography variant="h4">Preparing Orders</Typography>
+                </ExpansionPanelSummary>
+                <ExpansionPanelDetails>
+                  <Typography>
+                    <TableContainer component={Paper}>
+                      <Table
+                        aria-label="collapsible table"
+                        style={{ width: 800 }}
+                      >
+                        <TableHead>
+                          <TableRow>
+                            <TableCell />
+                            <TableCell>
+                              <Typography variant="h5">Order Number</Typography>
+                            </TableCell>
+                            <TableCell align="right">
+                              <Typography variant="h5">No. of Items</Typography>
+                            </TableCell>
+                            <TableCell align="right">
+                              <Typography variant="h5">
+                                Time of order
+                              </Typography>
+                            </TableCell>
+                            <TableCell align="right"></TableCell>
+                            <TableCell align="right"></TableCell>
+                          </TableRow>
+                        </TableHead>
+                        <TableBody>
+                          {rowsPrep.map((rowsPrep,indexRow) => (
+                            <RowTwo key={indexRow} row={rowsPrep} />
+                          ))}
+                        </TableBody>
+                      </Table>
+                    </TableContainer>
+                  </Typography>
+                </ExpansionPanelDetails>
+              </ExpansionPanel>
+
+              <ExpansionPanel square onChange={handleChange("panel2")}>
+                <ExpansionPanelSummary
+                  aria-controls="panel2d-content"
+                  id="panel2d-header"
+                >
+                  <Typography variant="h4">Pending Orders</Typography>
+                </ExpansionPanelSummary>
+                <ExpansionPanelDetails>
+                  <Typography>
+                    <TableContainer component={Paper}>
+                      <Table
+                        aria-label="collapsible table"
+                        style={{ width: 800 }}
+                      >
+                        <TableHead>
+                          <TableRow>
+                            <TableCell />
+                            <TableCell>
+                              <Typography variant="h5">Order Number</Typography>
+                            </TableCell>
+                            <TableCell align="right">
+                              <Typography variant="h5">No. of Items</Typography>
+                            </TableCell>
+                            <TableCell align="right">
+                              <Typography variant="h5">
+                                Time of order
+                              </Typography>
+                            </TableCell>
+                            <TableCell align="right"></TableCell>
+                            <TableCell align="right"></TableCell>
+                          </TableRow>
+                        </TableHead>
+                        <TableBody>
+                          {rows.map((row) => (
+                            <Row key={row.orderId} row={row} />
+                          ))}
+                        </TableBody>
+                      </Table>
+                    </TableContainer>
+                  </Typography>
+                </ExpansionPanelDetails>
+              </ExpansionPanel>
+              <ExpansionPanel square onChange={handleChange("panel3")}>
+                <ExpansionPanelSummary
+                  aria-controls="panel3d-content"
+                  id="panel3d-header"
+                >
+                  <Typography variant="h4">Completed Orders</Typography>
+                </ExpansionPanelSummary>
+                <ExpansionPanelDetails>
+                  <Typography>
+                    <TableContainer component={Paper}>
+                      <Table
+                        aria-label="collapsible table"
+                        style={{ width: 800 }}
+                      >
+                        <TableHead>
+                          <TableRow>
+                            <TableCell />
+                            <TableCell>
+                              <Typography variant="h5">Order Number</Typography>
+                            </TableCell>
+                            <TableCell align="right">
+                              <Typography variant="h5">No. of Items</Typography>
+                            </TableCell>
+                            <TableCell align="right">
+                              <Typography variant="h5">
+                                Time of order
+                              </Typography>
+                            </TableCell>
+                            <TableCell align="right"></TableCell>
+                            <TableCell align="right"></TableCell>
+                          </TableRow>
+                        </TableHead>
+                        <TableBody>
+                          {rowsCompleted.map((row) => (
+                            <RowThree key={row.orderId} row={row} />
+                          ))}
+                        </TableBody>
+                      </Table>
+                    </TableContainer>
+                  </Typography>
+                </ExpansionPanelDetails>
+              </ExpansionPanel>
+            </Container>
+          </Grid>
+        </Grid>
+      </div>
+    </div>
+  );
+});
+
+
+export default Orders;
 
 function createData(orderId, totalQuantity, timeOfOrder, carbs) {
   return {
@@ -36,7 +443,7 @@ function createData(orderId, totalQuantity, timeOfOrder, carbs) {
         itemId: "1",
         itemName: "Cheese pizza (XL)",
         amount: 3,
-        instruction: "Well done",
+        instruction: "Well done This is lomg instruction,then what will happen to the div",
         price: 12.2,
       },
       {
@@ -98,6 +505,7 @@ function Row(props) {
           </Button>
         </TableCell>
       </TableRow>
+
       <TableRow>
         <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={6}>
           <Collapse in={open} timeout="auto" unmountOnExit>
@@ -130,7 +538,7 @@ function Row(props) {
                   </TableRow>
                 </TableHead>
                 <TableBody>
-                  {row.history.map((historyRow) => (
+                  {row.history.map((historyRow, index) => (
                     <TableRow key={historyRow.itemId}>
                       <TableCell component="th" scope="row">
                         <Typography variant="h5">
@@ -255,6 +663,8 @@ function RowTwo(props) {
                     </TableCell>
                   </TableRow>
                 </TableHead>
+
+
                 <TableBody>
                   {row.history.map((historyRow) => (
                     <TableRow key={historyRow.itemId}>
@@ -405,301 +815,5 @@ function RowThree(props) {
         </TableCell>
       </TableRow>
     </React.Fragment>
-  );
-}
-
-var count = 1;
-var rows = [];
-var rowsIncoming = [
-  createData(count, 2, "11am"),
-  createData(++count, 2, "11.15am"),
-  createData(++count, 2, "11.20am"),
-  createData(++count, 2, "11.25am"),
-  createData(++count, 2, "11.30am"),
-];
-var rowsPrep = [];
-var rowsCompleted = [];
-
-export default function Orders() {
-  const [expanded, setExpanded] = React.useState("panel1");
-
-  const handleChange = (panel) => (event, newExpanded) => {
-    setExpanded(newExpanded ? panel : false);
-  };
-  const classes = useStyles();
-
-  function logout() {
-    firebase.auth().signOut();
-    // navigate('/');
-    //history.push("/login");
-  }
-
-
-  return (
-    <div className={classes.root}>
-      <div>
-        <OrdersNav />
-      </div>
-      <div>
-        <Grid container spacing={2}>
-          <Grid item xs={4}>
-            <Container maxWidth="lg" style={{ marginTop: 20 }}>
-              <Card variant="outlined">
-                <CardContent>
-                  <Typography color="textSecondary" variant="h4" gutterBottom>
-                    Incoming Orders
-                  </Typography>
-                  <Divider style={{ marginTop: 20, marginBottom: 20 }} />
-                  <div>
-                    {rowsIncoming.map((row,index) => (
-                      //<RowTwo key={rowsPrep.orderId} row={rowsPrep} />
-                      <Card
-                        key={index}
-                        style={{ marginBottom: 10 }}
-                      >
-                        <CardContent>
-                          <Typography color="textSecondary" gutterBottom>
-                            Order #{row.orderId}
-                          </Typography>
-
-                          <Typography color="textSecondary">
-                            Payment: Cash
-                          </Typography>
-                          <Typography variant="body2" component="p">
-                            {row.history.map((historyRow) => (
-                              <TableRow key={historyRow.itemId}>
-                                <TableCell>
-                                  <Typography variant="h6">
-                                    {historyRow.itemName} X {historyRow.amount}
-                                  </Typography>
-                                </TableCell>
-
-                                <TableCell align="right">
-                                  <Typography variant={"p"}>
-                                    {historyRow.instruction}
-                                  </Typography>
-                                </TableCell>
-
-                                <TableCell align="right">
-                                  <Typography variant="p">
-                                    ${" "}
-                                    {(
-                                      historyRow.amount * historyRow.price
-                                    ).toFixed(2)}
-                                  </Typography>
-                                </TableCell>
-                              </TableRow>
-                            ))}
-                          </Typography>
-                        </CardContent>
-                        <Button
-                          variant="contained"
-                          color="secondary"
-                          onClick={() => {
-                            rowsIncoming.splice(rowsIncoming.indexOf(row), 1);
-                          }}
-                        >
-                          <Typography variant="h6">Reject</Typography>
-                        </Button>
-                        <Button
-                          variant="contained"
-                          color="primary"
-                          onClick={() => {
-                            rows.push(row);
-                            rowsIncoming.splice(rowsIncoming.indexOf(row), 1);
-                          }}
-                        >
-                          <Typography variant="h6">Accept</Typography>
-                        </Button>
-                      </Card>
-                    ))}
-                  </div>
-                </CardContent>
-              </Card>
-            </Container>
-          </Grid>
-          <Grid item xs={8}>
-            <Container maxWidth="lg" style={{ marginTop: 20 }}>
-              <Grid container spacing={3}>
-                <Grid item xs={4}>
-                  <Card variant="outlined">
-                    <CardContent>
-                      <Typography
-                        color="textSecondary"
-                        variant="h4"
-                        gutterBottom
-                      >
-                        Pending Orders
-                      </Typography>
-                      <Typography variant="h5">5</Typography>
-                    </CardContent>
-                  </Card>
-                </Grid>
-
-                <Grid item xs={4}>
-                  <Card variant="outlined">
-                    <CardContent>
-                      <Typography
-                        color="textSecondary"
-                        variant="h4"
-                        gutterBottom
-                      >
-                        Preparing Orders
-                      </Typography>
-                      <Typography variant="h5">2</Typography>
-                    </CardContent>
-                  </Card>
-                </Grid>
-
-                <Grid item xs={4}>
-                  <Card variant="outlined">
-                    <CardContent>
-                      <Typography
-                        color="textSecondary"
-                        variant="h4"
-                        gutterBottom
-                      >
-                        Completed Orders
-                      </Typography>
-                      <Typography variant="h5">8</Typography>
-                    </CardContent>
-                  </Card>
-                </Grid>
-              </Grid>
-
-              <Divider style={{ marginTop: 25, marginBottom: 25 }} />
-
-              <ExpansionPanel square onChange={handleChange("panel1")}>
-                <ExpansionPanelSummary
-                  aria-controls="panel1d-content"
-                  id="panel1d-header"
-                >
-                  <Typography variant="h4">Preparing Orders</Typography>
-                </ExpansionPanelSummary>
-                <ExpansionPanelDetails>
-                  <Typography>
-                    <TableContainer component={Paper}>
-                      <Table
-                        aria-label="collapsible table"
-                        style={{ width: 800 }}
-                      >
-                        <TableHead>
-                          <TableRow>
-                            <TableCell />
-                            <TableCell>
-                              <Typography variant="h5">Order Number</Typography>
-                            </TableCell>
-                            <TableCell align="right">
-                              <Typography variant="h5">No. of Items</Typography>
-                            </TableCell>
-                            <TableCell align="right">
-                              <Typography variant="h5">
-                                Time of order
-                              </Typography>
-                            </TableCell>
-                            <TableCell align="right"></TableCell>
-                            <TableCell align="right"></TableCell>
-                          </TableRow>
-                        </TableHead>
-                        <TableBody>
-                          {rowsPrep.map((rowsPrep) => (
-                            <RowTwo key={rowsPrep.orderId} row={rowsPrep} />
-                          ))}
-                        </TableBody>
-                      </Table>
-                    </TableContainer>
-                  </Typography>
-                </ExpansionPanelDetails>
-              </ExpansionPanel>
-
-              <ExpansionPanel square onChange={handleChange("panel2")}>
-                <ExpansionPanelSummary
-                  aria-controls="panel2d-content"
-                  id="panel2d-header"
-                >
-                  <Typography variant="h4">Pending Orders</Typography>
-                </ExpansionPanelSummary>
-                <ExpansionPanelDetails>
-                  <Typography>
-                    <TableContainer component={Paper}>
-                      <Table
-                        aria-label="collapsible table"
-                        style={{ width: 800 }}
-                      >
-                        <TableHead>
-                          <TableRow>
-                            <TableCell />
-                            <TableCell>
-                              <Typography variant="h5">Order Number</Typography>
-                            </TableCell>
-                            <TableCell align="right">
-                              <Typography variant="h5">No. of Items</Typography>
-                            </TableCell>
-                            <TableCell align="right">
-                              <Typography variant="h5">
-                                Time of order
-                              </Typography>
-                            </TableCell>
-                            <TableCell align="right"></TableCell>
-                            <TableCell align="right"></TableCell>
-                          </TableRow>
-                        </TableHead>
-                        <TableBody>
-                          {rows.map((row) => (
-                            <Row key={row.orderId} row={row} />
-                          ))}
-                        </TableBody>
-                      </Table>
-                    </TableContainer>
-                  </Typography>
-                </ExpansionPanelDetails>
-              </ExpansionPanel>
-              <ExpansionPanel square onChange={handleChange("panel3")}>
-                <ExpansionPanelSummary
-                  aria-controls="panel3d-content"
-                  id="panel3d-header"
-                >
-                  <Typography variant="h4">Completed Orders</Typography>
-                </ExpansionPanelSummary>
-                <ExpansionPanelDetails>
-                  <Typography>
-                    <TableContainer component={Paper}>
-                      <Table
-                        aria-label="collapsible table"
-                        style={{ width: 800 }}
-                      >
-                        <TableHead>
-                          <TableRow>
-                            <TableCell />
-                            <TableCell>
-                              <Typography variant="h5">Order Number</Typography>
-                            </TableCell>
-                            <TableCell align="right">
-                              <Typography variant="h5">No. of Items</Typography>
-                            </TableCell>
-                            <TableCell align="right">
-                              <Typography variant="h5">
-                                Time of order
-                              </Typography>
-                            </TableCell>
-                            <TableCell align="right"></TableCell>
-                            <TableCell align="right"></TableCell>
-                          </TableRow>
-                        </TableHead>
-                        <TableBody>
-                          {rowsCompleted.map((row) => (
-                            <RowThree key={row.orderId} row={row} />
-                          ))}
-                        </TableBody>
-                      </Table>
-                    </TableContainer>
-                  </Typography>
-                </ExpansionPanelDetails>
-              </ExpansionPanel>
-            </Container>
-          </Grid>
-        </Grid>
-      </div>
-    </div>
   );
 }

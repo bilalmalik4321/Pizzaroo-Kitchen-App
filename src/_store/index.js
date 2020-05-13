@@ -17,7 +17,7 @@ export default {
     province:'',
     city: '',
     postalCode: '',
-    state: '',
+    state: '', 
     country: '',
     registrationCode: '',
     loading: true,
@@ -30,6 +30,9 @@ export default {
   },
   menu: {
 
+  },
+  orders: {
+    loading: true,
   },
   ...actions
 }

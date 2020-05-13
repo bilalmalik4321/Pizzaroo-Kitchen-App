@@ -137,3 +137,99 @@ export function getDistanceFromLatLonInKm(lat1,lon1,lat2,lon2) {
 function deg2rad(deg) {
   return deg * (Math.PI/180)
 }
+
+export const getOrders = async (callback) => {
+	try {
+
+		const userInfo = firebase.auth().currentUser;
+		const { uid } = userInfo;
+	  // .where('customerId', '==', uid)
+		return await db
+      .collection('orders')
+      .where('status', '==', 'open')
+			.onSnapshot( snapshot => {
+				const active = [];
+				// const completed = [];
+
+				snapshot.forEach( doc => (
+					doc.data().status === 'open' && active.push({
+						id: doc.id,
+						...doc.data()
+					})
+				))
+				// snapshot.forEach( doc => (
+				// 	doc.data().status === 'closed' && completed.push({
+				// 		id: doc.id,
+				// 		...doc.data()
+				// 	})
+				// ))
+
+			callback(active);
+
+			})
+
+	} catch (error) {
+		console.log("getOrders error", error);
+	}
+}
+
+
+export const createTodayOrders = async (payload) => {
+  try {
+    const { uid } = firebase.auth().currentUser;
+    const todayDate = moment().format('MMMM-Do-YYYY');
+    const pushID = uid+todayDate;
+
+    return await db
+      .collection('todayOrders')
+      .doc(pushID)
+      .set({
+        ...payload
+      },{
+        merge: true
+      });
+  
+  } catch (error) {
+    console.log("error createTodayAcceptedOrders")
+  }
+
+}
+
+
+export const getTodayOrders = async () => {
+  try {
+    const { uid } = firebase.auth().currentUser;
+    const todayDate = moment().format('MMMM-Do-YYYY');
+    const pushID = uid+todayDate;
+
+    const orders = await db
+      .collection('todayOrders')
+      .doc(pushID)
+      .get();
+
+    return {
+      ...orders.data()
+    };
+  
+  } catch (error) {
+    console.log("error createTodayAcceptedOrders")
+  }
+  
+}
+
+export const updateOrder = async(pushId, progressStep, status) => {
+  try {
+    return await db
+      .collection('orders')
+      .doc(pushId)
+      .set({
+        progressStep,
+        status
+      },{
+        merge: true
+      });
+
+  } catch (error) {
+    console.log("error updateOrder", error);
+  }
+}
