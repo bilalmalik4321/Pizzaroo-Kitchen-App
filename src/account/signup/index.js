@@ -7,15 +7,12 @@ import Container from "@material-ui/core/Container";
 import Snackbar from "@material-ui/core/Snackbar";
 import MuiAlert from "@material-ui/lab/Alert";
 import Typography from "@material-ui/core/Typography";
+import {geoCoding,getDistanceFromLatLonInKm } from '../../api';
 // import store from "store";
 function Alert(props) {
   return <MuiAlert elevation={6} variant="filled" {...props} />;
 }
 const Signup = props => {
-
-  function handleChange(e) {
-    this.setState({ [e.target.name]: e.target.value });
-  }
 
   function login(e) {
     e.preventDefault();
@@ -209,8 +206,11 @@ const Signup = props => {
               <button
                 style={styles.loginButton}
                 type="submit"
-                onClick={(e) => {
-                  
+                onClick={ async (e) => {
+                  e.preventDefault();
+                  const result = await geoCoding('n9b3a9');
+                  const answer = getDistanceFromLatLonInKm(42.3087567,-83.06667449999999,42.2519797,-82.9800606);
+                  console.log("result", answer)
                 }}
                 className="btn btn-primary"
               >

@@ -1,6 +1,6 @@
 import React from "react";
 import { Route, Switch } from "react-router-dom";
-import Home from "../account/Home";
+import Home from "../account/homePage";
 import NotFound from "./layout/NotFound";
 import Login from "../account/login";
 import Orders from "../orders";

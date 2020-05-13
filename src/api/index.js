@@ -1,10 +1,13 @@
 import firebase from "../firebase";
-
+import moment from 'moment';
+import axios from 'axios';
+import apiKey from '../googleAPI';
 // access the database
 
 // const { firebase , firestore } = all;
 // console.log("aall", all);
 const db = firebase.firestore();
+const timestamp = moment().format('YYYY-MM-DD hh:mm:ss:SS:SSS a');
 // timestamp
 // const timestamp = firebase.firestore.FieldValue.serverTimestamp();
 
@@ -27,27 +30,27 @@ const db = firebase.firestore();
  * @param {object} - users information
  * @return {bolean} true/false
  */
-export const createUser = async (payload) => {
+export const createStore = async (payload) => {
   try {
     // sign up user with firebase auth
-    const signedUpUser = await firebase
+    const signedUpStore = await firebase
       .auth()
       .createUserWithEmailAndPassword(payload.email, payload.password);
 
-    console.log("user sign up", signedUpUser);
+    console.log("store signed up", signedUpStore);
     // send verification email TODO
     // signedUpUser.user.sendEmailVerification();
 
     // delete password to secure
-    const userInfo = payload;
-    delete userInfo.password;
+    const storeInfo = payload;
+    delete storeInfo.password;
 
     // user is created in auth but not in the collection
 
     await db
       .collection("customers")
-      .doc(signedUpUser.user.uid)
-      .set({ ...userInfo }, { merge: true });
+      .doc(signedUpStore.user.uid)
+      .set({ ...storeInfo }, { merge: true });
 
     // return true after success
     return {
@@ -82,3 +85,47 @@ export const getUser = async (uid) => {
     console.log("getUser failed", error);
   }
 };
+
+export const geoCoding = async(address) => {
+  try {
+    const key = apiKey;
+    const { data } = await axios.get(
+      'https://maps.googleapis.com/maps/api/geocode/json',
+      {
+        params: {
+          address,
+          key
+        }
+      }
+    );
+    console.log("data from geoCode", data )
+    const { lat, lng } = data.results[0].geometry.location;
+
+    return {
+      location: {
+        lat,
+        lng
+      }
+    }
+  } catch (error ) {
+    console.log("error geoCode", error)
+  }
+
+}
+export function getDistanceFromLatLonInKm(lat1,lon1,lat2,lon2) {
+  var R = 6371; // Radius of the earth in km
+  var dLat = deg2rad(lat2-lat1);  // deg2rad below
+  var dLon = deg2rad(lon2-lon1); 
+  var a = 
+    Math.sin(dLat/2) * Math.sin(dLat/2) +
+    Math.cos(deg2rad(lat1)) * Math.cos(deg2rad(lat2)) * 
+    Math.sin(dLon/2) * Math.sin(dLon/2)
+    ; 
+  var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a)); 
+  var d = R * c; // Distance in km
+  return d;
+}
+
+function deg2rad(deg) {
+  return deg * (Math.PI/180)
+}
