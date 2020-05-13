@@ -1,4 +1,4 @@
-
+import * as actions from './actions';
 
 export default {
   store: {
@@ -13,6 +13,11 @@ export default {
     repeatPassword: '',
     website: '',
     address: {},
+    street: '',
+    city: '',
+    postalCode: '',
+    state: '',
+    country: '',
     registrationCode: '',
     loading: true,
     loggedIn: false,
@@ -26,5 +31,7 @@ export default {
 
   menu: {
 
-  }
+  },
+
+  ...actions
 }

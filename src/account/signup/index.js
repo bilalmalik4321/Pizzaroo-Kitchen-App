@@ -2,7 +2,7 @@ import React, { Component, useState } from "react";
 import fire from "../../firebase";
 import styles from "../style";
 import Orders from "../../orders";
-import Main from "../Main";
+import Main from "../header";
 import Container from "@material-ui/core/Container";
 import Snackbar from "@material-ui/core/Snackbar";
 import MuiAlert from "@material-ui/lab/Alert";
@@ -12,8 +12,6 @@ function Alert(props) {
   return <MuiAlert elevation={6} variant="filled" {...props} />;
 }
 const Signup = props => {
-
-
 
   function handleChange(e) {
     this.setState({ [e.target.name]: e.target.value });
@@ -34,19 +32,19 @@ const Signup = props => {
     // store.set("loggedIn", true);
     }
     return (
-      <div className="Login">
+      <div >
         <Main />
         <form>
           <h1 style={styles.logoText}>Welcome</h1>
-          <Container maxWidth="sm">
-            <div className="form-group">
+          <Container maxWidth={'sm'}>
+            <div >
               <input
                 style={styles.loginFormTextInput}
                 // value={this.state.email}
                 // onChange={this.handleChange}
                 type="email"
                 name="email"
-                class="form-control"
+                className="form-control"
                 id="exampleInputEmail1"
                 aria-describedby="emailHelp"
                 placeholder="First Name"
@@ -58,7 +56,7 @@ const Signup = props => {
                 // onChange={}
                 type="password"
                 name="password"
-                class="form-control"
+                className="form-control"
                 id="exampleInputPassword1"
                 placeholder="Last Name"
               />
@@ -69,7 +67,7 @@ const Signup = props => {
                 // onChange={}
                 type="password"
                 name="password"
-                class="form-control"
+                className="form-control"
                 id="exampleInputPassword1"
                 placeholder="Store Name"
               />
@@ -79,7 +77,7 @@ const Signup = props => {
                 // onChange={}
                 type="email"
                 name="email"
-                class="form-control"
+                className="form-control"
                 id="exampleInputEmail1"
                 aria-describedby="emailHelp"
                 placeholder="Store Phone Number"
@@ -90,7 +88,7 @@ const Signup = props => {
                 // onChange={}
                 type="email"
                 name="email"
-                class="form-control"
+                className="form-control"
                 id="exampleInputEmail1"
                 aria-describedby="emailHelp"
                 placeholder="Store Website"
@@ -101,7 +99,7 @@ const Signup = props => {
                 // onChange={}
                 type="password"
                 name="password"
-                class="form-control"
+                className="form-control"
                 id="exampleInputPassword1"
                 placeholder="Store Email"
               />
@@ -111,7 +109,7 @@ const Signup = props => {
                 // onChange={}
                 type="password"
                 name="password"
-                class="form-control"
+                className="form-control"
                 id="exampleInputPassword1"
                 placeholder="Password"
               />
@@ -121,7 +119,7 @@ const Signup = props => {
                 // onChange={}
                 type="email"
                 name="email"
-                class="form-control"
+                className="form-control"
                 id="exampleInputEmail1"
                 aria-describedby="emailHelp"
                 placeholder="Confirmed Password"
@@ -133,7 +131,7 @@ const Signup = props => {
                 // onChange={}
                 type="email"
                 name="email"
-                class="form-control"
+                className="form-control"
                 id="exampleInputEmail1"
                 aria-describedby="emailHelp"
                 placeholder="Store Street Address"
@@ -144,7 +142,7 @@ const Signup = props => {
                 // onChange={}
                 type="email"
                 name="email"
-                class="form-control"
+                className="form-control"
                 id="exampleInputEmail1"
                 aria-describedby="emailHelp"
                 placeholder="City"
@@ -156,7 +154,7 @@ const Signup = props => {
                 // onChange={}
                 type="email"
                 name="email"
-                class="form-control"
+                className="form-control"
                 id="exampleInputEmail1"
                 aria-describedby="emailHelp"
                 placeholder="Province"
@@ -168,7 +166,7 @@ const Signup = props => {
                 // onChange={}
                 type="email"
                 name="email"
-                class="form-control"
+                className="form-control"
                 id="exampleInputEmail1"
                 aria-describedby="emailHelp"
                 placeholder="Postal Code"
@@ -180,7 +178,7 @@ const Signup = props => {
                 // onChange={}
                 type="email"
                 name="email"
-                class="form-control"
+                className="form-control"
                 id="exampleInputEmail1"
                 aria-describedby="emailHelp"
                 placeholder="Country"
@@ -192,7 +190,7 @@ const Signup = props => {
                 // onChange={}
                 type="email"
                 name="email"
-                class="form-control"
+                className="form-control"
                 id="exampleInputEmail1"
                 aria-describedby="emailHelp"
                 placeholder="Registraion CODE"
@@ -214,7 +212,7 @@ const Signup = props => {
                 onClick={(e) => {
                   
                 }}
-                class="btn btn-primary"
+                className="btn btn-primary"
               >
                 Login
               </button>
