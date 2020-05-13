@@ -1,9 +1,9 @@
-import React, { Component, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import "typeface-roboto";
-import Routes from "./routes";
+
 import { subscribe } from 'react-contextual';
 import firebase from 'firebase';
-import { getStore } from '../api';
+
 import { useRoutes } from 'hookrouter';
 import NotFound from '../app/layout/NotFound';
 import Home from "../account/homePage";
@@ -12,24 +12,25 @@ import OrdersSSS from "../orders";
 import Signup from '../account/signup';
 import Auth from './auth';
 import Protected from './protected';
-import Waiting from './layout/loading';
+
+
 const App = (props) => {
 
   const [loggedIn , setLoggedIn] = useState(false);
   const [loading, setLoading] = useState(true);
   // console.log("current user", userInfo);
 
-  useEffect(() => {
-      firebase.auth().onAuthStateChanged(async user => {
-        if (user) {
-          setLoggedIn(true);
-          setLoading(false);
-        } else {
-          setLoggedIn(false);
-          setLoading(false);
-        }
-      });
-  }, [loggedIn]);
+  // useEffect(() => {
+  //     firebase.auth().onAuthStateChanged(async user => {
+  //       if (user) {
+  //         setLoggedIn(true);
+  //         setLoading(false);
+  //       } else {
+  //         setLoggedIn(false);
+  //         setLoading(false);
+  //       }
+  //     });
+  // }, [loggedIn]);
 
 
   console.log("app--set loggedin", loggedIn);
@@ -45,9 +46,9 @@ const App = (props) => {
   const path = window.location.pathname;
 
   console.log("App -- find", Routes);
-  if(loading) {
-    return <></>
-  }
+  // if(loading) {
+  //   return <></>
+  // }
 
   if(!Routes)
     return <NotFound/>
