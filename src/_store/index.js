@@ -27,5 +27,8 @@ export default {
       close: ''
     },
   },
+  menu: {
+
+  },
   ...actions
 }

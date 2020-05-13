@@ -1,6 +1,6 @@
 import React from "react";
 import fire from "../firebase";
-import history from "../account/History";
+import history from "../app/historyRoutes";
 import { makeStyles } from "@material-ui/core/styles";
 import Typography from "@material-ui/core/Typography";
 import IconButton from "@material-ui/core/IconButton";
