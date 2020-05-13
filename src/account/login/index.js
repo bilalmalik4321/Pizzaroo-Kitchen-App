@@ -1,4 +1,4 @@
-import React, { Component, useState } from "react";
+import React, { Component, useState, useEffect } from "react";
 import firebase from "../../firebase";
 import styles from "../style";
 import Orders from "../../orders";
@@ -16,10 +16,30 @@ function Alert(props) {
 }
 const Login = (props) => {
   
+  useEffect(()=> {
+    try {
+      firebase.auth().onAuthStateChanged(async userInfo => {
+        console.log("user proctected", userInfo);
+        if(userInfo) {
+          const user = await getStore(userInfo.uid);
+          props.updateStore({...user, loggedIn: true})
+          props.history.push('/Orders');
+        }
+        else {
+          props.updateStore({loggedIn: false})
+          props.history.push('/login');
+        }
+          
+      });
+    } catch (error) {
+      console.log("error")
+    }
+
+  },[]);
+  console.log('user props app', props);
+
   const [errorMessage, setError] = useState('');
-  function handleChange(e) {
-    this.setState({ [e.target.name]: e.target.value });
-  }
+
   const onLogin = async e =>{
     e.preventDefault();
 
@@ -30,8 +50,8 @@ const Login = (props) => {
         .then( async userInfo => {
           console.log("after login in userInfo", userInfo);
           if(userInfo) {
-
             const user = await getStore(userInfo.user.uid);
+            props.updateStore({...user, loggedIn: true})
             console.log("user info", user);
             props.history.push('/Orders');
           }

@@ -33,6 +33,12 @@ export default function ButtonAppBar() {
               Pizzaroo
             </Typography>
           </LinkContainer>
+          <Button variant="contained" color="primary" href="/Orders">
+            <Typography variant="h6">Orders</Typography>
+          </Button>
+          <Button variant="contained" color="primary" href="/signup">
+            <Typography variant="h6">Signup</Typography>
+          </Button>
           <Button variant="contained" color="primary" href="/login">
             <Typography variant="h6">Login</Typography>
           </Button>

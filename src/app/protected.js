@@ -3,33 +3,20 @@ import { Route } from "react-router-dom";
 // import isLoggedIn from "../containers/localStore/isLoggedIn";
 import firebase from "../firebase";
 import { subscribe } from 'react-contextual';
-
+import { getStore } from "../api";
+import history from './historyRoutes';
 const Protected = subscribe()(props => {
 
   const { component: Component, ...rest } = props;
-  console.log("props protected", props);
+  console.log("props protected------", props);
   const [loading, setLoading] = useState(true);
   const { loggedIn } = props.restaurant;
 
-  useEffect(()=> {
-    try {
-      setLoading(true);
-      firebase.auth().onAuthStateChanged(userInfo => {
-        console.log("user proctected", userInfo);
-        if(userInfo)
-          props.updateStore({loggedIn: true})
-        else 
-        props.updateStore({loggedIn: false})
-      });
-    } catch (error) {
-      setLoading(false);
-    }
-
-    setLoading(false);
-
-  },[loggedIn, loading]);
-
-  console.log("loggedIn", loggedIn);
+  console.log("loggedIn",loggedIn);
+  if(loggedIn)
+  {
+    history.push(props.path);
+  }
   return (
     <Route
       {...rest}
