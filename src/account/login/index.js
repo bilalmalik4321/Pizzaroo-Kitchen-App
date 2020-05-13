@@ -7,6 +7,7 @@ import Container from "@material-ui/core/Container";
 import Snackbar from "@material-ui/core/Snackbar";
 import MuiAlert from "@material-ui/lab/Alert";
 import Typography from "@material-ui/core/Typography";
+import { Input } from "@material-ui/core";
 
 function Alert(props) {
   return <MuiAlert elevation={6} variant="filled" {...props} />;
@@ -49,27 +50,27 @@ class Login extends Component {
           <h1 style={styles.logoText}>Welcome</h1>
           <Container maxWidth="sm">
             <div className="form-group">
-              <input
+              <Input
+                disableUnderline={true}
                 style={styles.loginFormTextInput}
                 value={this.state.email}
                 onChange={this.handleChange}
                 type="email"
                 name="email"
-                class="form-control"
+                className="form-control"
                 id="exampleInputEmail1"
                 aria-describedby="emailHelp"
-                placeholder="username"
+                placeholder="Email"
               />
-            </div>
-
-            <div>
-              <input
+          
+              <Input
+                disableUnderline={true}
                 style={styles.loginFormTextInput}
                 value={this.state.password}
                 onChange={this.handleChange}
                 type="password"
                 name="password"
-                class="form-control"
+                className="form-control"
                 id="exampleInputPassword1"
                 placeholder="Password"
               />
@@ -90,7 +91,7 @@ class Login extends Component {
                 onClick={(e) => {
                   this.login(e);
                 }}
-                class="btn btn-primary"
+                className="btn btn-primary"
               >
                 Login
               </button>

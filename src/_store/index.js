@@ -14,6 +14,7 @@ export default {
     website: '',
     address: '',
     street: '',
+    province:'',
     city: '',
     postalCode: '',
     state: '',

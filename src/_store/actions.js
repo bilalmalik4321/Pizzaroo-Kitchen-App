@@ -1,23 +1,23 @@
 
 
 export const updateStore = (key, value) => state => {
-  let store = {};
+  let restaurant = {};
 
   if (typeof key === 'object') {
     const dataToAppend = key;
-    store = {
-      ...state.store,
+    restaurant = {
+      ...state.restaurant,
       ...dataToAppend
     };
   } else {
-    store = {
-      ...state.store,
+    restaurant = {
+      ...state.restaurant,
       [key]: value
     };
   }
 
   return {
-    store
+    restaurant
   };
 };
 
