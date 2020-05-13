@@ -1,4 +1,5 @@
-const React = require("react");
+import React from 'react';
+
 export default {
   logoText: {
     fontSize: 40,
@@ -28,6 +29,7 @@ export default {
     width: 95,
     marginTop: 20,
     outline: 0,
+    marginBottom: 200
   },
   errorInput: {
     textAlign: "center",

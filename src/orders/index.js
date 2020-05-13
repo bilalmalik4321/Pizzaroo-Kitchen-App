@@ -1,7 +1,6 @@
 import React from "react";
 import fire from "../firebase";
 import history from "../account/History";
-import store from "store";
 import { makeStyles } from "@material-ui/core/styles";
 import Typography from "@material-ui/core/Typography";
 import IconButton from "@material-ui/core/IconButton";
@@ -422,7 +421,6 @@ var rowsPrep = [];
 var rowsCompleted = [];
 function logout() {
   fire.auth().signOut();
-  store.remove("loggedIn");
   //history.push("/login");
 }
 export default function Orders() {

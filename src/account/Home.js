@@ -1,6 +1,6 @@
 import React from "react";
 import "./Home.css";
-import Main from "./Main";
+import Main from "./header";
 export default function Home() {
   return (
     <div className="Home">

@@ -10,11 +10,11 @@ import AccountCircle from "@material-ui/icons/AccountCircle";
 import MenuItem from "@material-ui/core/MenuItem";
 import Menu from "@material-ui/core/Menu";
 import Profile from "../../account/profile";
-import store from "store";
+// import store from "store";
 
 function logout() {
   fire.auth().signOut();
-  store.clearAll();
+  // store.clearAll();
 }
 
 function direct() {

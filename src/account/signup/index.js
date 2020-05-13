@@ -1,13 +1,13 @@
 import React, { Component, useState } from "react";
 import fire from "../../firebase";
 import styles from "../style";
-import Orders from "../../orders/Orders";
+import Orders from "../../orders";
 import Main from "../Main";
 import Container from "@material-ui/core/Container";
 import Snackbar from "@material-ui/core/Snackbar";
 import MuiAlert from "@material-ui/lab/Alert";
 import Typography from "@material-ui/core/Typography";
-import store from "store";
+// import store from "store";
 function Alert(props) {
   return <MuiAlert elevation={6} variant="filled" {...props} />;
 }
@@ -31,7 +31,7 @@ const Signup = props => {
       .catch((error) => {
         this.setState({ errorMessage: error.message });
       });
-    store.set("loggedIn", true);
+    // store.set("loggedIn", true);
     }
     return (
       <div className="Login">
@@ -61,6 +61,17 @@ const Signup = props => {
                 class="form-control"
                 id="exampleInputPassword1"
                 placeholder="Last Name"
+              />
+
+              <input
+                style={styles.loginFormTextInput}
+                // value={}
+                // onChange={}
+                type="password"
+                name="password"
+                class="form-control"
+                id="exampleInputPassword1"
+                placeholder="Store Name"
               />
               <input
                 style={styles.loginFormTextInput}
