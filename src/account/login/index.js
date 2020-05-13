@@ -1,5 +1,5 @@
-import React, { Component } from "react";
-import fire from "../../firebase";
+import React, { Component, useState } from "react";
+import firebase from "../../firebase";
 import styles from "../style";
 import Orders from "../../orders";
 import Main from "../header";
@@ -8,41 +8,60 @@ import Snackbar from "@material-ui/core/Snackbar";
 import MuiAlert from "@material-ui/lab/Alert";
 import Typography from "@material-ui/core/Typography";
 import { Input } from "@material-ui/core";
+import { subscribe } from 'react-contextual';
+import { getStore } from "../../api";
 
 function Alert(props) {
   return <MuiAlert elevation={6} variant="filled" {...props} />;
 }
-class Login extends Component {
-  constructor(props) {
-    super(props);
-    this.login = this.login.bind(this);
-    this.handleChange = this.handleChange.bind(this);
-    this.state = {
-      email: "",
-      password: "",
-      errorMessage: "",
-    };
-  }
-
-  handleChange(e) {
+const Login = (props) => {
+  
+  const [errorMessage, setError] = useState('');
+  function handleChange(e) {
     this.setState({ [e.target.name]: e.target.value });
   }
-
-  login(e) {
+  const onLogin = async e =>{
     e.preventDefault();
-    const { history } = this.props;
-    fire
-      .auth()
-      .signInWithEmailAndPassword(this.state.email, this.state.password)
-      .then((u) => {
-        history.push("/Orders");
-      })
-      .catch((error) => {
-        this.setState({ errorMessage: error.message });
-      });
-    // store.set("loggedIn", true);
+
+    try {
+      const result = await firebase
+        .auth()
+        .signInWithEmailAndPassword(props.restaurant.email,props.restaurant.password)
+        .then( async userInfo => {
+          console.log("after login in userInfo", userInfo);
+          if(userInfo) {
+
+            const user = await getStore(userInfo.user.uid);
+            console.log("user info", user);
+            props.history.push('/Orders');
+          }
+        })
+
+    } catch (error ){
+      setError(error.message);
+    }
   }
-  render() {
+  // function login(e) {
+
+  //   e.preventDefault();
+  //   const { history } = this.props;
+  //   firebase
+  //     .auth()
+  //     .signInWithEmailAndPassword(this.state.email, this.state.password)
+  //     .then((user) => {
+
+  //       if(user) {
+          
+  //         history.push("/Orders");
+  //       }
+     
+  //     })
+  //     .catch((error) => {
+  //       this.setState({ errorMessage: error.message });
+  //     });
+  //   // store.set("loggedIn", true);
+  // }
+
     return (
       <div className="Login">
         <Main />
@@ -53,8 +72,8 @@ class Login extends Component {
               <Input
                 disableUnderline={true}
                 style={styles.loginFormTextInput}
-                value={this.state.email}
-                onChange={this.handleChange}
+                value={props.restaurant.email}
+                onChange={e => props.updateStore({email: e.target.value})}
                 type="email"
                 name="email"
                 className="form-control"
@@ -66,8 +85,8 @@ class Login extends Component {
               <Input
                 disableUnderline={true}
                 style={styles.loginFormTextInput}
-                value={this.state.password}
-                onChange={this.handleChange}
+                value={props.restaurant.password}
+                onChange={e => props.updateStore({password: e.target.value})}
                 type="password"
                 name="password"
                 className="form-control"
@@ -76,7 +95,7 @@ class Login extends Component {
               />
             </div>
             <div style={{ textAlign: "center" }}>
-              {this.state.errorMessage && (
+              {false && (
                 <Snackbar open={true} autoHideDuration={1000}>
                   <Alert severity="error">
                     <Typography variant="h6">
@@ -89,7 +108,7 @@ class Login extends Component {
                 style={styles.loginButton}
                 type="submit"
                 onClick={(e) => {
-                  this.login(e);
+                  onLogin(e);
                 }}
                 className="btn btn-primary"
               >
@@ -100,7 +119,6 @@ class Login extends Component {
         </form>
       </div>
     );
-  }
 }
 
-export default Login;
+export default subscribe()(Login);

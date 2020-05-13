@@ -7,9 +7,10 @@ import Container from "@material-ui/core/Container";
 import Snackbar from "@material-ui/core/Snackbar";
 import MuiAlert from "@material-ui/lab/Alert";
 import Typography from "@material-ui/core/Typography";
-import {geoCoding,getDistanceFromLatLonInKm } from '../../api';
+import {geoCoding,getDistanceFromLatLonInKm, createStore } from '../../api';
 import { Input } from '@material-ui/core';
 import { subscribe } from 'react-contextual';
+
 // import store from "store";
 function Alert(props) {
   return <MuiAlert elevation={6} variant="filled" {...props} />;
@@ -18,14 +19,33 @@ const Signup = props => {
 
   console.log("props", props);
   const [errors, setErrors] = useState(null);
-  function login(e) {
+  async function login(e) {
     e.preventDefault();
-    const { history } = this.props;
+    const { email, password, description, firstName, lastName, storeName, phone, website, street, province, city, postalCode, country, registrationCode } = props.restaurant;
+
+    // TODO check registraion code in here
+
+    await createStore({
+      email,
+      phone,
+      password,
+      website,
+      description,
+      firstName,
+      lastName,
+      storeName,
+      street,
+      province,
+      city,
+      postalCode,
+      country
+    });
+
     fire
       .auth()
       .signInWithEmailAndPassword(this.state.email, this.state.password)
       .then((u) => {
-        history.push("/Orders");
+        props.history.push("/Orders");
       })
       .catch((error) => {
         this.setState({ errorMessage: error.message });

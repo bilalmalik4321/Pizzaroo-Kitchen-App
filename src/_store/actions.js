@@ -1,5 +1,3 @@
-
-
 export const updateStore = (key, value) => state => {
   let restaurant = {};
 

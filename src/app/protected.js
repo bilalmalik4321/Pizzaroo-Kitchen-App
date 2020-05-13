@@ -4,41 +4,46 @@ import { Route } from "react-router-dom";
 import firebase from "../firebase";
 import { subscribe } from 'react-contextual';
 
-const Protected = ({ component: Component, ...rest }) => {
-  console.log("rest", ...rest)
-  const [loading, setLoading] = useState(true);
-  const [loggedIn, setLoggedIn] = useState(false)
+const Protected = subscribe()(props => {
 
-  useEffect( ()=> {
+  const { component: Component, ...rest } = props;
+  console.log("props protected", props);
+  const [loading, setLoading] = useState(true);
+  const { loggedIn } = props.restaurant;
+
+  useEffect(()=> {
     try {
       setLoading(true);
-
       firebase.auth().onAuthStateChanged(userInfo => {
+        console.log("user proctected", userInfo);
         if(userInfo)
-          setLoggedIn(true);
+          props.updateStore({loggedIn: true})
         else 
-          setLoggedIn(false);
+        props.updateStore({loggedIn: false})
       });
     } catch (error) {
       setLoading(false);
     }
-  },[loading, loggedIn]);
 
+    setLoading(false);
 
+  },[loggedIn, loading]);
+
+  console.log("loggedIn", loggedIn);
   return (
     <Route
       {...rest}
       render={(props) => {
-        if(loading)
-          return props.history.push("/loading");
         if (loggedIn) {
+          console.log("go to order")
           return <Component {...props} />;
         } else {
+          console.log("go to home")
           return props.history.push("/login");
         }
       }}
     />
   );
-};
+});
 
-export default subscribe()(Protected);
+export default Protected;

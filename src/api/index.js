@@ -32,6 +32,8 @@ const timestamp = moment().format('YYYY-MM-DD hh:mm:ss:SS:SSS a');
  */
 export const createStore = async (payload) => {
   try {
+    // TODO checkout registration CODE
+    const { registrationCode } = payload;
     // sign up user with firebase auth
     const signedUpStore = await firebase
       .auth()
@@ -78,7 +80,7 @@ export const createStore = async (payload) => {
  * @return {object} the user details
  */
 
-export const getUser = async (uid) => {
+export const getStore = async (uid) => {
   try {
     // get user ref
     const user = await db.collection("customers").doc(uid).get();
