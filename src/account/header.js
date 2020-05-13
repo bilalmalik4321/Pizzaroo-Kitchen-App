@@ -5,6 +5,7 @@ import Toolbar from "@material-ui/core/Toolbar";
 import Typography from "@material-ui/core/Typography";
 import Button from "@material-ui/core/Button";
 import { LinkContainer } from "react-router-bootstrap";
+import { navigate } from 'hookrouter';
 const useStyles = makeStyles((theme) => ({
   root: {
     flexGrow: 1,
@@ -33,13 +34,26 @@ export default function ButtonAppBar() {
               Pizzaroo
             </Typography>
           </LinkContainer>
-          <Button variant="contained" color="primary" href="/Orders">
+          <Button 
+            variant="contained" 
+            color="primary"
+            // onClick={navigate('/orders')}
+            
+            >
             <Typography variant="h6">Orders</Typography>
           </Button>
-          <Button variant="contained" color="primary" href="/signup">
+          <Button 
+            variant="contained" 
+            color="primary"
+            // onClick={navigate('/signup')}
+             >
             <Typography variant="h6">Signup</Typography>
           </Button>
-          <Button variant="contained" color="primary" href="/login">
+          <Button 
+            variant="contained" 
+            color="primary"
+            // onClick={()=>navigate('/login')}
+            >
             <Typography variant="h6">Login</Typography>
           </Button>
         </Toolbar>

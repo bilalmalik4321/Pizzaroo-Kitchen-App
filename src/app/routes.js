@@ -12,14 +12,12 @@ export default function Routes() {
   return (
     <Switch>
 
-      <Route exact path="/" component={Home} />
+      {/* <Route exact path="/" component={Home} />
       <Route exact path="/login" component={Login} />
       <Route exact path="/signup" component={Signup}/>
-      <Protected exact path="/Orders" component={Orders}/>
+      <Protected exact path="/orders" component={Orders}/> */}
 
       <Route exact path="/loading" component={Loading}/>
-
-      <Route exact path="/NotFound" component={NotFound}/>
 
       <Route>
         <NotFound/>
@@ -27,3 +25,11 @@ export default function Routes() {
     </Switch>
   );
 }
+// export default Routes = {
+
+//   '/': ()=> <Home/>,
+//   '/login': ()=> <Login/>,
+//   '/signup': ()=> <Signup/>,
+//   '/orders': ()=> <Orders/>,
+//   '/NotFound': ()=> <NotFound/>
+// }

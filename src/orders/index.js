@@ -1,6 +1,5 @@
 import React from "react";
 import fire from "../firebase";
-import history from "../app/historyRoutes";
 import { makeStyles } from "@material-ui/core/styles";
 import Typography from "@material-ui/core/Typography";
 import IconButton from "@material-ui/core/IconButton";
@@ -431,7 +430,7 @@ export default function Orders() {
   };
   const classes = useStyles();
   logout = logout.bind(this);
-  history.push("Orders");
+  // history.push("Orders");
 
   return (
     <div className={classes.root}>

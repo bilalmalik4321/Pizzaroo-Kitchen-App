@@ -1,7 +1,6 @@
 import React, { Component, useState, useEffect } from "react";
 import firebase from "../../firebase";
 import styles from "../style";
-import Orders from "../../orders";
 import Main from "../header";
 import Container from "@material-ui/core/Container";
 import Snackbar from "@material-ui/core/Snackbar";
@@ -10,36 +9,16 @@ import Typography from "@material-ui/core/Typography";
 import { Input } from "@material-ui/core";
 import { subscribe } from 'react-contextual';
 import { getStore } from "../../api";
-
+import { navigate } from 'hookrouter';
 function Alert(props) {
   return <MuiAlert elevation={6} variant="filled" {...props} />;
 }
 const Login = (props) => {
   
-  useEffect(()=> {
-    try {
-      firebase.auth().onAuthStateChanged(async userInfo => {
-        console.log("user proctected", userInfo);
-        if(userInfo) {
-          const user = await getStore(userInfo.uid);
-          props.updateStore({...user, loggedIn: true})
-          props.history.push('/Orders');
-        }
-        else {
-          props.updateStore({loggedIn: false})
-          props.history.push('/login');
-        }
-          
-      });
-    } catch (error) {
-      console.log("error")
-    }
-
-  },[]);
+  const { loggedIn } = props.restaurant;
   console.log('user props app', props);
 
   const [errorMessage, setError] = useState('');
-
   const onLogin = async e =>{
     e.preventDefault();
 
@@ -53,7 +32,7 @@ const Login = (props) => {
             const user = await getStore(userInfo.user.uid);
             props.updateStore({...user, loggedIn: true})
             console.log("user info", user);
-            props.history.push('/Orders');
+            navigate('/dashboard');
           }
         })
 
@@ -61,27 +40,6 @@ const Login = (props) => {
       setError(error.message);
     }
   }
-  // function login(e) {
-
-  //   e.preventDefault();
-  //   const { history } = this.props;
-  //   firebase
-  //     .auth()
-  //     .signInWithEmailAndPassword(this.state.email, this.state.password)
-  //     .then((user) => {
-
-  //       if(user) {
-          
-  //         history.push("/Orders");
-  //       }
-     
-  //     })
-  //     .catch((error) => {
-  //       this.setState({ errorMessage: error.message });
-  //     });
-  //   // store.set("loggedIn", true);
-  // }
-
     return (
       <div className="Login">
         <Main />

@@ -1,7 +1,6 @@
 import React, { Component, useState } from "react";
 import fire from "../../firebase";
 import styles from "../style";
-import Orders from "../../orders";
 import Main from "../header";
 import Container from "@material-ui/core/Container";
 import Snackbar from "@material-ui/core/Snackbar";
@@ -45,7 +44,7 @@ const Signup = props => {
       .auth()
       .signInWithEmailAndPassword(this.state.email, this.state.password)
       .then((u) => {
-        props.history.push("/Orders");
+        // props.history.push("/Orders");
       })
       .catch((error) => {
         this.setState({ errorMessage: error.message });
