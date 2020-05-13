@@ -9,6 +9,7 @@ import Typography from "@material-ui/core/Typography";
 import {geoCoding,getDistanceFromLatLonInKm, createStore } from '../../api';
 import { Input } from '@material-ui/core';
 import { subscribe } from 'react-contextual';
+import { navigate } from 'hookrouter';
 
 // import store from "store";
 function Alert(props) {
@@ -18,13 +19,14 @@ const Signup = props => {
 
   console.log("props", props);
   const [errors, setErrors] = useState(null);
+  
   async function login(e) {
     e.preventDefault();
     const { email, password, description, firstName, lastName, storeName, phone, website, street, province, city, postalCode, country, registrationCode } = props.restaurant;
 
     // TODO check registraion code in here
 
-    await createStore({
+    const { result , error } = await createStore({
       email,
       phone,
       password,
@@ -40,17 +42,12 @@ const Signup = props => {
       country
     });
 
-    fire
-      .auth()
-      .signInWithEmailAndPassword(this.state.email, this.state.password)
-      .then((u) => {
-        // props.history.push("/Orders");
-      })
-      .catch((error) => {
-        this.setState({ errorMessage: error.message });
-      });
-    // store.set("loggedIn", true);
+    if( result ) {
+      navigate('/login');;
     }
+  }
+
+
     return (
       <div >
         <Main />

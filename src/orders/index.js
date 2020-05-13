@@ -1,5 +1,5 @@
 import React from "react";
-import fire from "../firebase";
+import firebase from "firebase";
 import { makeStyles } from "@material-ui/core/styles";
 import Typography from "@material-ui/core/Typography";
 import IconButton from "@material-ui/core/IconButton";
@@ -24,6 +24,7 @@ import Paper from "@material-ui/core/Paper";
 import KeyboardArrowDownIcon from "@material-ui/icons/KeyboardArrowDown";
 import KeyboardArrowUpIcon from "@material-ui/icons/KeyboardArrowUp";
 import OrdersNav from "../app/layout/ordersNav";
+import { navigate } from 'hookrouter';
 
 function createData(orderId, totalQuantity, timeOfOrder, carbs) {
   return {
@@ -418,10 +419,7 @@ var rowsIncoming = [
 ];
 var rowsPrep = [];
 var rowsCompleted = [];
-function logout() {
-  fire.auth().signOut();
-  //history.push("/login");
-}
+
 export default function Orders() {
   const [expanded, setExpanded] = React.useState("panel1");
 
@@ -429,8 +427,13 @@ export default function Orders() {
     setExpanded(newExpanded ? panel : false);
   };
   const classes = useStyles();
-  logout = logout.bind(this);
-  // history.push("Orders");
+
+  function logout() {
+    firebase.auth().signOut();
+    // navigate('/');
+    //history.push("/login");
+  }
+
 
   return (
     <div className={classes.root}>
@@ -448,10 +451,10 @@ export default function Orders() {
                   </Typography>
                   <Divider style={{ marginTop: 20, marginBottom: 20 }} />
                   <div>
-                    {rowsIncoming.map((row) => (
+                    {rowsIncoming.map((row,index) => (
                       //<RowTwo key={rowsPrep.orderId} row={rowsPrep} />
                       <Card
-                        key={rowsIncoming.orderId}
+                        key={index}
                         style={{ marginBottom: 10 }}
                       >
                         <CardContent>
@@ -472,7 +475,7 @@ export default function Orders() {
                                 </TableCell>
 
                                 <TableCell align="right">
-                                  <Typography variant="p">
+                                  <Typography variant={"p"}>
                                     {historyRow.instruction}
                                   </Typography>
                                 </TableCell>

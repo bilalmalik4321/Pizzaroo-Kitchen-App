@@ -1,5 +1,5 @@
 import React from "react";
-import fire from "../../firebase";
+import firebase from "firebase";
 import { makeStyles } from "@material-ui/core/styles";
 import AppBar from "@material-ui/core/AppBar";
 import Toolbar from "@material-ui/core/Toolbar";
@@ -9,15 +9,12 @@ import AccountCircle from "@material-ui/icons/AccountCircle";
 import MenuItem from "@material-ui/core/MenuItem";
 import Menu from "@material-ui/core/Menu";
 import Profile from "../../account/profile";
-// import store from "store";
+import { navigate } from 'hookrouter';
 
 function logout() {
-  fire.auth().signOut();
+  firebase.auth().signOut();
+  navigate('/');
   // store.clearAll();
-}
-
-function direct() {
-  window.location.href = "/login";
 }
 
 const useStyles = makeStyles((theme) => ({
@@ -83,7 +80,6 @@ export default function OrdersNav(props) {
                 <MenuItem
                   onClick={() => {
                     logout();
-                    direct();
                   }}
                 >
                   <Typography variant="h5">Logout</Typography>

@@ -23,6 +23,7 @@ const Login = (props) => {
     e.preventDefault();
 
     try {
+      props.updateStore({loading: true})
       const result = await firebase
         .auth()
         .signInWithEmailAndPassword(props.restaurant.email,props.restaurant.password)
@@ -30,7 +31,7 @@ const Login = (props) => {
           console.log("after login in userInfo", userInfo);
           if(userInfo) {
             const user = await getStore(userInfo.user.uid);
-            props.updateStore({...user, loggedIn: true})
+            props.updateStore({...user, loggedIn: true, loading: false});
             console.log("user info", user);
             navigate('/dashboard');
           }

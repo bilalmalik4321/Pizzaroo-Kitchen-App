@@ -34,14 +34,15 @@ export default function ButtonAppBar() {
               Pizzaroo
             </Typography>
           </LinkContainer>
-          <Button 
-            variant="contained" 
-            color="primary"
-            // onClick={navigate('/orders')}
-            
-            >
-            <Typography variant="h6">Orders</Typography>
-          </Button>
+          <div onClick={() => navigate('/dashboard')}>
+            <Button 
+              variant="contained" 
+              color="primary"
+              >
+              <Typography variant="h6">Orders</Typography>
+            </Button>
+          </div>
+          <div onClick={() => navigate('/signup')}>
           <Button 
             variant="contained" 
             color="primary"
@@ -49,6 +50,8 @@ export default function ButtonAppBar() {
              >
             <Typography variant="h6">Signup</Typography>
           </Button>
+          </div>
+          <div onClick={() => navigate('/login')}>
           <Button 
             variant="contained" 
             color="primary"
@@ -56,6 +59,7 @@ export default function ButtonAppBar() {
             >
             <Typography variant="h6">Login</Typography>
           </Button>
+          </div>
         </Toolbar>
       </AppBar>
     </div>
