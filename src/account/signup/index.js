@@ -8,12 +8,14 @@ import Snackbar from "@material-ui/core/Snackbar";
 import MuiAlert from "@material-ui/lab/Alert";
 import Typography from "@material-ui/core/Typography";
 import {geoCoding,getDistanceFromLatLonInKm } from '../../api';
+import { subscribe } from 'react-contextual';
 // import store from "store";
 function Alert(props) {
   return <MuiAlert elevation={6} variant="filled" {...props} />;
 }
 const Signup = props => {
 
+  console.log("props", props);
   function login(e) {
     e.preventDefault();
     const { history } = this.props;
@@ -208,9 +210,7 @@ const Signup = props => {
                 type="submit"
                 onClick={ async (e) => {
                   e.preventDefault();
-                  const result = await geoCoding('n9b3a9');
-                  const answer = getDistanceFromLatLonInKm(42.3087567,-83.06667449999999,42.2519797,-82.9800606);
-                  console.log("result", answer)
+              
                 }}
                 className="btn btn-primary"
               >
@@ -223,4 +223,4 @@ const Signup = props => {
     );
   }
 
-export default Signup;
+export default subscribe()(Signup);

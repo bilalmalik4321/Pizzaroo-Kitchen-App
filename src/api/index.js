@@ -47,10 +47,16 @@ export const createStore = async (payload) => {
 
     // user is created in auth but not in the collection
 
+    const { lng, lat } = await geoCoding(payload.postalCode);
+
     await db
-      .collection("customers")
+      .collection("stores")
       .doc(signedUpStore.user.uid)
-      .set({ ...storeInfo }, { merge: true });
+      .set({ 
+        ...storeInfo,
+        lng,
+        lat
+      }, { merge: true });
 
     // return true after success
     return {
@@ -98,9 +104,9 @@ export const geoCoding = async(address) => {
         }
       }
     );
-    console.log("data from geoCode", data )
-    const { lat, lng } = data.results[0].geometry.location;
 
+    const { lat, lng } = data.results[0].geometry.location;
+    console.log("lat",lat,'lng',lng )
     return {
       location: {
         lat,

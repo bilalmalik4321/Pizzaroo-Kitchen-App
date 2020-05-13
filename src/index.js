@@ -8,7 +8,7 @@ import { Provider } from 'react-contextual';
 
 ReactDOM.render(
   <Router>
-    <Provider>
+    <Provider {...store}>
       <App/>
     </Provider>
      

@@ -1,7 +1,7 @@
 import * as actions from './actions';
 
 export default {
-  store: {
+  restaurant: {
     storeId: '',
     description:'',
     firstName: '',
@@ -12,7 +12,7 @@ export default {
     password: '',
     repeatPassword: '',
     website: '',
-    address: {},
+    address: '',
     street: '',
     city: '',
     postalCode: '',
@@ -21,17 +21,11 @@ export default {
     registrationCode: '',
     loading: true,
     loggedIn: false,
-    menu: {},
+    menu: '',
     hour: {
       open: '',
       close: ''
     },
-
   },
-
-  menu: {
-
-  },
-
   ...actions
 }
