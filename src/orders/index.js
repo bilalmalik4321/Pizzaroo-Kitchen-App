@@ -190,10 +190,9 @@ const Orders = subscribe()((props) =>  {
 
                           <div>
                           <Typography variant="body2" component="p">
-                            { order.items && Object.keys(order.items).map((typeOfFood, i)=>(
-                              <div key={i}>
-                              {order.items[typeOfFood].map((anItem, ii ) => (
-                                <div key={ii}>
+                            { order.items && Object.keys(order.items).map((typeOfFood, i)=>{
+                              return order.items[typeOfFood].map((anItem, ii ) => {
+                                return (
                                   <TableRow key={ii}>
                                       <TableCell>
                                         <Typography variant="h6">
@@ -213,16 +212,11 @@ const Orders = subscribe()((props) =>  {
                                         </Typography>
                                       </TableCell>
                                     </TableRow>
-                                </div>
-
-                                ))}
-
-                              </div>
-
-                            ))}
-
-                          </Typography>
-                          </div>
+                                 )}
+                                )}
+                              )}
+                            </Typography>
+                            </div>
 
                         </CardContent>
                         <CardActions>
@@ -407,7 +401,7 @@ const Orders = subscribe()((props) =>  {
                           if(order.progressStep === 'confirmed'){
                               return(
 
-                                  <React.Fragment>
+                                  <React.Fragment key={index}>
                                   <Grid item xs={10}>
                                   <Card variant="outlined" style={{marginBottom:10, width:"100%"}}>
                                     <CardContent>
@@ -494,7 +488,7 @@ const Orders = subscribe()((props) =>  {
 
                                               ))}
                                             )}
-                                            <br />
+                                            {/* <br /> */}
                                             <Typography color="textSecondary">
                                               Customer: {order.customerName}
                                             </Typography>
