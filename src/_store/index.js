@@ -27,6 +27,14 @@ export default {
       open: '',
       close: ''
     },
+    toggleLogin: true,
+    toggleLogout: false, 
+    toggleProfile: false, 
+    toggleMenu: false, 
+    toggleSignUp: true,
+    toggleOrders: false,
+    toggleSignOut: false
+
   },
   menu: {
 

@@ -22,7 +22,7 @@ const App = () => {
   const Routes = useRoutes(routes);
 
   if(!Routes)
-    return <NotFound/>
+    return <Wrapper><NotFound/></Wrapper>
 
   return <Auth><Wrapper>{Routes}</Wrapper></Auth> 
 }

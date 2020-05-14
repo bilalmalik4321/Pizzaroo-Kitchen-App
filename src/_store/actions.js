@@ -20,7 +20,45 @@ export const updateStore = (key, value) => state => {
     restaurant
   };
 };
-
+export const ResetStore = () => state => {
+  return{
+    restaurant: {
+      storeId: '',
+      description:'',
+      firstName: '',
+      lastName: '',
+      storeName: '',
+      phone: '',
+      email: '',
+      password: '',
+      repeatPassword: '',
+      website: '',
+      address: '',
+      street: '',
+      province:'',
+      city: '',
+      postalCode: '',
+      state: '', 
+      country: '',
+      registrationCode: '',
+      loading: true,
+      loggedIn: false,
+      menu: '',
+      hour: {
+        open: '',
+        close: ''
+      },
+      toggleLogin: true,
+      toggleLogout: false, 
+      toggleProfile: false, 
+      toggleMenu: false, 
+      toggleSignUp: false,
+      toggleOrders: false,
+      toggleSignOut: false
+    
+    }
+  }
+}
 
 export const updateMenu = (key, value) => state => {
   let menu = {};

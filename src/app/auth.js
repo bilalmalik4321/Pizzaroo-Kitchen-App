@@ -27,7 +27,15 @@ const Auth = (props) => {
               props.updateStore({
                 loggedIn: true,
                 ...userDetails,
-                emailVerified
+                emailVerified,
+                toggleLogin: false,
+                toggleLogout: true, 
+                toggleProfile: true, 
+                toggleMenu: true, 
+                toggleSignUp: false,
+                toggleSignOut: true,
+                toggleOrders: true
+
               });
           } else {
             setLoading(false);
@@ -42,7 +50,7 @@ const Auth = (props) => {
 
   if(loading)
     return <></>;
-    
+
   if( !loggedIn && needLogin.includes(window.location.pathname.toLowerCase()))
     return <NotFound/>
 
