@@ -1,6 +1,6 @@
 import React from 'react';
 import Navbar from './ordersNav';
-import HeaderBar from '../../account/header';
+import HeaderBar from './header';
 
 
 const Wrapper = props => {

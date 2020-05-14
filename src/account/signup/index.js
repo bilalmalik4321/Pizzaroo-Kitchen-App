@@ -1,24 +1,25 @@
 import React, { Component, useState } from "react";
 import fire from "../../firebase";
-import styles from "../style";
-import Main from "../header";
+import styles from "./style";
+import Main from "../../app/layout/header";
 import Container from "@material-ui/core/Container";
 import Snackbar from "@material-ui/core/Snackbar";
 import MuiAlert from "@material-ui/lab/Alert";
 import Typography from "@material-ui/core/Typography";
 import {geoCoding,getDistanceFromLatLonInKm, createStore } from '../../api';
-import { Input } from '@material-ui/core';
+import { Input, Select, MenuItem } from '@material-ui/core';
 import { subscribe } from 'react-contextual';
 import { navigate } from 'hookrouter';
 
-// import store from "store";
+
 function Alert(props) {
   return <MuiAlert elevation={6} variant="filled" {...props} />;
 }
 const Signup = props => {
 
-  console.log("props", props);
+  console.log("props", props.restaurant);
   const [errors, setErrors] = useState(null);
+
 
   async function login(e) {
     e.preventDefault();
@@ -50,7 +51,6 @@ const Signup = props => {
 
     return (
       <div >
-        {/* <Main /> */}
         <form>
           <h1 style={styles.logoText}>Welcome</h1>
           <Container maxWidth={'sm'}>
@@ -127,7 +127,7 @@ const Signup = props => {
                 placeholder="Store Email"
               />
               <Input
-                  disableUnderline={true}
+                disableUnderline={true}
                 style={styles.loginFormTextInput}
                 value={props.restaurant.password}
                 onChange={(e)=> props.updateStore({password: e.target.value})}
@@ -138,7 +138,7 @@ const Signup = props => {
                 placeholder="Password"
               />
               <Input
-                  disableUnderline={true}
+                disableUnderline={true}
                 style={styles.loginFormTextInput}
                 value={props.restaurant.repeatPassword}
                 onChange={(e)=> props.updateStore({repeatPassword: e.target.value})}
@@ -163,7 +163,7 @@ const Signup = props => {
                 placeholder="Store Street Address"
               />
               <Input
-                  disableUnderline={true}
+                disableUnderline={true}
                 style={styles.loginFormTextInput}
                 value={props.restaurant.city}
                 onChange={(e)=> props.updateStore({city: e.target.value})}
@@ -175,8 +175,8 @@ const Signup = props => {
                 placeholder="City"
               />
 
-              <Input
-                  disableUnderline={true}
+              {/* <Input
+                disableUnderline={true}
                 style={styles.loginFormTextInput}
                 value={props.restaurant.province}
                 onChange={(e)=> props.updateStore({province: e.target.value})}
@@ -186,10 +186,20 @@ const Signup = props => {
                 id="exampleInputEmail1"
                 aria-describedby="emailHelp"
                 placeholder="Province"
-              />
+              /> */}
+              <Select
+                onChange={(e)=> props.updateStore({province: e.target.value})}
+                disableUnderline={true}
+                style={{...styles.selectBox}}
+                value={'Ontario'}
+              >
+              <MenuItem value={'Ontario'}>Ontario</MenuItem>
+              
+
+              </Select>
             
               <Input
-                  disableUnderline={true}
+                disableUnderline={true}
                 style={styles.loginFormTextInput}
                 value={props.restaurant.postalCode}
                 onChange={(e)=> props.updateStore({postalCode: e.target.value})}
@@ -202,9 +212,9 @@ const Signup = props => {
               />
                  
               <Input
-                  disableUnderline={true}
+                disableUnderline={true}
                 style={styles.loginFormTextInput}
-                value={props.restaurant.country}
+                value={'Canada'}
                 onChange={(e)=> props.updateStore({country: e.target.value})}
                 type="email"
                 name="email"
@@ -215,7 +225,7 @@ const Signup = props => {
               />
               
               <Input
-                  disableUnderline={true}
+                disableUnderline={true}
                 style={styles.loginFormTextInput}
                 value={props.restaurant.registrationCode}
                 onChange={(e)=> props.updateStore({registrationCode: e.target.value})}

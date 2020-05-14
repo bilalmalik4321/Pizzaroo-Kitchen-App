@@ -1,7 +1,7 @@
 import React, { Component, useState, useEffect } from "react";
 import firebase from "../../firebase";
 import styles from "../style";
-import Main from "../header";
+import Main from "../../app/layout/header";
 import Container from "@material-ui/core/Container";
 import Snackbar from "@material-ui/core/Snackbar";
 import MuiAlert from "@material-ui/lab/Alert";

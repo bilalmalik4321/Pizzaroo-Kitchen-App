@@ -6,6 +6,12 @@ import Typography from "@material-ui/core/Typography";
 import Button from "@material-ui/core/Button";
 import { LinkContainer } from "react-router-bootstrap";
 import { navigate } from 'hookrouter';
+import { subscribe } from 'react-contextual';
+import AccountCircle from "@material-ui/icons/AccountCircle";
+import IconButton from "@material-ui/core/IconButton";
+import firebase from 'firebase';
+
+
 const useStyles = makeStyles((theme) => ({
   root: {
     flexGrow: 1,
@@ -22,7 +28,14 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function ButtonAppBar() {
+
+ 
+
+const ButtonAppBar = props => {
+
+  const { toggleLogin, toggleLogout,toggleOrders, toggleProfile ,toggleMenu, toggleSignOut, toggleSignUp} = props.restaurant;
+  
+  
   const classes = useStyles();
 
   return (
@@ -34,7 +47,7 @@ export default function ButtonAppBar() {
               Pizzaroo
             </Typography>
           </LinkContainer>
-          <div onClick={() => navigate('/dashboard')}>
+          {toggleOrders && <div onClick={() => navigate('/dashboard')}>
             <Button 
               variant="contained" 
               color="primary"
@@ -42,7 +55,9 @@ export default function ButtonAppBar() {
               <Typography variant="h6">Orders</Typography>
             </Button>
           </div>
-          <div onClick={() => navigate('/signup')}>
+          }
+         
+          {toggleSignUp && <div onClick={() => navigate('/signup')}>
           <Button 
             variant="contained" 
             color="primary"
@@ -50,8 +65,9 @@ export default function ButtonAppBar() {
              >
             <Typography variant="h6">Signup</Typography>
           </Button>
-          </div>
-          <div onClick={() => navigate('/login')}>
+          </div>}
+         
+          {toggleLogin && <div onClick={() => navigate('/login')}>
           <Button 
             variant="contained" 
             color="primary"
@@ -60,8 +76,40 @@ export default function ButtonAppBar() {
             <Typography variant="h6">Login</Typography>
           </Button>
           </div>
+          }
+
+          {toggleSignOut && <div onClick={() => {
+            
+            firebase.auth().signOut();
+            props.ResetStore()
+            navigate('/')
+            
+          }}>
+          <Button 
+            variant="contained" 
+            color="primary"
+            // onClick={()=>navigate('/login')}
+            >
+            <Typography variant="h6">Sign Out</Typography>
+          </Button>
+          </div>
+          }
+
+          {toggleProfile && <div>
+           <IconButton
+                style={{ width: 64, height: 64, padding: 0 }}
+                aria-label="account of current user"
+                aria-controls="menu-appbar"
+                aria-haspopup="true"
+                onClick={()=> {}}
+                color="inherit"
+              >
+                <AccountCircle style={{ width: 32, height: 32 }} />
+              </IconButton>
+          </div>}
         </Toolbar>
       </AppBar>
     </div>
   );
 }
+export default subscribe()(ButtonAppBar);

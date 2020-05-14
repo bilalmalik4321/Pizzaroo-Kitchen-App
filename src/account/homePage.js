@@ -1,6 +1,6 @@
 import React from "react";
 import "./homePage.css";
-import Header from "./header";
+import Header from "../app/layout/header";
 export default function Home() {
   return (
     <div className="Home">
