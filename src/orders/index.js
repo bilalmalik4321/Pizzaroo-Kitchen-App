@@ -5,6 +5,7 @@ import IconButton from "@material-ui/core/IconButton";
 import Container from "@material-ui/core/Container";
 import Card from "@material-ui/core/Card";
 import CardContent from "@material-ui/core/CardContent";
+import CardActions from '@material-ui/core/CardActions';
 import Button from "@material-ui/core/Button";
 import Grid from "@material-ui/core/Grid";
 import ExpansionPanel from "@material-ui/core/ExpansionPanel";
@@ -15,6 +16,7 @@ import Box from "@material-ui/core/Box";
 import Collapse from "@material-ui/core/Collapse";
 import Table from "@material-ui/core/Table";
 import TableBody from "@material-ui/core/TableBody";
+import Badge from '@material-ui/core/Badge';
 import TableCell from "@material-ui/core/TableCell";
 import TableContainer from "@material-ui/core/TableContainer";
 import TableHead from "@material-ui/core/TableHead";
@@ -98,7 +100,7 @@ const Orders = subscribe()((props) =>  {
     hi: [1,2,3],
     hello: [3,4,5]
   }
-  
+
   console.log("incomings", props.orders);
 
   const onRejectOrder = async (pushId) => {
@@ -128,9 +130,16 @@ const Orders = subscribe()((props) =>  {
             <Container maxWidth="lg" style={{ marginTop: 20 }}>
               <Card variant="outlined">
                 <CardContent>
+
                   <Typography color="textSecondary" variant="h4" gutterBottom>
-                    Incoming Orders
+                      Incoming Orders
+                      <Badge badgeContent={4} color="primary" anchorOrigin={{
+                          vertical: 'top',
+                          horizontal: 'right',
+                        }} style={{marginLeft:20}}>
+                      </Badge>
                   </Typography>
+
                   <Divider style={{ marginTop: 20, marginBottom: 20 }} />
                   <div>
                   {!loading && incomings && incomings.length !== 0 && incomings.sort((a,b)=> a.createdAt < b.createdAt).map((order,index) => {
@@ -177,7 +186,7 @@ const Orders = subscribe()((props) =>  {
                         <Typography color="textSecondary">
                           Address: { `${order.address.apt? " " : "Apt/Unit: " + order.address.apt}`  + " " + order.address.street +" "+ order.address.city+ " " + order.address.postalCode }
                         </Typography>
-                     
+
 
                           <div>
                           <Typography variant="body2" component="p">
@@ -205,17 +214,18 @@ const Orders = subscribe()((props) =>  {
                                       </TableCell>
                                     </TableRow>
                                 </div>
-                                  
-                                ))} 
-                        
+
+                                ))}
+
                               </div>
 
                             ))}
 
                           </Typography>
                           </div>
-                         
+
                         </CardContent>
+                        <CardActions>
                         <Button
                           variant="contained"
                           color="secondary"
@@ -235,6 +245,7 @@ const Orders = subscribe()((props) =>  {
                         >
                           <Typography variant="h6">Accept</Typography>
                         </Button>
+                        </CardActions>
                       </Card>
                       )
                     }
@@ -305,7 +316,7 @@ const Orders = subscribe()((props) =>  {
 
               {/* ----------------- Preparing Orders ------------------ */}
 
-{/* 
+{/*
               <ExpansionPanel square onChange={handleChange("panel1")}>
                 <ExpansionPanelSummary
                   aria-controls="panel1d-content"
@@ -375,188 +386,185 @@ const Orders = subscribe()((props) =>  {
                   aria-controls="panel2d-content"
                   id="panel2d-header"
                 >
-                  <Typography variant="h4">Pending Orders</Typography>
+                  <Typography variant="h4">
+                    Pending Orders
+                    <Badge badgeContent={4} color="primary" anchorOrigin={{
+                        vertical: 'top',
+                        horizontal: 'right',
+                      }} style={{marginLeft:20}}>
+                    </Badge>
+                  </Typography>
                 </ExpansionPanelSummary>
                 <ExpansionPanelDetails>
-                  <Typography>
-                    <TableContainer component={Paper}>
-                      <Table
-                        aria-label="collapsible table"
-                        style={{ width: 800 }}
-                      >
-                        <TableHead>
-                          <TableRow>
-                            <TableCell />
-                            <TableCell>
-                              <Typography variant="h5">Order Id</Typography>
-                            </TableCell>
-                            <TableCell align="right">
-                              <Typography variant="h5">No. of Items</Typography>
-                            </TableCell>
-                            <TableCell align="right">
-                              <Typography variant="h5">
-                                Ordered At
-                              </Typography>
-                            </TableCell>
-                            <TableCell align="right"></TableCell>
-                            <TableCell align="right"></TableCell>
-                          </TableRow>
-                        </TableHead>
-                        <TableBody>
+                <Grid container spacing={3}>
+
+
+
 
 
                         {!loading && incomings && incomings.length !== 0 && incomings.sort((a,b)=> a.createdAt < b.createdAt).map((order,index) => {
 
                           if(order.progressStep === 'confirmed'){
                               return(
-                                    
+
                                   <React.Fragment>
-                                        <TableRow>
-                                          <TableCell>
-                                            <IconButton
-                                              aria-label="expand row"
-                                              size="small"
-                                              // onClick={() => setOpen(!open)}
-                                            >
-                                              {/* {open ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />} */}
-                                            </IconButton>
-                                          </TableCell>
+                                  <Grid item xs={10}>
+                                  <Card variant="outlined" style={{marginBottom:10, width:"100%"}}>
+                                    <CardContent>
+                                      <Typography variant="h5" color="textSecondary" gutterBottom>
+                                        Order #
+                                        </Typography>
+                                          <Typography variant="h5" color="textPrimary" gutterBottom>
+                                        {order.id}<br />
+                                        </Typography>
+                                        <Typography variant="h5" color="textSecondary" gutterBottom>
+                                        No. of Items : {order.numberOfItems}<br />
+                                        Ordered at : {convertDate(order.createdAt)}<br />
+                                        </Typography>
 
-                                          <TableCell align="left">
-                                            <Typography variant="h6">{order.id}</Typography>
-                                          </TableCell>
+                                      <Typography variant="h5" color="textSecondary">
+                                        Order details:
+                                      </Typography>
 
-                                          <TableCell align="right">
-                                            <Typography variant="h6">{order.numberOfItems}</Typography>
-                                          </TableCell>
+                                      <Typography variant="body2" component="p">
+                                      <TableRow>
+                                        <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={6}>
+                                          <Collapse in={true} timeout="auto" unmountOnExit>
+                                            <Box margin={1}>
 
-                                          <TableCell align="right">
-                                            <Typography variant="h6">{convertDate(order.createdAt)}</Typography>
-                                          </TableCell>
+                                              <Table size="small" aria-label="purchases">
+                                                <TableHead>
+                                                  <TableRow>
 
-                                          <TableCell align="right">
-                                            <Button
-                                              variant="contained"
-                                              color="secondary"
-                                              onClick={() => {
-                                                // rows.push(row);
-                                                // rowsPrep.splice(rowsPrep.indexOf(row), 1);
-                                              }}
-                                            >
-                                              <Typography variant="h6">Move to prepare</Typography>
-                                            </Button>
-                                            <Button
-                                              variant="contained"
-                                              color="default"
-                                              onClick={() => {
-                                                // rowsCompleted.push(row);
-                                                // rowsPrep.splice(rowsPrep.indexOf(row), 1);
-                                              }}
-                                            >
-                                              <Typography variant="h6">Completed</Typography>
-                                            </Button>
-                                          </TableCell>
-                                        </TableRow>
+                                                    <TableCell>
+                                                      <Typography variant="h5"></Typography>
+                                                    </TableCell>
+
+                                                    <TableCell>
+                                                      <Typography variant="h5">Size</Typography>
+                                                    </TableCell>
 
 
-                                        <TableRow>
-                                          <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={6}>
-                                            <Collapse in={true} timeout="auto" unmountOnExit>
-                                              <Box margin={1}>
-                                                <Typography variant="h3" gutterBottom component="div">
-                                                  Order Details
-                                                </Typography>
-                                                <Table size="small" aria-label="purchases">
-                                                  <TableHead>
-                                                    <TableRow>
-                        
-                                                      <TableCell>
-                                                        <Typography variant="h5">Item</Typography>
-                                                      </TableCell>
+                                                    <TableCell align="right">
+                                                      <Typography variant="h5">Special instructions</Typography>
+                                                    </TableCell>
 
-                                                      
-
-                                                      <TableCell>
-                                                        <Typography variant="h5">Quantity</Typography>
-                                                      </TableCell>
-
-                                                      <TableCell>
-                                                        <Typography variant="h5">Size</Typography>
-                                                      </TableCell>
+                                                    <TableCell align="right">
+                                                      <Typography variant="h5">Total price ($)</Typography>
+                                                    </TableCell>
+                                                  </TableRow>
+                                                </TableHead>
 
 
-                                                      <TableCell align="right">
-                                                        <Typography variant="h5">Special instructions</Typography>
-                                                      </TableCell>
+                                            <TableBody>
+                                            {/* ------------ body of each item detail ---------- */}
+                                            { order.items && Object.keys(order.items).map((typeOfFood, i)=>{
+                                              return order.items[typeOfFood].map((anItem, ii ) => (
 
-                                                      <TableCell align="right">
-                                                        <Typography variant="h5">Total price ($)</Typography>
-                                                      </TableCell>
-                                                    </TableRow>
-                                                  </TableHead>
-
-
-                                              <TableBody>
-                                              {/* ------------ body of each item detail ---------- */}
-                                              { order.items && Object.keys(order.items).map((typeOfFood, i)=>{
-                                                return order.items[typeOfFood].map((anItem, ii ) => (
-                                                  
-                                                  <TableRow key={ii}>
-                                                      <TableCell>
-                                                        <Typography variant="h5">
-                                                       {anItem.name}
-                                                        </Typography>
-                                                      </TableCell>
-                                                   
-                                                      <TableCell>
-                                                        <Typography variant="h5">
-                                                        {anItem.quantity}
-                                                        </Typography>
-                                                      </TableCell>
-
-                                                      <TableCell>
-                                                        <Typography variant="h5">
-                                                        {anItem.size? anItem.size : " "}
-                                                        </Typography>
-                                                      </TableCell>
+                                                <TableRow key={ii}>
+                                                    <TableCell>
+                                                      <Typography variant="h5">
+                                                     {anItem.name} x {anItem.quantity}
+                                                      </Typography>
+                                                    </TableCell>
 
 
-                                                      <TableCell align="right">
-                                                        <Typography variant="h5">
-                                                        {anItem.instruction}
-                                                        </Typography>
-                                                      </TableCell>
 
-                                                      <TableCell align="right">
-                                                        <Typography variant="h5">
-                                                        {anItem.price}
-                                                        </Typography>
-                                                      </TableCell>
-                                                    </TableRow>
+                                                    <TableCell>
+                                                      <Typography variant="h5">
+                                                      {anItem.size? anItem.size : " "}
+                                                      </Typography>
+                                                    </TableCell>
 
-                                        
-                                                  
-                                                ))}
-                                              )}
 
-                                              </TableBody>
+                                                    <TableCell align="right">
+                                                      <Typography variant="h5">
+                                                      {anItem.instruction}
+                                                      </Typography>
+                                                    </TableCell>
 
-                                                </Table>
-                                              </Box>
-                                            </Collapse>
-                                          </TableCell>
-                                        </TableRow>
-                                      </React.Fragment>
-                                    
-                                )} 
+                                                    <TableCell align="right">
+                                                      <Typography variant="h5">
+                                                      {anItem.price.toFixed(2)}
+                                                      </Typography>
+                                                    </TableCell>
+                                                  </TableRow>
+
+
+
+                                              ))}
+                                            )}
+                                            <br />
+                                            <Typography color="textSecondary">
+                                              Customer: {order.customerName}
+                                            </Typography>
+                                            <Typography color="textSecondary">
+                                              Email: {order.customerEmail}
+                                            </Typography>
+                                            <Typography color="textSecondary" gutterBottom>
+                                              Phone: {order.customerPhone}
+                                            </Typography>
+                                            <Typography color="textSecondary">
+                                              Payment: {order.payment}
+                                            </Typography>
+                                            <Typography color="textSecondary">
+                                              Status: {order.status}
+                                            </Typography>
+                                            <Typography color="textSecondary">
+                                              Delivery Instruction: {order.instruction? order.instruction : "N/A"}
+                                            </Typography>
+
+
+                                            <Typography color="textSecondary">
+                                              Address: { `${order.address.apt? " " : "Apt/Unit: " + order.address.apt}`  + " " + order.address.street +" "+ order.address.city+ " " + order.address.postalCode }
+                                            </Typography>
+                                            </TableBody>
+
+                                              </Table>
+                                            </Box>
+                                          </Collapse>
+                                        </TableCell>
+                                      </TableRow>
+
+
+                                      </Typography>
+
+                                    </CardContent>
+                                    <CardActions>
+                                    <Button
+                                      variant="contained"
+                                      color="secondary"
+                                      onClick={() => {
+                                        // rows.push(row);
+                                        // rowsPrep.splice(rowsPrep.indexOf(row), 1);
+                                      }}
+                                    >
+                                      <Typography variant="h6">Move to prepare</Typography>
+                                    </Button>
+                                    <Button
+                                      variant="contained"
+                                      color="default"
+                                      onClick={() => {
+                                        // rowsCompleted.push(row);
+                                        // rowsPrep.splice(rowsPrep.indexOf(row), 1);
+                                      }}
+                                    >
+                                      <Typography variant="h6">Completed</Typography>
+                                    </Button>
+                                    </CardActions>
+                                </Card>
+                                </Grid>
+                              </React.Fragment>
+
+                                )}
                               })}
-                                
 
 
-                              </TableBody>
-                            </Table>
-                          </TableContainer>
-                        </Typography>
+
+
+
+                              </Grid>
+
                       </ExpansionPanelDetails>
                     </ExpansionPanel>
 
@@ -575,7 +583,7 @@ const Orders = subscribe()((props) =>  {
 
                  {/* ----------------- Completed Orders ------------------ */}
 
-{/* 
+{/*
                     <ExpansionPanel square onChange={handleChange("panel3")}>
                       <ExpansionPanelSummary
                         aria-controls="panel3d-content"
@@ -617,10 +625,9 @@ const Orders = subscribe()((props) =>  {
                           </TableContainer>
                         </Typography>
                       </ExpansionPanelDetails>
-                    </ExpansionPanel> */} 
+                    </ExpansionPanel> */}
 
                  {/* ----------------- End of Completed Orders ------------------ */}
-
 
 
 
@@ -881,7 +888,7 @@ const useStyles = makeStyles((theme) => ({
 
 
 //                 <TableBody>
-  
+
 //                     <TableRow >
 //                       <TableCell component="th" scope="row">
 //                         <Typography variant="h5">
