@@ -66,10 +66,21 @@ const useStyles = makeStyles((theme) => ({
 
 }));
 
+const countOrder = (incomings,step) => {
+  let count = 0;
+  incomings.map((order,index) => {
 
+    if( order.progressStep === step)
+      count = count + 1;
+  })
 
+  return count;
+}
 
 const Orders = subscribe()((props) =>  {
+
+
+  const classes = useStyles();
 
   const [open, setOpen] =useState(false);
 
@@ -78,7 +89,7 @@ const Orders = subscribe()((props) =>  {
   const handleChange = (panel) => (event, newExpanded) => {
     setExpanded(newExpanded ? panel : false);
   };
-  const classes = useStyles();
+
 
   const { loading } = props.orders;
 
@@ -153,7 +164,7 @@ const Orders = subscribe()((props) =>  {
                       Incoming Orders:  
                   </Typography>
                   <Typography  variant="h3" gutterBottom>
-                      14 
+                    {!loading ? countOrder(incomings, 'waiting') : ''}
                   </Typography>
                 </Grid>
 {/* 
@@ -262,7 +273,7 @@ const Orders = subscribe()((props) =>  {
                                       variant="contained"
                                       color="secondary"
                                       onClick={() => {
-                                        onPrepareOrder(order.id)
+                                        onRejectOrder(order.id)
                                       }}
                                     >
                                         <Typography variant="h6">Contact Customer to Reject</Typography>
@@ -301,7 +312,7 @@ const Orders = subscribe()((props) =>  {
                       Pending Orders:  
                   </Typography>
                   <Typography  variant="h3" gutterBottom>
-                      14 
+                    {!loading ? countOrder(incomings, 'confirmed') : ''}
                   </Typography>
                 </Grid>
           
@@ -313,55 +324,124 @@ const Orders = subscribe()((props) =>  {
                   
                   <div className={classes.orderBox} key={index}>
                   <Divider style={{ marginTop: 20, marginBottom: 20 }} />
-                    <div style={{ paddingBottom: 20 }}>
-                    <Typography color="textSecondary" variant="h6">
-                        Order #{order.id}
-                      </Typography>
-                     
-                      <Typography color="textSecondary" variant="h6">
-                        Ordered At: {convertDate(order.createdAt)}
-                      </Typography>
-                      <Button
-                        className={classes.buttonInfo}
-                        color="primary"
-                        onClick={() => setOpen(!open)}
-                      >
-                      <Typography variant="h6">{!open ?"Show Info":"Hide info"}</Typography>
-                      </Button> 
-                      { open &&
-                        <div>
-                          <Typography color="textSecondary">
-                            Customer: {order.customerName}
-                          </Typography>
-                          <Typography color="textSecondary">
-                            Email: {order.customerEmail}
-                          </Typography>
-                          <Typography color="textSecondary" gutterBottom>
-                            Phone: {order.customerPhone}
-                          </Typography>
-                          <Typography color="textSecondary">
-                            Payment: {order.payment}
-                          </Typography>
-                          <Typography color="textSecondary">
-                            Status: {order.status}
-                          </Typography>
-                          <Typography color="textSecondary">
-                            Number of Item: {order.numberOfItems}
-                          </Typography>
-                          <Typography color="textSecondary" gutterBottom>
-                            Total: {order.total.toFixed(2)}
-                          </Typography>
-                          <Typography color="textSecondary">
-                            Delivery Instruction: {order.instruction? order.instruction : "N/A"}
-                          </Typography>
-                          <Typography color="textSecondary" variant="h6">
-                            Address: { `${order.address.apt? " " : "Apt/Unit: " + order.address.apt}`  + " " + order.address.street +" "+ order.address.city+ " " + order.address.postalCode }
-                          </Typography>
-                        </div>
-                      }
-                  
+                    
+                    <CustomerInfo order={order}/>
 
-                    </div>
+                    <TableContainer component={Paper}>
+                      <Table className={classes.table} aria-label="spanning table">
+                        <TableHead>
+                          <TableRow>
+                            <TableCell >Item</TableCell>
+                            <TableCell align="right" className={classes.itemSizeCell}>Size</TableCell>
+                            <TableCell align="right" className={classes.itemSizeCell}>Sum</TableCell>
+                          </TableRow>
+                        </TableHead>
+                        <TableBody>
+                        { order.items && Object.keys(order.items).map((typeOfFood, i)=>{
+                            return order.items[typeOfFood].sort((a,b)=> a.price < b.price).map((anItem, ii ) => {
+                              return (
+                                  <TableRow key={ii }>
+                                    <TableCell >
+                                      <h5>
+                                      {anItem.quantity} x {anItem.name}
+                                      </h5>
+                                      <h5 style={{ fontWeight: 'normal', color: 'grey'}}>
+                                        {anItem.instruction}
+                                      </h5>
+                                    </TableCell>
+                                    <TableCell align="right">
+                                      <h5>
+                                      {anItem.size}
+                                      </h5>
+                                    </TableCell>
+                                    <TableCell align="right">
+                                      <h5>
+                                      {anItem.price}
+                                      </h5>
+                                  </TableCell>
+                                  </TableRow>
+                                    )
+                              })})}
+
+                                  <TableRow>
+                                    <TableCell colSpan={2} >
+                                      <h5>
+                                      Subtotal
+                                      </h5>
+                                    </TableCell>  
+                                    <TableCell align="right">
+                                      <h4>
+                                      {order.total.toFixed(2)}
+                                      </h4>
+                                    </TableCell>
+                                  </TableRow>
+                             
+                            <TableRow>
+                              <TableCell colSpan={3}>
+                                <Grid 
+                                  container
+                                  direction="row"
+                                  justify="space-around"
+                                  alignItems="center"
+                                >
+                                  <Button
+                                    className={classes.button}
+                                    variant="contained"
+                                    color="secondary"
+                                    onClick={() => {
+                                      onPrepareOrder(order.id)
+                                    }}
+                                  >
+                                      <Typography variant="h6">Start preparing</Typography>
+                                  </Button>
+
+                                    <Button
+                                      className={classes.button}
+                                      variant="contained"
+                                      color="primary"
+                                      onClick={() => {
+                                        onCompleteOrder(order.id)
+                                      }}
+                                    >
+                                    <Typography variant="h6">Complete</Typography>
+                                  </Button>  
+                                </Grid> 
+                              </TableCell>
+                            </TableRow>
+                        </TableBody>
+                      </Table>
+                    </TableContainer>
+
+                </div>
+                )}})}
+                </CardContent>
+              </Card>
+            </Grid>
+
+
+
+
+            <Grid item xs>
+             <Card variant="outlined">
+              <CardContent>
+                <Grid container direction="row" alignItems="center" justify="space-evenly" >
+                  <Typography color="textSecondary" variant="h3" gutterBottom>
+                      Preparing Orders:  
+                  </Typography>
+                  <Typography  variant="h3" gutterBottom>
+                    {!loading ? countOrder(incomings, 'preparing') : ''}
+                  </Typography>
+                </Grid>
+          
+
+                {!loading && incomings && incomings.length !== 0 && incomings.sort((a,b)=> a.createdAt < b.createdAt).map((order,index) => {
+
+                if(order.progressStep === 'preparing'){
+                  return(
+                  
+                  <div className={classes.orderBox} key={index}>
+                  <Divider style={{ marginTop: 20, marginBottom: 20 }} />
+                    <CustomerInfo order={order}/>
                     <TableContainer component={Paper}>
                       <Table className={classes.table} aria-label="spanning table">
                         <TableHead>
@@ -429,13 +509,13 @@ const Orders = subscribe()((props) =>  {
                                     variant="contained"
                                     color="secondary"
                                     onClick={() => {
-                                      onRejectOrder(order.id)
+                                      onCompleteOrder(order.id)
                                     }}
                                   >
-                                      <Typography variant="h6">Start preparing</Typography>
+                                      <Typography variant="h6">Complete</Typography>
                                   </Button>
 
-                                    <Button
+                                    {/* <Button
                                       className={classes.button}
                                       variant="contained"
                                       color="primary"
@@ -444,7 +524,7 @@ const Orders = subscribe()((props) =>  {
                                       }}
                                     >
                                     <Typography variant="h6">Completed</Typography>
-                                  </Button>  
+                                  </Button>   */}
                                 </Grid> 
                               </TableCell>
                             </TableRow>
@@ -457,73 +537,9 @@ const Orders = subscribe()((props) =>  {
                 </CardContent>
                 </Card>
                 </Grid>
-
-
-
-
-
-        <Grid item xs>
-          <Card variant="outlined">
-              <CardContent>
-                <Grid container direction="row" alignItems="center" justify="space-evenly" >
-                  <Typography color="textSecondary" variant="h3" gutterBottom>
-                      Preparing Orders:  
-                  </Typography>
-                  <Typography  variant="h3" gutterBottom>
-                      14 
-                  </Typography>
-                </Grid>
-
-
-                <Divider style={{ marginTop: 20, marginBottom: 20 }} />
-                <TableContainer component={Paper}>
-                <Table className={classes.table} aria-label="spanning table">
-                  <TableHead>
-                    <TableRow>
-                      <TableCell align="center" colSpan={3}>
-                        Details
-                      </TableCell>
-                      <TableCell align="right">Price</TableCell>
-                    </TableRow>
-                    <TableRow>
-                      <TableCell>Desc</TableCell>
-                      <TableCell align="right">Qty.</TableCell>
-                      <TableCell align="right">Unit</TableCell>
-                      <TableCell align="right">Sum</TableCell>
-                    </TableRow>
-                  </TableHead>
-                  <TableBody>
-                    {rows.map((row) => (
-                      <TableRow key={row.desc}>
-                        <TableCell>{row.desc}</TableCell>
-                        <TableCell align="right">2</TableCell>
-                        <TableCell align="right">1</TableCell>
-                        <TableCell align="right">12</TableCell>
-                      </TableRow>
-                    ))}
-
-                    <TableRow>
-                      <TableCell rowSpan={3} />
-                      <TableCell colSpan={2}>Subtotal</TableCell>
-                      <TableCell align="right">22222</TableCell>
-                    </TableRow>
-                    <TableRow>
-                      <TableCell>Tax</TableCell>
-                      <TableCell align="right">122</TableCell>
-                      <TableCell align="right">21</TableCell>
-                    </TableRow>
-                    <TableRow>
-                      <TableCell colSpan={2}>Total</TableCell>
-                      <TableCell align="right">9000</TableCell>
-                    </TableRow>
-                  </TableBody>
-                </Table>
-              </TableContainer>
-               
-              </CardContent>
-              
-          </Card>
-        </Grid>
+      
+      
+      
       </Grid>
     </div>
 
@@ -535,389 +551,59 @@ export default Orders;
 
 
 
+const CustomerInfo = ({order}) => {
+  const [open, setOpen] = useState(false);
 
 
+  return (
+    <div style={{ paddingBottom: 20 }}>
+    <Typography color="textSecondary" variant="h6">
+        Order #{order.id}
+      </Typography>
+     
+      <Typography color="textSecondary" variant="h6">
+        Ordered At: {convertDate(order.createdAt)}
+      </Typography>
+      <Button
+        style={{ magrin: 0, padding: 0}}
+        color="primary"
+        onClick={() => setOpen(!open)}
+      >
+      <Typography variant="h6">{!open ?"Show Info":"Hide info"}</Typography>
+      </Button> 
+      { open &&
+        <div>
+          <Typography color="textSecondary">
+            Customer: {order.customerName}
+          </Typography>
+          <Typography color="textSecondary">
+            Email: {order.customerEmail}
+          </Typography>
+          <Typography color="textSecondary" gutterBottom>
+            Phone: {order.customerPhone}
+          </Typography>
+          <Typography color="textSecondary">
+            Payment: {order.payment}
+          </Typography>
+          <Typography color="textSecondary">
+            Status: {order.status}
+          </Typography>
+          <Typography color="textSecondary">
+            Number of Item: {order.numberOfItems}
+          </Typography>
+          <Typography color="textSecondary" gutterBottom>
+            Total: {order.total.toFixed(2)}
+          </Typography>
+          <Typography color="textSecondary">
+            Delivery Instruction: {order.instruction? order.instruction : "N/A"}
+          </Typography>
+          <Typography color="textSecondary" variant="h6">
+            Address: { `${order.address.apt? " " : "Apt/Unit: " + order.address.apt}`  + " " + order.address.street +" "+ order.address.city+ " " + order.address.postalCode }
+          </Typography>
+        </div>
+      }
+  
 
-
-
-// function createData(orderId, totalQuantity, timeOfOrder, carbs) {
-//   return {
-//     orderId,
-//     totalQuantity,
-//     timeOfOrder,
-//     history: [
-//       {
-//         itemId: "1",
-//         itemName: "Cheese pizza (XL)",
-//         amount: 3,
-//         instruction: "Well done This is lomg instruction,then what will happen to the div",
-//         price: 12.2,
-//       },
-//       {
-//         itemId: "2",
-//         itemName: "Pepperoni pizza (L)",
-//         amount: 1,
-//         instruction: "Easy on the cheese please",
-//         price: 14.5,
-//       },
-//     ],
-//   };
-// }
-
-
-
-// function Row(props) {
-//   const { row } = props;
-//   const [open, setOpen] = React.useState(false);
-
-//   return (
-//     <React.Fragment>
-//       <TableRow>
-//         <TableCell>
-//           <IconButton
-//             aria-label="expand row"
-//             size="small"
-//             onClick={() => setOpen(!open)}
-//           >
-//             {open ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
-//           </IconButton>
-//         </TableCell>
-
-//         <TableCell align="left">
-//           <Typography variant="h6">{row.orderId}</Typography>
-//         </TableCell>
-
-//         <TableCell align="right">
-//           <Typography variant="h6">{row.totalQuantity}</Typography>
-//         </TableCell>
-
-//         <TableCell align="right">
-//           <Typography variant="h6">{row.timeOfOrder}</Typography>
-//         </TableCell>
-
-//         <TableCell align="right">
-//           <Button
-//             variant="contained"
-//             color="primary"
-//             onClick={() => {
-//               rowsPrep.push(row);
-//               rows.splice(rows.indexOf(row), 1);
-//             }}
-//           >
-//             <Typography variant="h6">Being prepared</Typography>
-//           </Button>
-//         </TableCell>
-//       </TableRow>
-
-//       <TableRow>
-//         <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={6}>
-//           <Collapse in={open} timeout="auto" unmountOnExit>
-//             <Box margin={1}>
-//               <Typography variant="h5" gutterBottom component="div">
-//                 Order details
-//               </Typography>
-//               <Table size="small" aria-label="purchases">
-//                 <TableHead>
-//                   <TableRow>
-//                     <TableCell>
-//                       <Typography variant="h5">ID</Typography>
-//                     </TableCell>
-
-//                     <TableCell>
-//                       <Typography variant="h5">Item</Typography>
-//                     </TableCell>
-
-//                     <TableCell>
-//                       <Typography variant="h5">Quantity</Typography>
-//                     </TableCell>
-
-//                     <TableCell align="right">
-//                       <Typography variant="h5">Special instructions</Typography>
-//                     </TableCell>
-
-//                     <TableCell align="right">
-//                       <Typography variant="h5">Total price ($)</Typography>
-//                     </TableCell>
-//                   </TableRow>
-//                 </TableHead>
-//                 <TableBody>
-//                   {row.history.map((historyRow, index) => (
-//                     <TableRow key={historyRow.itemId}>
-//                       <TableCell component="th" scope="row">
-//                         <Typography variant="h5">
-//                           {historyRow.itemId}
-//                         </Typography>
-//                       </TableCell>
-
-//                       <TableCell>
-//                         <Typography variant="h5">
-//                           {historyRow.itemName}
-//                         </Typography>
-//                       </TableCell>
-
-//                       <TableCell>
-//                         <Typography variant="h5">
-//                           {historyRow.amount}
-//                         </Typography>
-//                       </TableCell>
-
-//                       <TableCell align="right">
-//                         <Typography variant="h5">
-//                           {historyRow.instruction}
-//                         </Typography>
-//                       </TableCell>
-
-//                       <TableCell align="right">
-//                         <Typography variant="h5">
-//                           {(historyRow.amount * historyRow.price).toFixed(2)}
-//                         </Typography>
-//                       </TableCell>
-//                     </TableRow>
-//                   ))}
-//                 </TableBody>
-//               </Table>
-//             </Box>
-//           </Collapse>
-//         </TableCell>
-//       </TableRow>
-//     </React.Fragment>
-//   );
-// }
-
-// function RowTwo(props) {
-//   const { row } = props;
-//   const [open, setOpen] = React.useState(false);
-
-//   return (
-//     <React.Fragment>
-//       <TableRow>
-//         <TableCell>
-//           <IconButton
-//             aria-label="expand row"
-//             size="small"
-//             // onClick={() => setOpen(!open)}
-//           >
-//             {/* {open ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />} */}
-//           </IconButton>
-//         </TableCell>
-
-//         <TableCell align="left">
-//           <Typography variant="h6">{row.orderId}</Typography>
-//         </TableCell>
-
-//         <TableCell align="right">
-//           <Typography variant="h6">{row.totalQuantity}</Typography>
-//         </TableCell>
-
-//         <TableCell align="right">
-//           <Typography variant="h6">{row.timeOfOrder}</Typography>
-//         </TableCell>
-
-//         <TableCell align="right">
-//           <Button
-//             variant="contained"
-//             color="secondary"
-//             onClick={() => {
-//               // rows.push(row);
-//               // rowsPrep.splice(rowsPrep.indexOf(row), 1);
-//             }}
-//           >
-//             <Typography variant="h6">Still pending</Typography>
-//           </Button>
-//           <Button
-//             variant="contained"
-//             color="default"
-//             onClick={() => {
-//               // rowsCompleted.push(row);
-//               // rowsPrep.splice(rowsPrep.indexOf(row), 1);
-//             }}
-//           >
-//             <Typography variant="h6">Completed</Typography>
-//           </Button>
-//         </TableCell>
-//       </TableRow>
-//       <TableRow>
-//         <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={6}>
-//           <Collapse in={open} timeout="auto" unmountOnExit>
-//             <Box margin={1}>
-//               <Typography variant="h5" gutterBottom component="div">
-//                 Order details
-//               </Typography>
-//               <Table size="small" aria-label="purchases">
-//                 <TableHead>
-//                   <TableRow>
-//                     <TableCell>
-//                       <Typography variant="h5">ID</Typography>
-//                     </TableCell>
-
-//                     <TableCell>
-//                       <Typography variant="h5">Item</Typography>
-//                     </TableCell>
-
-//                     <TableCell>
-//                       <Typography variant="h5">Quantity</Typography>
-//                     </TableCell>
-
-//                     <TableCell align="right">
-//                       <Typography variant="h5">Special instructions</Typography>
-//                     </TableCell>
-
-//                     <TableCell align="right">
-//                       <Typography variant="h5">Total price ($)</Typography>
-//                     </TableCell>
-//                   </TableRow>
-//                 </TableHead>
-
-
-//                 <TableBody>
-
-//                     <TableRow >
-//                       <TableCell component="th" scope="row">
-//                         <Typography variant="h5">
-//                          item ID
-//                         </Typography>
-//                       </TableCell>
-
-//                       <TableCell>
-//                         <Typography variant="h5">
-//                         item Name
-//                         </Typography>
-//                       </TableCell>
-
-//                       <TableCell>
-//                         <Typography variant="h5">
-//                          item amount
-//                         </Typography>
-//                       </TableCell>
-
-//                       <TableCell align="right">
-//                         <Typography variant="h5">
-//                          item instruction
-//                         </Typography>
-//                       </TableCell>
-
-//                       <TableCell align="right">
-//                         <Typography variant="h5">
-//                          item price
-//                         </Typography>
-//                       </TableCell>
-//                     </TableRow>
-
-//                 </TableBody>
-//               </Table>
-//             </Box>
-//           </Collapse>
-//         </TableCell>
-//       </TableRow>
-//     </React.Fragment>
-//   );
-// }
-// function RowThree(props) {
-//   const { row } = props;
-//   const [open, setOpen] = React.useState(false);
-
-//   return (
-//     <React.Fragment>
-//       <TableRow>
-//         <TableCell>
-//           <IconButton
-//             aria-label="expand row"
-//             size="small"
-//             onClick={() => setOpen(!open)}
-//           >
-//             {open ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
-//           </IconButton>
-//         </TableCell>
-
-//         <TableCell align="left">
-//           <Typography variant="h6">{row.orderId}</Typography>
-//         </TableCell>
-
-//         <TableCell align="right">
-//           <Typography variant="h6">{row.totalQuantity}</Typography>
-//         </TableCell>
-
-//         <TableCell align="right">
-//           <Typography variant="h6">{row.timeOfOrder}</Typography>
-//         </TableCell>
-
-//         <TableCell align="right">
-//           <Button variant="contained" disabled>
-//             <Typography variant="h6">Out the door</Typography>
-//           </Button>
-//         </TableCell>
-//       </TableRow>
-//       <TableRow>
-//         <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={6}>
-//           <Collapse in={open} timeout="auto" unmountOnExit>
-//             <Box margin={1}>
-//               <Typography variant="h5" gutterBottom component="div">
-//                 Order details
-//               </Typography>
-//               <Table size="small" aria-label="purchases">
-//                 <TableHead>
-//                   <TableRow>
-//                     <TableCell>
-//                       <Typography variant="h5">ID</Typography>
-//                     </TableCell>
-
-//                     <TableCell>
-//                       <Typography variant="h5">Item</Typography>
-//                     </TableCell>
-
-//                     <TableCell>
-//                       <Typography variant="h5">Quantity</Typography>
-//                     </TableCell>
-
-//                     <TableCell align="right">
-//                       <Typography variant="h5">Special instructions</Typography>
-//                     </TableCell>
-
-//                     <TableCell align="right">
-//                       <Typography variant="h5">Total price ($)</Typography>
-//                     </TableCell>
-//                   </TableRow>
-//                 </TableHead>
-//                 <TableBody>
-//                   {row.history.map((historyRow) => (
-//                     <TableRow key={historyRow.itemId}>
-//                       <TableCell component="th" scope="row">
-//                         <Typography variant="h5">
-//                           {historyRow.itemId}
-//                         </Typography>
-//                       </TableCell>
-
-//                       <TableCell>
-//                         <Typography variant="h5">
-//                           {historyRow.itemName}
-//                         </Typography>
-//                       </TableCell>
-
-//                       <TableCell>
-//                         <Typography variant="h5">
-//                           {historyRow.amount}
-//                         </Typography>
-//                       </TableCell>
-
-//                       <TableCell align="right">
-//                         <Typography variant="h5">
-//                           {historyRow.instruction}
-//                         </Typography>
-//                       </TableCell>
-
-//                       <TableCell align="right">
-//                         <Typography variant="h5">
-//                           {(historyRow.amount * historyRow.price).toFixed(2)}
-//                         </Typography>
-//                       </TableCell>
-//                     </TableRow>
-//                   ))}
-//                 </TableBody>
-//               </Table>
-//             </Box>
-//           </Collapse>
-//         </TableCell>
-//       </TableRow>
-//     </React.Fragment>
-//   );
-// }
+    </div>
+  )
+}
