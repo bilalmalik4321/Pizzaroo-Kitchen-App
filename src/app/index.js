@@ -9,14 +9,15 @@ import Signup from '../account/signup';
 import Auth from './auth';
 import Protected from './protected';
 import Wrapper from './layout';
-
+import Order from '../orders/newIndex';
 const App = () => {
 
   const routes = {
     '/': ()=> <Home/>,
     '/login': ()=> <Login/>,
     '/signup': ()=> <Signup/>,
-    '/dashboard': ()=> <Protected component={OrdersSSS}/>
+    '/dashboard': ()=> <Protected component={OrdersSSS}/>,
+    '/order': ()=> <Order/>
   }
   
   const Routes = useRoutes(routes);
