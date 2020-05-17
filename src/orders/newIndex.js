@@ -26,6 +26,7 @@ import KeyboardArrowDownIcon from "@material-ui/icons/KeyboardArrowDown";
 import KeyboardArrowUpIcon from "@material-ui/icons/KeyboardArrowUp";
 import OrdersNav from "../app/layout/ordersNav";
 import { navigate } from 'hookrouter';
+import Popover from '@material-ui/core/Popover';
 import { subscribe } from 'react-contextual';
 import moment from 'moment';
 
@@ -82,7 +83,7 @@ const Orders = subscribe()((props) =>  {
 
   const classes = useStyles();
 
-  const [open, setOpen] =useState(false);
+  const [completed, setCompleted] =useState(false);
 
   console.log("today",moment().format('MMMM-Do-YYYY'));
   const [expanded, setExpanded] = React.useState("panel1");
@@ -153,8 +154,170 @@ const Orders = subscribe()((props) =>  {
   function priceRow(qty, unit) {
     return qty * unit;
   }
+
+
+
+  const [anchorEl, setAnchorEl] = React.useState(null);
+
+  const handleClick = (event) => {
+    setAnchorEl(event.currentTarget);
+  };
+
+  const handleClose = () => {
+    setAnchorEl(null);
+  };
+
+  const open = Boolean(anchorEl);
+  const id = open ? 'simple-popover' : undefined;
+
   return (
     <div className={classes.root}>
+      <Grid 
+        container
+        direction="row" 
+        alignItems="center" justify="space-between"
+      >
+        <Typography  variant="h4" gutterBottom>
+          Date: {moment().format('MMMM Do YYYY, h:mm:ss a')}
+        </Typography>
+        <Button
+          style={{marginBottom: 20}}
+          variant="contained"
+          color="secondary"
+          onClick={(e) => handleClick(e)}
+        >
+        <Typography variant="h6">View Completed Orders</Typography>
+      </Button>  
+      <Popover
+        id={id}
+        open={open}
+        anchorEl={anchorEl}
+        onClose={handleClose}
+        anchorOrigin={{
+          vertical: 'bottom',
+          horizontal: 'center',
+        }}
+        transformOrigin={{
+          vertical: 'top',
+          horizontal: 'center',
+        }}
+      >
+        
+          <Card variant="outlined">
+              <CardContent>
+                <Grid container direction="row" alignItems="center" justify="space-evenly" >
+                  <Typography color="textSecondary" variant="h3" gutterBottom>
+                      Completed/Enroute Orders:  
+                  </Typography>
+                  <Typography  variant="h3" gutterBottom>
+                    {!loading ? countOrder(incomings, 'enroute') : ''}
+                  </Typography>
+                </Grid>
+          
+
+                {!loading && incomings && incomings.length !== 0 && incomings.sort((a,b)=> a.createdAt < b.createdAt).map((order,index) => {
+
+                if(order.progressStep === 'enroute'){
+                  return(
+                  
+                  <div className={classes.orderBox} key={index}>
+                  <Divider style={{ marginTop: 20, marginBottom: 20 }} />
+                    <CustomerInfo order={order}/>
+                    <TableContainer component={Paper}>
+                      <Table className={classes.table} aria-label="spanning table">
+                        <TableHead>
+                          <TableRow>
+                            <TableCell className={classes.itemName}>Item</TableCell>
+                            <TableCell align="right" className={classes.itemSizeCell}>Size</TableCell>
+                            <TableCell align="right" className={classes.itemSizeCell}>Sum</TableCell>
+                          </TableRow>
+                        </TableHead>
+                        <TableBody>
+                        { order.items && Object.keys(order.items).map((typeOfFood, i)=>{
+                            return order.items[typeOfFood].sort((a,b)=> a.price < b.price).map((anItem, ii ) => {
+                              return (
+                                  <TableRow key={ii }>
+                                    <TableCell >
+                                      <h5>
+                                      {anItem.quantity} x {anItem.name}
+                                      </h5>
+                                      <h5 style={{ fontWeight: 'normal', color: 'grey'}}>
+                                        {anItem.instruction}
+                                      </h5>
+                                    </TableCell>
+                                    <TableCell align="right">
+                                      <h5>
+                                      {anItem.size}
+                                      </h5>
+                                    </TableCell>
+                                    <TableCell align="right">
+                                      <h5>
+                                      {anItem.price}
+                                      </h5>
+                                  </TableCell>
+                                  </TableRow>
+                                    )
+                              })})}
+
+          
+                                  <TableRow>
+                                    <TableCell colSpan={2} >
+                                      <h5>
+                                      Subtotal
+                                      </h5>
+                                    </TableCell>  
+                                    <TableCell align="right">
+                                      <h4>
+                                      {order.total.toFixed(2)}
+                                      </h4>
+                                    </TableCell>
+                                  </TableRow>
+                            
+                    
+                             
+                            <TableRow>
+                              <TableCell colSpan={3}>
+                                <Grid 
+                                  container
+                                  direction="row"
+                                  justify="space-around"
+                                  alignItems="center"
+                                >
+                                  <Button
+                                    className={classes.button}
+                                    variant="contained"
+                                    color="secondary"
+                                    onClick={() => {
+                                      onCompleteOrder(order.id)
+                                    }}
+                                  >
+                                      <Typography variant="h6">Complete</Typography>
+                                  </Button>
+
+                    
+                                </Grid> 
+                              </TableCell>
+                            </TableRow>
+                        </TableBody>
+                      </Table>
+                    </TableContainer>
+
+                </div>
+                )}})}
+                </CardContent>
+              </Card>
+
+
+
+
+
+
+
+
+
+      </Popover>
+        
+      </Grid>
       <Grid container spacing={1}>
         <Grid item xs>
           <Card variant="outlined">
@@ -478,9 +641,7 @@ const Orders = subscribe()((props) =>  {
                                     )
                               })})}
 
-                              {
-                                open && 
-                             
+          
                                   <TableRow>
                                     <TableCell colSpan={2} >
                                       <h5>
@@ -494,7 +655,7 @@ const Orders = subscribe()((props) =>  {
                                     </TableCell>
                                   </TableRow>
                             
-                              }
+                    
                              
                             <TableRow>
                               <TableCell colSpan={3}>
@@ -515,16 +676,7 @@ const Orders = subscribe()((props) =>  {
                                       <Typography variant="h6">Complete</Typography>
                                   </Button>
 
-                                    {/* <Button
-                                      className={classes.button}
-                                      variant="contained"
-                                      color="primary"
-                                      onClick={() => {
-                                        onCompleteOrder(order.id)
-                                      }}
-                                    >
-                                    <Typography variant="h6">Completed</Typography>
-                                  </Button>   */}
+                    
                                 </Grid> 
                               </TableCell>
                             </TableRow>
@@ -535,9 +687,9 @@ const Orders = subscribe()((props) =>  {
                 </div>
                 )}})}
                 </CardContent>
-                </Card>
-                </Grid>
-      
+              </Card>
+            </Grid>
+    
       
       
       </Grid>
