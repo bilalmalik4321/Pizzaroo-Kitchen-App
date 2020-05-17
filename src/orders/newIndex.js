@@ -127,7 +127,7 @@ const Orders = subscribe()((props) =>  {
   console.log("incomings", props.orders);
 
   const onRejectOrder = async (pushId) => {
-    await updateOrder(pushId,'confirmed', 'closed');
+    await updateOrder(pushId,'cancelled', 'closed');
   }
 
   const onAcceptOrder = async (pushId) => {
@@ -135,13 +135,14 @@ const Orders = subscribe()((props) =>  {
     await updateOrder(pushId,'confirmed', 'open');
   }
 
-  const onPrepareOrder = async (pushId) => {
-    await updateOrder(pushId, 'preparing', 'open');
-  }
+  // const onPrepareOrder = async (pushId) => {
+  //   await updateOrder(pushId, 'preparing', 'open');
+  // }
 
   const onCompleteOrder = async (pushId) => {
     await updateOrder(pushId, 'enroute', 'open');
   }
+
   const rows = [
     createRow('Paperclips (Box)', 100, 1.15),
     createRow('Paper (Case)', 10, 45.99),
@@ -274,7 +275,7 @@ const Orders = subscribe()((props) =>  {
                                   </TableRow>
                             
                     
-                             
+{/*                              
                             <TableRow>
                               <TableCell colSpan={3}>
                                 <Grid 
@@ -297,7 +298,7 @@ const Orders = subscribe()((props) =>  {
                     
                                 </Grid> 
                               </TableCell>
-                            </TableRow>
+                            </TableRow> */}
                         </TableBody>
                       </Table>
                     </TableContainer>
@@ -466,122 +467,6 @@ const Orders = subscribe()((props) =>  {
         </Grid>
 
 
-        {/* ---------- Pending Orders ------------ */}
-        <Grid item xs>
-          <Card variant="outlined">
-              <CardContent>
-                <Grid container direction="row" alignItems="center" justify="space-evenly" >
-                  <Typography color="textSecondary" variant="h3" gutterBottom>
-                      Pending Orders:  
-                  </Typography>
-                  <Typography  variant="h3" gutterBottom>
-                    {!loading ? countOrder(incomings, 'confirmed') : ''}
-                  </Typography>
-                </Grid>
-          
-
-                {!loading && incomings && incomings.length !== 0 && incomings.sort((a,b)=> a.createdAt < b.createdAt).map((order,index) => {
-
-                if(order.progressStep === 'confirmed'){
-                  return(
-                  
-                  <div className={classes.orderBox} key={index}>
-                  <Divider style={{ marginTop: 20, marginBottom: 20 }} />
-                    
-                    <CustomerInfo order={order}/>
-
-                    <TableContainer component={Paper}>
-                      <Table className={classes.table} aria-label="spanning table">
-                        <TableHead>
-                          <TableRow>
-                            <TableCell >Item</TableCell>
-                            <TableCell align="right" className={classes.itemSizeCell}>Size</TableCell>
-                            <TableCell align="right" className={classes.itemSizeCell}>Sum</TableCell>
-                          </TableRow>
-                        </TableHead>
-                        <TableBody>
-                        { order.items && Object.keys(order.items).map((typeOfFood, i)=>{
-                            return order.items[typeOfFood].sort((a,b)=> a.price < b.price).map((anItem, ii ) => {
-                              return (
-                                  <TableRow key={ii }>
-                                    <TableCell >
-                                      <h5>
-                                      {anItem.quantity} x {anItem.name}
-                                      </h5>
-                                      <h5 style={{ fontWeight: 'normal', color: 'grey'}}>
-                                        {anItem.instruction}
-                                      </h5>
-                                    </TableCell>
-                                    <TableCell align="right">
-                                      <h5>
-                                      {anItem.size}
-                                      </h5>
-                                    </TableCell>
-                                    <TableCell align="right">
-                                      <h5>
-                                      {anItem.price}
-                                      </h5>
-                                  </TableCell>
-                                  </TableRow>
-                                    )
-                              })})}
-
-                                  <TableRow>
-                                    <TableCell colSpan={2} >
-                                      <h5>
-                                      Subtotal
-                                      </h5>
-                                    </TableCell>  
-                                    <TableCell align="right">
-                                      <h4>
-                                      {order.total.toFixed(2)}
-                                      </h4>
-                                    </TableCell>
-                                  </TableRow>
-                             
-                            <TableRow>
-                              <TableCell colSpan={3}>
-                                <Grid 
-                                  container
-                                  direction="row"
-                                  justify="space-around"
-                                  alignItems="center"
-                                >
-                                  <Button
-                                    className={classes.button}
-                                    variant="contained"
-                                    color="secondary"
-                                    onClick={() => {
-                                      onPrepareOrder(order.id)
-                                    }}
-                                  >
-                                      <Typography variant="h6">Start preparing</Typography>
-                                  </Button>
-
-                                    <Button
-                                      className={classes.button}
-                                      variant="contained"
-                                      color="primary"
-                                      onClick={() => {
-                                        onCompleteOrder(order.id)
-                                      }}
-                                    >
-                                    <Typography variant="h6">Complete</Typography>
-                                  </Button>  
-                                </Grid> 
-                              </TableCell>
-                            </TableRow>
-                        </TableBody>
-                      </Table>
-                    </TableContainer>
-
-                </div>
-                )}})}
-                </CardContent>
-              </Card>
-            </Grid>
-
-
 
 
             <Grid item xs>
@@ -592,14 +477,14 @@ const Orders = subscribe()((props) =>  {
                       Preparing Orders:  
                   </Typography>
                   <Typography  variant="h3" gutterBottom>
-                    {!loading ? countOrder(incomings, 'preparing') : ''}
+                    {!loading ? countOrder(incomings, 'confirmed') : ''}
                   </Typography>
                 </Grid>
           
 
                 {!loading && incomings && incomings.length !== 0 && incomings.sort((a,b)=> a.createdAt < b.createdAt).map((order,index) => {
 
-                if(order.progressStep === 'preparing'){
+                if(order.progressStep === 'confirmed'){
                   return(
                   
                   <div className={classes.orderBox} key={index}>
@@ -616,7 +501,7 @@ const Orders = subscribe()((props) =>  {
                         </TableHead>
                         <TableBody>
                         { order.items && Object.keys(order.items).map((typeOfFood, i)=>{
-                            return order.items[typeOfFood].sort((a,b)=> a.price < b.price).map((anItem, ii ) => {
+                            return order.items[typeOfFood].map((anItem, ii ) => {
                               return (
                                   <TableRow key={ii }>
                                     <TableCell >
