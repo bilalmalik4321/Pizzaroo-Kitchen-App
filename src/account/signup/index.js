@@ -7,171 +7,215 @@ import Snackbar from "@material-ui/core/Snackbar";
 import MuiAlert from "@material-ui/lab/Alert";
 import Typography from "@material-ui/core/Typography";
 import {geoCoding,getDistanceFromLatLonInKm, createStore } from '../../api';
-import { Input, Select, MenuItem } from '@material-ui/core';
+import { Input, Select, MenuItem , TextField, Grid, Button} from '@material-ui/core';
 import { subscribe } from 'react-contextual';
+import { makeStyles } from '@material-ui/core/styles';
 import { navigate } from 'hookrouter';
 
+import * as validations from './validations'
 
 function Alert(props) {
   return <MuiAlert elevation={6} variant="filled" {...props} />;
 }
+
+
+const useStyles = makeStyles((theme) => ({
+  root: {
+    '& .MuiTextField-root': {
+      margin: theme.spacing(1),
+      width: 200,
+    },
+  },
+
+  form: {
+    paddingBottom: 200
+  },
+  input: {
+    // fontSize: 20,
+    // width: '100%',
+    marginTop: 30
+    // height: 45,
+  
+  },
+  button: {
+    height: 40,
+    marginTop: 30,
+    color: 'white',
+    backgroundColor: 'green',
+
+
+  }
+}));
+
+
 const Signup = props => {
 
   console.log("props", props.restaurant);
   const [errors, setErrors] = useState(null);
 
-
+  const classes = useStyles();
   async function login(e) {
     e.preventDefault();
     const { email, password, description, firstName, lastName, storeName, phone, website, street, province, city, postalCode, country, registrationCode } = props.restaurant;
 
-    // TODO check registraion code in here
+    const err = validations.signup(props);
 
-    const { result , error } = await createStore({
-      email,
-      phone,
-      password,
-      website,
-      description,
-      firstName,
-      lastName,
-      storeName,
-      street,
-      province,
-      city,
-      postalCode,
-      country
-    });
+    if( Object.keys(err).length !== 0) {
+      setErrors(err);
+    } else {
 
-    if( result ) {
-      navigate('/login');;
+      // TODO check registraion code in here
+      const { result , error } = await createStore({
+        email,
+        phone,
+        password,
+        website,
+        description,
+        firstName,
+        lastName,
+        storeName,
+        street,
+        province,
+        city,
+        postalCode,
+        country
+      });
+  
+      if( result ) {
+        navigate('/login');;
+      } else {
+        alert(error)
+        console.log("error registrating a store", error);
+      }
     }
+  
+
+  
   }
 
+  const inputProps = {
+    disableUnderline: false,
+    sise: 30
+  }
 
     return (
-      <div >
-        <form>
+
+        <form className={classes.form}>
           <h1 style={styles.logoText}>Welcome</h1>
           <Container maxWidth={'sm'}>
-            <div >
-              <Input
-                disableUnderline={true}
-                style={styles.loginFormTextInput}
+            <Grid container direction="column" spacing={2}>
+            <TextField
+                InputProps={{style: {fontSize: 15}}}
+                size="small"
+                variant="outlined"
+                className={classes.input}
+
+
                 value={props.restaurant.firstName}
                 onChange={ e => {
                   console.log("value", e.target.value);
                   props.updateStore('firstName', e.target.value)
                   
                 }}
-                className="form-control"
-                aria-describedby="emailHelp"
+            
                 placeholder="First Name"
               />
             
-              <Input
-                disableUnderline={true}
-                style={styles.loginFormTextInput}
+              <TextField
+                InputProps={{style: {fontSize: 15}}}
+                size="small"
+                variant="outlined"
+                className={classes.input}
+
                 value={props.restaurant.lastName}
                 onChange={(e)=> props.updateStore({lastName: e.target.value})}
                 type="text"
-                className="form-control"
-                id="exampleInputPassword1"
+              
                 placeholder="Last Name"
               />
 
-              <Input
-                disableUnderline={true}
+              <TextField
+                InputProps={{style: {fontSize: 15}}}
+                size="small"
+                variant="outlined"
+                className={classes.input}
                 style={styles.loginFormTextInput}
                 value={props.restaurant.storeName}
                 onChange={(e)=> props.updateStore({storeName: e.target.value})}
                 type="text"
                 // name="password"
-                className="form-control"
+            
                 // id="exampleInputPassword1"
                 placeholder="Store Name"
               />
-              <Input
-                disableUnderline={true}
-                style={styles.loginFormTextInput}
+              <TextField
+                InputProps={{style: {fontSize: 15}}}
+                size="small"
+                variant="outlined"
+                className={classes.input}
                 value={props.restaurant.phone}
                 onChange={(e)=> props.updateStore({phone: e.target.value})}
                 type="text"
                 // name="email"
                 className="form-control"
-                id="exampleInputEmail1"
+            
                 // aria-describedby="emailHelp"
                 placeholder="Store Phone Number"
               />
-              <Input
-                disableUnderline={true}
-                style={styles.loginFormTextInput}
+              <TextField
+                InputProps={{style: {fontSize: 15}}}
+                size="small"
+                variant="outlined"
+                className={classes.input}
                 value={props.restaurant.website}
                 onChange={(e)=> props.updateStore({website: e.target.value})}
-                type="email"
-                // name="email"
-                className="form-control"
-                id="exampleInputEmail1"
-                // aria-describedby="emailHelp"
                 placeholder="Store Website"
               />
-              <Input
-                    disableUnderline={true}
-                style={styles.loginFormTextInput}
+              <TextField
+                InputProps={{style: {fontSize: 15}}}
+                size="small"
+                variant="outlined"
+                className={classes.input}
                 value={props.restaurant.email}
                 onChange={(e)=> props.updateStore({email: e.target.value})}
-                type="email"
-                // name="password"
-                className="form-control"
-                id="exampleInputEmail1"
                 placeholder="Store Email"
               />
-              <Input
-                disableUnderline={true}
-                style={styles.loginFormTextInput}
+              <TextField
+                InputProps={{style: {fontSize: 15}}}
+                size="small"
+                variant="outlined"
+                className={classes.input}
                 value={props.restaurant.password}
                 onChange={(e)=> props.updateStore({password: e.target.value})}
                 type="password"
-                name="password"
-                className="form-control"
-                id="exampleInputPassword1"
                 placeholder="Password"
               />
-              <Input
-                disableUnderline={true}
-                style={styles.loginFormTextInput}
+              <TextField
+                InputProps={{style: {fontSize: 15}}}
+                size="small"
+                variant="outlined"
+                className={classes.input}
                 value={props.restaurant.repeatPassword}
                 onChange={(e)=> props.updateStore({repeatPassword: e.target.value})}
-                type="password"
-                name="password"
-                className="form-control"
-                className="form-control"
-                id="exampleInputPassword1"
                 placeholder="Confirmed Password"
               />
             
-              <Input
-                  disableUnderline={true}
-                style={styles.loginFormTextInput}
+              <TextField
+                InputProps={{style: {fontSize: 15}}}
+                size="small"
+                variant="outlined"
+                className={classes.input}
                 value={props.restaurant.street}
                 onChange={(e)=> props.updateStore({street: e.target.value})}
-                type="email"
-                name="email"
-                className="form-control"
-                id="exampleInputEmail1"
-                aria-describedby="emailHelp"
                 placeholder="Store Street Address"
               />
-              <Input
-                disableUnderline={true}
-                style={styles.loginFormTextInput}
+              <TextField
+                InputProps={{style: {fontSize: 15}}}
+                size="small"
+                variant="outlined"
+                className={classes.input}
                 value={props.restaurant.city}
                 onChange={(e)=> props.updateStore({city: e.target.value})}
-                type="email"
-                name="email"
-                className="form-control"
-                id="exampleInputEmail1"
-                aria-describedby="emailHelp"
                 placeholder="City"
               />
 
@@ -187,57 +231,48 @@ const Signup = props => {
                 aria-describedby="emailHelp"
                 placeholder="Province"
               /> */}
-              <Select
+              <TextField
+                InputProps={{style: {fontSize: 15}}}
+                size="small"
+                variant="outlined"
+                className={classes.input}
+                select
                 onChange={(e)=> props.updateStore({province: e.target.value})}
-                disableUnderline={true}
-                style={{...styles.selectBox}}
                 value={'Ontario'}
               >
               <MenuItem value={'Ontario'}>Ontario</MenuItem>
-              
-
-              </Select>
+              </TextField>
             
-              <Input
-                disableUnderline={true}
-                style={styles.loginFormTextInput}
+              <TextField
+                InputProps={{style: {fontSize: 15}}}
+                size="small"
+                variant="outlined"
+                className={classes.input}
                 value={props.restaurant.postalCode}
                 onChange={(e)=> props.updateStore({postalCode: e.target.value})}
-                type="email"
-                name="email"
-                className="form-control"
-                id="exampleInputEmail1"
-                aria-describedby="emailHelp"
                 placeholder="Postal Code"
               />
                  
-              <Input
-                disableUnderline={true}
-                style={styles.loginFormTextInput}
+              <TextField
+                InputProps={{style: {fontSize: 15}}}
+                size="small"
+                variant="outlined"
+                className={classes.input}
                 value={'Canada'}
                 onChange={(e)=> props.updateStore({country: e.target.value})}
-                type="email"
-                name="email"
-                className="form-control"
-                id="exampleInputEmail1"
-                aria-describedby="emailHelp"
                 placeholder="Country"
               />
               
-              <Input
-                disableUnderline={true}
-                style={styles.loginFormTextInput}
+              <TextField
+                InputProps={{style: {fontSize: 15}}}
+                size="small"
+                variant="outlined"
+                className={classes.input}
                 value={props.restaurant.registrationCode}
                 onChange={(e)=> props.updateStore({registrationCode: e.target.value})}
-                type="email"
-                name="email"
-                className="form-control"
-                id="exampleInputEmail1"
-                aria-describedby="emailHelp"
                 placeholder="Registraion CODE"
               />
-            </div>
-            <div style={{ textAlign: "center" }}>
+       
               {false && (
                 <Snackbar open={true} autoHideDuration={1000}>
                   <Alert severity="error">
@@ -247,21 +282,20 @@ const Signup = props => {
                   </Alert>
                 </Snackbar>
               )}
-              <button
-                style={styles.loginButton}
+              <Button
+                className={classes.button}
                 type="submit"
                 onClick={ async (e) => {
                   e.preventDefault();
               
                 }}
-                className="btn btn-primary"
               >
                 Login
-              </button>
-            </div>
+              </Button>
+            </Grid>
           </Container>
         </form>
-      </div>
+  
     );
   }
 

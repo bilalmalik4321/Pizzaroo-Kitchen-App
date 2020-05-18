@@ -35,29 +35,29 @@ export const signup = async props => {
   if(!city) error.city = "Please enter the store city.";
   if(!postalCode) error.postalCode = "Please enter the store postal code.";
   if(!country) error.country = "Please enter the store country.";
-  if(!registrationCode) {
-    error.registrationCode = "Please enter the registration code. Contact us if you do not have one.";
-  }
-  else {
-    try {
-      const codeRef = await firebase.firestore().collection('codes').doc(registrationCode);
+  // if(!registrationCode) {
+  //   error.registrationCode = "Please enter the registration code. Contact us if you do not have one.";
+  // }
+  // else {
+  //   try {
+  //     const codeRef = await firebase.firestore().collection('codes').doc(registrationCode);
 
-      codeRef.get().then( snapshot => {
-        if(snapshot.exists) {
-          codeRef.onSnapshot(doc => {
-            const status = doc.get('status');
-            if( status === 'used')
-              error.registrationCode = "Invalid Code";
-          })
-        } else {
-          error.registrationCode = "Invalid Code";
-        }
-      })
+  //     codeRef.get().then( snapshot => {
+  //       if(snapshot.exists) {
+  //         codeRef.onSnapshot(doc => {
+  //           const status = doc.get('status');
+  //           if( status === 'used')
+  //             error.registrationCode = "Invalid Code";
+  //         })
+  //       } else {
+  //         error.registrationCode = "Invalid Code";
+  //       }
+  //     })
 
-    } catch ( error ) {
-      console.log("error checking registration code");
-    }
-  } 
+  //   } catch ( error ) {
+  //     console.log("error checking registration code");
+  //   }
+  // } 
 
   return {
     ...error

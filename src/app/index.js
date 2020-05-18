@@ -10,6 +10,8 @@ import Auth from './auth';
 import Protected from './protected';
 import Wrapper from './layout';
 import Order from '../orders/newIndex';
+import Menu from '../menu';
+
 const App = () => {
 
   const routes = {
@@ -17,7 +19,8 @@ const App = () => {
     '/login': ()=> <Login/>,
     '/signup': ()=> <Signup/>,
     '/dashboard': ()=> <Protected component={OrdersSSS}/>,
-    '/order': ()=> <Order/>
+    '/order': ()=> <Order/>,
+    '/menu': ()=> <Menu/>
   }
   
   const Routes = useRoutes(routes);

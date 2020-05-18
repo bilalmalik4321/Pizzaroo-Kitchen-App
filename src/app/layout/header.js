@@ -47,7 +47,7 @@ const ButtonAppBar = props => {
               Pizzaroo
             </Typography>
           </LinkContainer>
-          {toggleOrders && <div onClick={() => navigate('/dashboard')}>
+          {toggleOrders && <div onClick={() => navigate('/order')}>
             <Button 
               variant="contained" 
               color="primary"

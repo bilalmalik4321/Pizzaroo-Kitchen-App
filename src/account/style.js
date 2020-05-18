@@ -8,6 +8,12 @@ export default {
     marginBottom: 30,
     textAlign: "center",
   },
+
+  inputTextField: {
+    
+    // height: 45,
+    // fontSize: 15
+  },
   loginFormTextInput: {
     height: 43,
     fontSize: 14,
