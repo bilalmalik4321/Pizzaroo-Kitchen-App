@@ -7,7 +7,7 @@ export default {
     firstName: '',
     lastName: '',
     storeName: '',
-    phone: '',
+    storePhone: '',
     email: '',
     password: '',
     repeatPassword: '',

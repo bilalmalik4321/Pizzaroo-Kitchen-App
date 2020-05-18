@@ -1,15 +1,14 @@
 
 import firebase from '../../firebase';
 
-export const signup = async props => {
+export const signup =  props => {
   const error = {};
   const {
     email,
-    phone,
+    storePhone,
     password,
     repeatPassword,
     website,
-    description,
     firstName,
     lastName,
     storeName,
@@ -18,14 +17,18 @@ export const signup = async props => {
     city,
     postalCode,
     country,
+    storeEmail,
     registrationCode
 
   } = props.restaurant;
 
+  console.log("props validaiton", props.restaurant);
   if(!email) error.email = "Please enter an email.";
-  if(!phone) error.phone = "Please enter a phone number.";
+  if(!storeEmail) error.storeEmail = "Please enter the store email.";
+  if(!storePhone) error.storePhone = "Please enter a phone number.";
   if(!password) error.password = "Please enter a password.";
   if(!repeatPassword) error.repeatPassword = "Please enter a confirmed password.";
+  if(!password && !repeatPassword && password !== repeatPassword) error.repeatPassword = "Passwords do not match.";
   if(!website) error.website = "Please enter you store website.";
   if(!firstName) error.firstName = "Please enter your first name.";
   if(!lastName) error.lastName = "Please enter your last name.";
