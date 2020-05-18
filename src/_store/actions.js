@@ -20,7 +20,7 @@ export const updateStore = (key, value) => state => {
     restaurant
   };
 };
-export const ResetStore = () => state => {
+export const resetStore = () => state => {
   return{
     restaurant: {
       storeId: '',

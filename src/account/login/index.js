@@ -33,7 +33,7 @@ const Login = (props) => {
             const user = await getStore(userInfo.user.uid);
             props.updateStore({...user, loggedIn: true, loading: false});
             console.log("user info", user);
-            navigate('/dashboard');
+            navigate('/order');
           }
         })
 

@@ -1,4 +1,4 @@
-import React, { Component, useState } from "react";
+import React, { useEffect, useState } from "react";
 import fire from "../../firebase";
 import styles from "./style";
 import Main from "../../app/layout/header";
@@ -16,6 +16,7 @@ import * as validations from './validations'
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import { Link } from '@material-ui/core';
 import { FormLabel } from '@material-ui/core';
+import geoHash from 'ngeohash';
 function Alert(props) {
   return <MuiAlert elevation={6} variant="filled" {...props} />;
 }
@@ -62,9 +63,6 @@ const useStyles = makeStyles((theme) => ({
 const Signup = props => {
 
 
-
-  console.log("props", props.restaurant);
-
   const [loading, setLoading] = useState(false);
   const [errors, setErrors] = useState({});
   const [accept, setAccept] = useState(false);
@@ -75,10 +73,10 @@ const Signup = props => {
   
   async function onRegister(e) {
     e.preventDefault();
-    const { email, password, firstName, lastName, storeName, storePhone, website, street, province, city, postalCode, country, registrationCode } = props.restaurant;
-
-  
- 
+    setLoading(true);
+    try {
+      const { email, password, firstName, lastName, storeName, storePhone, website, street, province, city, postalCode, country, registrationCode } = props.restaurant;
+      console.log("call register")
       // TODO check registraion code in here
       const { result , error } = await createStore({
         email,
@@ -94,15 +92,21 @@ const Signup = props => {
         postalCode,
         country
       });
-  
+      console.log("call register result", result)
       if( result ) {
+        props.resetStore();
         navigate('/login');;
       } else {
-        alert(error)
+        
         console.log("error registrating a store", error);
       }
   
-  
+    } catch (err) {
+
+      console.log("error creating a store", err);
+    }
+    
+   setLoading(false);
 
   
   }
@@ -132,7 +136,7 @@ const Signup = props => {
           <Grid container direction="column" spacing={1}>
          
              <TextField
-                label="First Name"
+                label="Manager First Name"
                 InputProps={{style: {fontSize: 15}}}
                 size="small"
                 variant="outlined"
@@ -149,7 +153,7 @@ const Signup = props => {
               />
             
               <TextField
-                label="Last Name"
+                label="Manager Last Name"
                 InputProps={{style: {fontSize: 15}}}
                 size="small"
                 variant="outlined"
@@ -170,6 +174,18 @@ const Signup = props => {
                 size="small"
                 variant="outlined"
                 className={classes.input}
+                value={props.restaurant.email || ''}
+                onChange={(e)=> onChangeValue('email', e.target.value)}
+                label="Manager Email"
+                error={isEmpty(errors,'email')}
+                helperText={isEmpty(errors, 'email')? errors.email : ''}
+              />
+
+              <TextField
+                InputProps={{style: {fontSize: 15}}}
+                size="small"
+                variant="outlined"
+                className={classes.input}
                 value={props.restaurant.storeName || ''}
                 onChange={(e)=> onChangeValue('storeName', e.target.value)}
                 type="text"
@@ -182,7 +198,7 @@ const Signup = props => {
                 size="small"
                 variant="outlined"
                 className={classes.input}
-                value={props.restaurant.phone || ''}
+                value={props.restaurant.storePhone || ''}
                 onChange={(e)=> onChangeValue('storePhone', e.target.value)}
                 type="text"
                 label="Store Phone Number"
@@ -205,8 +221,8 @@ const Signup = props => {
                 size="small"
                 variant="outlined"
                 className={classes.input}
-                value={props.restaurant.email || ''}
-                onChange={(e)=> onChangeValue('email', e.target.value)}
+                value={props.restaurant.storeEmail || ''}
+                onChange={(e)=> onChangeValue('storeEmail', e.target.value)}
                 label="Store Email"
                 error={isEmpty(errors, 'storeEmail')}
                 helperText={isEmpty(errors, 'storeEmail')? errors.storeEmail : ''}
@@ -231,6 +247,7 @@ const Signup = props => {
                 value={props.restaurant.repeatPassword || ''}
                 onChange={(e)=> onChangeValue('repeatPassword', e.target.value)}
                 label="Confirmed Password"
+                type="password"
                 error={isEmpty(errors, 'repeatPassword')}
                 helperText={isEmpty(errors, 'repeatPassword')? errors.repeatPassword : ''}
               />
@@ -291,7 +308,7 @@ const Signup = props => {
                 size="small"
                 variant="outlined"
                 className={classes.input}
-                value={props.restaurant.country}
+                value={props.restaurant.country || ''}
                 onChange={(e)=> onChangeValue('country', e.target.value)}
                 label="Country"
                 error={isEmpty(errors, 'country')}
@@ -330,16 +347,19 @@ const Signup = props => {
                 className={classes.button}
                 type="submit"
                 onClick={(e) => {
-                  console.log("Clickedd-------")
+                 
                   const err = validations.signup(props);
-      
+                  console.log("errors ", err);
                 if( Object.keys(err).length !== 0) {
                   setErrors(err);
                   setAccept(false);
                   setCheck(true);
-                 
+                  console.log("return error", err)
                 } else {
-                  onRegister(e)
+                  if(accept) {
+                    onRegister(e)
+                  }
+                    
                 }
                   
                 }}

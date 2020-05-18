@@ -2,6 +2,7 @@ import firebase from "../firebase";
 import moment from 'moment';
 import axios from 'axios';
 import apiKey from '../googleAPI';
+import geohash from 'ngeohash';
 // access the database
 
 // const { firebase , firestore } = all;
@@ -49,15 +50,18 @@ export const createStore = async (payload) => {
 
     // user is created in auth but not in the collection
 
-    const { lng, lat } = await geoCoding(payload.postalCode);
-
+    const  location = await geoCoding(payload.postalCode);
+    const { lat, lng } = location;
+    const latlon = geohash.encode( lat, lng );
+    
     await db
       .collection("stores")
       .doc(signedUpStore.user.uid)
       .set({ 
         ...storeInfo,
+        lat,
         lng,
-        lat
+        latlon
       }, { merge: true });
 
     // return true after success
@@ -83,7 +87,7 @@ export const createStore = async (payload) => {
 export const getStore = async (uid) => {
   try {
     // get user ref
-    const user = await db.collection("customers").doc(uid).get();
+    const user = await db.collection("stores").doc(uid).get();
 
     return {
       ...user.data(),
@@ -110,10 +114,8 @@ export const geoCoding = async(address) => {
     const { lat, lng } = data.results[0].geometry.location;
     console.log("lat",lat,'lng',lng )
     return {
-      location: {
         lat,
         lng
-      }
     }
   } catch (error ) {
     console.log("error geoCode", error)

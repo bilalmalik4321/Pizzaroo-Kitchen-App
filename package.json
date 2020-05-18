@@ -14,6 +14,7 @@
     "hookrouter": "^1.2.3",
     "material-table": "^1.57.2",
     "moment": "^2.25.3",
+    "ngeohash": "^0.6.3",
     "react": "^16.13.1",
     "react-contextual": "^5.0.2",
     "react-dom": "^16.13.1",
