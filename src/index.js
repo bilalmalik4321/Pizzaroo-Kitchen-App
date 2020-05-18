@@ -3,7 +3,7 @@ import ReactDOM from "react-dom";
 import App from "./app";
 import * as serviceWorker from "./serviceWorker";
 import { BrowserRouter as Router } from "react-router-dom";
-import store from './_store';
+import store from './_shared/store';
 import { Provider } from 'react-contextual';
 
 ReactDOM.render(

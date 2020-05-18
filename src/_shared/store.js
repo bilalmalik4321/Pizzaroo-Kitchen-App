@@ -21,7 +21,13 @@ export default {
     registrationCode: '',
     loading: true,
     loggedIn: false,
-    menu: '',
+    menu: {
+      pizzas: [],
+      desserts: [],
+      sides: [],
+      dippings: [],
+      drinks: []
+    },
     hour: {
       open: '',
       close: ''
