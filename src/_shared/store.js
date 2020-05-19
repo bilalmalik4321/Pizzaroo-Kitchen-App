@@ -38,7 +38,8 @@ export default {
     toggleMenu: false, 
     toggleSignUp: true,
     toggleOrders: false,
-    toggleSignOut: false
+    toggleSignOut: false,
+    toggleMenu: false
 
   },
   menu: {

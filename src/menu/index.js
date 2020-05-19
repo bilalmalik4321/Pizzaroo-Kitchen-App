@@ -21,6 +21,10 @@ import Fade from '@material-ui/core/Fade';
 import DeleteOutlinedIcon from '@material-ui/icons/DeleteOutlined';
 import PizzaCard from './pizzaCard';
 
+import EditSave from './Edit_Save';
+
+import ItemCard from './itemCard';
+
 import PizzaEditAndSave from './pizza_add_edit';
 
 const useStyles = makeStyles((theme) => ({
@@ -132,7 +136,7 @@ const Menu = subscribe()(props=> {
           {pizzas.length !== 0 && pizzas.map((item, index)=> (
               
             <Grid item xs={3} sm={2} className={classes.pizzaCard} key={index} > 
-              <PizzaCard item={item}/>
+              <ItemCard typeOfFood="pizzas" item={item}/>
             </Grid>
 
           ))}
@@ -155,7 +159,7 @@ const Menu = subscribe()(props=> {
                 </Card>
                 }
                 { addPizza && 
-                  <PizzaEditAndSave addPizza={addPizza} action={'add'} setAddPizza={setAddPizza} />
+                  <EditSave addPizza={addPizza} action={'add'} typeOfFood="pizzas" setAddPizza={setAddPizza} />
                 }
               </Grid>
 
@@ -166,8 +170,6 @@ const Menu = subscribe()(props=> {
           </Card>
         </Grid>
        
-
-
 
 
 
@@ -186,36 +188,31 @@ const Menu = subscribe()(props=> {
               {sides.length !== 0 && sides.map((item, index)=> (
                   
                 <Grid item xs={3} sm={2} className={classes.pizzaCard} key={index} > 
-                  <PizzaCard item={item}/>
+                  <ItemCard item={item} typeOfFood="sides" />
                 </Grid>
     
               ))}
-                
-            
+    
                           {/* add new pizza  */}
-  
-  
   
                 <Grid item xs={3} sm={2} className={classes.pizzaCard} >
   
                   { !addSide &&
                   
-                  <Card style={{ height: 380, width: 250}}>
+                  <Card style={{ height: 200, width: 250}}>
                     <CardContent>
-                      <Grid container direction="row" justify="center" alignContent="center" alignItems="center" style={{ height: 350}}>
+                      <Grid container direction="row" justify="center" alignContent="center" alignItems="center" style={{  height: 180}}>
                         <Icon onClick={()=> setAddSide(!addSide)} fontSize="large" color="primary" style={{ alignSelf: 'center'}}>add_circle</Icon>
                       </Grid>
                     </CardContent>
                   </Card>
                   }
                   { addSide && 
-                    <PizzaEditAndSave addSide={addSide} action={'add'} setAddSide={setAddSide} />
+                    <EditSave toggle={addSide} action={'add'} typeOfFood="sides" setToggle={setAddSide} />
                   }
                 </Grid>
   
                         {/*  end of add new pizza  */}
-  
-      
             </Grid>
     
            
@@ -225,32 +222,136 @@ const Menu = subscribe()(props=> {
 
         <Grid item xs>
           <Card>
-            <CardContent>
+           
               <Typography color="textSecondary" variant="h3" gutterBottom>
                Desserts 
               </Typography>
-            </CardContent>
+             
+             
+              <Grid container direction="row" spacing={3} style={{ padding: 20, backgroundColor: '#f7f7f7'}}>
+              
+              {desserts.length !== 0 && desserts.map((item, index)=> (
+                  
+                <Grid item xs={3} sm={2} className={classes.pizzaCard} key={index} > 
+                  <ItemCard item={item} typeOfFood="desserts" />
+                </Grid>
+    
+              ))}
+    
+                          {/* add new pizza  */}
+  
+                <Grid item xs={3} sm={2} className={classes.pizzaCard} >
+  
+                  { !addDessert &&
+                  
+                  <Card style={{ height: 200, width: 250}}>
+                    <CardContent>
+                      <Grid container direction="row" justify="center" alignContent="center" alignItems="center" style={{ height: 180}}>
+                        <Icon onClick={()=> setAddDessert(!addDessert)} fontSize="large" color="primary" style={{ alignSelf: 'center'}}>add_circle</Icon>
+                      </Grid>
+                    </CardContent>
+                  </Card>
+                  }
+
+                  { addDessert && 
+                    <EditSave toggle={addDessert} action={'add'} typeOfFood="desserts" setToggle={setAddDessert} />
+                  }
+                </Grid>
+  
+                        {/*  end of add new pizza  */}
+            </Grid>
+          
+          
           </Card>
         </Grid>
 
 
         <Grid item xs>
           <Card>
-            <CardContent>
+           
             <Typography color="textSecondary" variant="h3" gutterBottom>
                 Dippings
-              </Typography>
-            </CardContent>
+            </Typography>
+
+            <Grid container direction="row" spacing={3} style={{ padding: 20, backgroundColor: '#f7f7f7'}}>
+              
+              {dippings.length !== 0 && dippings.map((item, index)=> (
+                  
+                <Grid item xs={3} sm={2} className={classes.pizzaCard} key={index} > 
+                  <ItemCard item={item} typeOfFood="dippings" />
+                </Grid>
+    
+              ))}
+    
+                          {/* add new pizza  */}
+  
+                <Grid item xs={3} sm={2} className={classes.pizzaCard} >
+  
+                  { !addDipping &&
+                  
+                  <Card style={{ height: 200, width: 250}}>
+                    <CardContent>
+                      <Grid container direction="row" justify="center" alignContent="center" alignItems="center" style={{ height: 180}}>
+                        <Icon onClick={()=> setAddDipping(!addDipping)} fontSize="large" color="primary" style={{ alignSelf: 'center'}}>add_circle</Icon>
+                      </Grid>
+                    </CardContent>
+                  </Card>
+                  }
+
+                  { addDipping && 
+                    <EditSave toggle={setAddDipping} action={'add'} typeOfFood="dippings" setToggle={setAddDipping} />
+                  }
+                </Grid>
+  
+                        {/*  end of add new pizza  */}
+            </Grid>
+          
+
+           
           </Card>
         </Grid>
 
         <Grid item xs>
           <Card>
-            <CardContent>
+       
             <Typography color="textSecondary" variant="h3" gutterBottom>
                Drinks
-              </Typography>
-            </CardContent>
+            </Typography>
+
+            <Grid container direction="row" spacing={3} style={{ padding: 20, backgroundColor: '#f7f7f7'}}>
+              
+              {drinks.length !== 0 && drinks.map((item, index)=> (
+                  
+                <Grid item xs={3} sm={2} className={classes.pizzaCard} key={index} > 
+                  <ItemCard item={item} typeOfFood="drinks" />
+                </Grid>
+    
+              ))}
+    
+                          {/* add new pizza  */}
+  
+                <Grid item xs={3} sm={2} className={classes.pizzaCard} >
+  
+                  { !addDrink &&
+                  
+                  <Card style={{ height: 200, width: 250}}>
+                    <CardContent>
+                      <Grid container direction="row" justify="center" alignContent="center" alignItems="center" style={{ height: 180}}>
+                        <Icon onClick={()=> setAddDrink(!addDrink)} fontSize="large" color="primary" style={{ alignSelf: 'center'}}>add_circle</Icon>
+                      </Grid>
+                    </CardContent>
+                  </Card>
+                  }
+
+                  { addDrink && 
+                    <EditSave toggle={setAddDrink} action={'add'} typeOfFood="drinks" setToggle={setAddDrink} />
+                  }
+                </Grid>
+  
+                        {/*  end of add new pizza  */}
+            </Grid>
+          
+          
           </Card>
         </Grid>
 
