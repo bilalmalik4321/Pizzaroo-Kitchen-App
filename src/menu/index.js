@@ -106,12 +106,12 @@ const Menu = subscribe()(props=> {
   const [addPizza, setAddPizza] = useState(false);
   const [addSide, setAddSide] = useState(false);
   const [addDessert, setAddDessert] = useState(false);
-  const [addDink, setAddDrink] = useState(false);
+  const [addDrink, setAddDrink] = useState(false);
   const [addDipping, setAddDipping] = useState(false);
 
 
   const { menu , loading } = props.restaurant;
-  const { pizzas } = menu;
+  const { pizzas, sides, drinks, desserts, dippings } = menu;
   
   console.log("props ----", pizzas, 'loading', loading);
   return (
@@ -175,11 +175,50 @@ const Menu = subscribe()(props=> {
 
         <Grid item xs>
           <Card>
-            <CardContent>
+         
             <Typography color="textSecondary" variant="h3" gutterBottom>
                 Sides
-              </Typography>
-            </CardContent>
+            </Typography>
+
+
+            <Grid container direction="row" spacing={3} style={{ padding: 20, backgroundColor: '#f7f7f7'}}>
+              
+              {sides.length !== 0 && sides.map((item, index)=> (
+                  
+                <Grid item xs={3} sm={2} className={classes.pizzaCard} key={index} > 
+                  <PizzaCard item={item}/>
+                </Grid>
+    
+              ))}
+                
+            
+                          {/* add new pizza  */}
+  
+  
+  
+                <Grid item xs={3} sm={2} className={classes.pizzaCard} >
+  
+                  { !addSide &&
+                  
+                  <Card style={{ height: 380, width: 250}}>
+                    <CardContent>
+                      <Grid container direction="row" justify="center" alignContent="center" alignItems="center" style={{ height: 350}}>
+                        <Icon onClick={()=> setAddSide(!addSide)} fontSize="large" color="primary" style={{ alignSelf: 'center'}}>add_circle</Icon>
+                      </Grid>
+                    </CardContent>
+                  </Card>
+                  }
+                  { addSide && 
+                    <PizzaEditAndSave addSide={addSide} action={'add'} setAddSide={setAddSide} />
+                  }
+                </Grid>
+  
+                        {/*  end of add new pizza  */}
+  
+      
+            </Grid>
+    
+           
           </Card>
         </Grid>
 

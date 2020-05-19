@@ -19,8 +19,8 @@ const App = () => {
     '/login': ()=> <Login/>,
     '/signup': ()=> <Signup/>,
     '/dashboard': ()=> <Protected component={OrdersSSS}/>,
-    '/order': ()=> <Order/>,
-    '/menu': ()=> <Menu/>
+    '/order': ()=> <Protected component={Order}/>,
+    '/menu': ()=> <Protected component={Menu}/>
   }
   
   const Routes = useRoutes(routes);
