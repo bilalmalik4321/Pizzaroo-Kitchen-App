@@ -16,7 +16,12 @@ import Icon from '@material-ui/core/Icon';
 import CardActionArea from '@material-ui/core/CardActionArea';
 import CardMedia from '@material-ui/core/CardMedia';
 import Backdrop from '@material-ui/core/Backdrop';
-const TransitionsModal = ({ open, setOpen}) => {
+
+import PizzaEditAndSave from './pizza_add_edit';
+import firebase from '../firebase';
+import { getStore } from '../api';
+
+const TransitionsModal = ({ open, setOpen, onRemove, uuid}) => {
 
   const useStyles = makeStyles((theme) => ({
     modal: {
@@ -33,11 +38,6 @@ const TransitionsModal = ({ open, setOpen}) => {
   }));
 
   const classes = useStyles();
-
-  // const handleOpen = () => {
-  //   setOpen(true);
-  // };
-
   const handleClose = () => {
     setOpen(false);
   };
@@ -67,6 +67,10 @@ const TransitionsModal = ({ open, setOpen}) => {
                 <Button
                   variant="outlined"
                   color="secondary"
+                  onClick={()=> { 
+                    onRemove(uuid);
+                    setOpen(false);
+                  }}
                 >
                   Yes
                 </Button>
@@ -74,7 +78,7 @@ const TransitionsModal = ({ open, setOpen}) => {
                 <Button
                   variant="outlined"
                   color="primary"
-                  onClick={()=>handleClose()}
+                  onClick={() => setOpen(false)}
                 >
                   No
                 </Button>
@@ -94,76 +98,102 @@ const Pizza = subscribe()(props=>{
 
   const { item } = props;
 
+  const { updateStore } = props;
+
   const [edit, setEdit] = useState(false);
   const [open, setOpen] = useState(false); 
+  const [loading, setLoading] = useState(false);
 
-  const [anchorEl, setAnchorEl] = React.useState(null);
+  const onRemove = async (uuid) => {
+    setLoading(true);
+    try {
 
-  const handleClick = (event) => {
-    setAnchorEl(event.currentTarget);
-  };
+      const userId = props.restaurant.id;
+      const { menu } = await getStore(userId);
+      const newMenu = menu;
 
-  const handleClose = () => {
-    setAnchorEl(null);
-  };
+      let newPizzas = newMenu.pizzas.filter( e => e.uuid !== uuid);
 
-  const openI = Boolean(anchorEl);
-  const id = openI ? 'simple-popover' : undefined;
+      newMenu.pizzas = newPizzas;
 
+      await firebase.firestore()
+        .collection('stores')
+        .doc(userId)
+        .update({
+          menu: newMenu
+        })
+
+      updateStore({menu:newMenu, loading: false});
+        
+    } catch (error) {
+      console.log("error removing an item", error)
+    }
+
+
+    setLoading(false);
+    setOpen(false);
+  }
 
   return (
+    <div>
+    { !edit && 
     <Card >
-    <CardActionArea>
-      <CardMedia
-        style={{ backgroundColor: '#dddddd', height: 250}}
-        image={require('./restaurant.jpg')}
-        title="Contemplative Reptile"
-      />
-      <CardContent>
-        <Typography gutterBottom variant="h3">
-          {item.name}
-        </Typography>
-        <p style={{fontSize: 12, color: 'grey' }}>
-          {item.description}
-        </p>
+      <CardActionArea>
+        <CardMedia
+          style={{ backgroundColor: '#dddddd', height: 250}}
+          image={require('./restaurant.jpg')}
+          title="Contemplative Reptile"
+        />
+        <CardContent>
+          <Typography gutterBottom variant="h3">
+            {item.name}
+          </Typography>
+          <p style={{fontSize: 12, color: 'grey' }}>
+            {item.description}
+          </p>
 
-        {/* --------- price coloum grid ---------- */}
-        <Grid container direction="column">
-          { item.sizes.length !== 0 && item.sizes.sort((a,b)=> a.price < b.price).map((size,indexSize)=>(
-            <Grid item xs key={indexSize}>
-              <Grid  container direction="row" justify="space-between">
-                <Grid item >
-                  <p>
-                    {size.size}
-                  </p>
-                </Grid>
-                <Grid item >
-                  <p>
-                    ${size.price}
-                  </p>
+          {/* --------- price coloum grid ---------- */}
+          <Grid container direction="column">
+            { item.sizes.length !== 0 && item.sizes.sort((a,b)=> a.price < b.price).map((size,indexSize)=>(
+              <Grid item xs key={indexSize}>
+                <Grid  container direction="row" justify="space-between">
+                  <Grid item >
+                    <p>
+                      {size.size}
+                    </p>
+                  </Grid>
+                  <Grid item >
+                    <p>
+                      ${size.price}
+                    </p>
+                  </Grid>
                 </Grid>
               </Grid>
+              ))}
             </Grid>
-          ))}
-        </Grid>
-       
-      </CardContent>
-    </CardActionArea>
+        
+        </CardContent>
+      </CardActionArea>
 
-    <CardActions>
-      <Grid container direction="row" justify="space-between">
-        <Button size="small" color="primary" onClick={() => setEdit(!edit)}>
-          Edit
-        </Button>
-        <Button size="small" color="secondary" onClick={() =>setOpen(!open) }>
-          Remove
-        </Button>
+      <CardActions>
+          <Grid container direction="row" justify="space-between">
+            <Button size="small" color="primary" onClick={() => setEdit(!edit)}>
+              Edit
+            </Button>
+            <Button size="small" color="secondary" onClick={() =>setOpen(!open) }>
+              Remove
+            </Button>
 
-      </Grid>
-     <TransitionsModal  edit={edit} setEdit={setEdit} open={open} setOpen={setOpen}/>
-    </CardActions>
-  </Card>
-  )
-})
+          </Grid> 
+        <TransitionsModal  onRemove={onRemove} uuid={item.uuid} edit={edit} setEdit={setEdit} open={open} setOpen={setOpen}/>
+      </CardActions>
+    </Card>}
+  
+    
+     {edit && 
+    <PizzaEditAndSave  setAddPizza={setEdit} uuid={item.uuid} addPizza={edit} pizzaItem={item} action={'edit'}/>
+    }
+  </div>
+)});
 
 export default Pizza;

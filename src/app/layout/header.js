@@ -81,7 +81,7 @@ const ButtonAppBar = props => {
           {toggleSignOut && <div onClick={() => {
             
             firebase.auth().signOut();
-            props.ResetStore()
+            props.resetStore()
             navigate('/')
             
           }}>

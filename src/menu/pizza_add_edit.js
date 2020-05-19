@@ -26,15 +26,18 @@ const PizzaCard = subscribe()( props=> {
   // add a new one or edit
   const { action } = props;
   const { uuid } = props;
+
   const { addPizza, setAddPizza } = props;
-  const { pizzzItem } = props;
-  const [sizes, setSizes] = useState([]);
-  const [name, setName] = useState('');
-  const [description, setDescription] = useState('');
+  const { pizzaItem } = props;
+  const [sizes, setSizes] = useState( action === 'edit'? pizzaItem.sizes : []);
+  const [name, setName] = useState(action === 'edit'? pizzaItem.name : '');
+  const [description, setDescription] = useState(action === 'edit'? pizzaItem.description : '');
   const [size, setSize] = useState('');
   const [price, setPrice] = useState('');
   const [errors , setErrors] = useState({});
 
+
+  const { updateStore } = props;
   const [loading, setLoading] = useState(false);
   console.log('sizes', sizes);
   const validate = (sizes, name, description) => {
@@ -86,17 +89,18 @@ const PizzaCard = subscribe()( props=> {
   const validatePrice = () => {
     let error = {};
 
-    const isNumber = new RegExp(/([1-9]\d*(\.\d*[1-9])?|0\.\d*[1-9]+)|\d+(\.\d*[1-9])?/)
+    const isNumber = new RegExp(/([1-9]\d*(\.\d*[1-9])?|0\.\d*[1-9]+)|\d+(\.\d*[1-9])?/);
+    const isNumberTwo = new RegExp(/^[-+]?[0-9]+(\.[0-9]+)?$/);
 
     if(!size) error.size = "Enter a size.";
     if(!price) error.price = "Enter a valid price.";
-    if(!isNumber.test(price.trim())) error.price = "Enter a valid price e.g: 10.99 or 10";
+    if(!isNumberTwo.test(price.trim())) error.price = "Enter a valid price e.g: 10.99 or 10";
 
     return error;
   }
   const onSave = async () => {
     setLoading(true);
-    props.updateStore({loading: true});
+    // props.updateStore({loading: true});
     if( action === 'add') {
     
       try {
@@ -120,18 +124,16 @@ const PizzaCard = subscribe()( props=> {
         await firebase.firestore()
           .collection('stores')
           .doc(userId)
-          .set({
+          .update({
             menu: newMenu
-          },{
-            merge: true
           })
-        props.updateStore({menu:newMenu, loading: false});
+        updateStore({menu:newMenu, loading: false});
         setName('');
         setDescription('');
         setSize('');
         setSizes([]);
         setPrice('');
-        setAddPizza(!addPizza);
+      
   
         } catch (error ) {
           console.log("error saving an item", error);
@@ -161,21 +163,22 @@ const PizzaCard = subscribe()( props=> {
           await firebase.firestore()
             .collection('stores')
             .doc(userId)
-            .set({
+            .update({
               menu: newMenu
-            },{
-              merge: true
             })
 
-            props.updateStore({menu:newMenu, loading: false});
+          updateStore({menu:newMenu, loading: false});
+
+        
           }  catch (error ) {
           console.log("error saving an item", error);
         }
         
     }
     
-    props.updateStore({loading: false});
+    // props.updateStore({loading: false});
     setLoading(false);
+    setAddPizza(!addPizza);
   }
   return (
   <Card  >

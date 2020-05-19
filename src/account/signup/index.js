@@ -17,9 +17,6 @@ import FormControlLabel from '@material-ui/core/FormControlLabel';
 import { Link } from '@material-ui/core';
 import { FormLabel } from '@material-ui/core';
 import geoHash from 'ngeohash';
-function Alert(props) {
-  return <MuiAlert elevation={6} variant="filled" {...props} />;
-}
 
 
 const useStyles = makeStyles((theme) => ({
@@ -327,15 +324,7 @@ const Signup = props => {
                 // helperText={isEmpty(errors, 'registrationCode')? errors.registrationCode : ''}
               />
        
-              {false && (
-                <Snackbar open={true} autoHideDuration={1000}>
-                  <Alert severity="error">
-                    <Typography variant="h6">
-                     //TODO
-                    </Typography>
-                  </Alert>
-                </Snackbar>
-              )}
+        
               <FormControlLabel
                 className={classes.checkButton}
                 control={<Checkbox color="primary" value={accept} onClick={() => setAccept(!accept)}/>}
