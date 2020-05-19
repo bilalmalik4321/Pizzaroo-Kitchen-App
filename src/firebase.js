@@ -1,11 +1,14 @@
 import * as firebase from "firebase/app";
-import "firebase/firestore";
-import "firebase/auth";
+import 'firebase/analytics';
+import 'firebase/auth';
+import 'firebase/firestore';
 
-// get firebase config from serviceAccount.js
-// get the config from google console/setting/general
 import config from "./serviceAccount";
 
-firebase.initializeApp(config);
+if (!firebase.apps.length) {
+  firebase.initializeApp(config);
+} else {
+  firebase.app();
+}
 
 export default firebase;
