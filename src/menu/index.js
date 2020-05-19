@@ -20,13 +20,17 @@ import Backdrop from '@material-ui/core/Backdrop';
 import Fade from '@material-ui/core/Fade';
 import DeleteOutlinedIcon from '@material-ui/icons/DeleteOutlined';
 import PizzaCard from './pizzaCard';
-
+import { TextField} from '@material-ui/core';
 import EditSave from './Edit_Save';
-
+import 'date-fns';
 import ItemCard from './itemCard';
-
-import PizzaEditAndSave from './pizza_add_edit';
-
+import DateFnsUtils from '@date-io/date-fns';
+import {
+  MuiPickersUtilsProvider,
+  KeyboardTimePicker,
+  KeyboardDatePicker,
+} from '@material-ui/pickers';
+import TimeKeeper from 'react-timekeeper';
 const useStyles = makeStyles((theme) => ({
   modal: {
     display: 'flex',
@@ -85,6 +89,11 @@ const Menu = subscribe()(props=> {
     photo : {
       backgroundColor: '#dddddd',
       height: 250
+    },
+    textField: {
+      width: 200,
+      height: 100,
+      padding: 20
     }
   
   }));
@@ -116,11 +125,33 @@ const Menu = subscribe()(props=> {
 
   const { menu , loading } = props.restaurant;
   const { pizzas, sides, drinks, desserts, dippings } = menu;
-  
+  const [openHour, setOpenHour] = useState('10:30am');
+  const [closeHour, setCloseHour ] = useState('11:00pm');
+
+ 
   console.log("props ----", pizzas, 'loading', loading);
   return (
     <div style={{ padding: 20}}>
-      <Grid container spacing={1} direction="column">
+      <Grid container spacing={1} direction="column" >
+        <Grid item xs>
+          <Grid container direction="row" justify="flex-start" spacing={4}>
+            <Grid item >
+              <TimeKeeper
+                
+                time={openHour}
+                onChange={(data) => setOpenHour(data.formatted12)}
+              />
+            </Grid>
+            <Grid  item >
+        
+              <TimeKeeper
+                time={closeHour}
+                onChange={(data) => setCloseHour(data.formatted12)}
+              />   
+            </Grid>
+          
+          </Grid>
+        </Grid>
         <Grid item xs >
           <Card>
 
@@ -159,7 +190,7 @@ const Menu = subscribe()(props=> {
                 </Card>
                 }
                 { addPizza && 
-                  <EditSave addPizza={addPizza} action={'add'} typeOfFood="pizzas" setAddPizza={setAddPizza} />
+                  <EditSave toggle={addPizza} action={'add'} typeOfFood="pizzas" setToggle={setAddPizza} />
                 }
               </Grid>
 

@@ -48,7 +48,18 @@ const Login = (props) => {
           console.log("after login in userInfo", userInfo);
           if(userInfo) {
             const user = await getStore(userInfo.user.uid);
-            props.updateStore({...user, loggedIn: true, loading: false});
+            props.updateStore({
+              ...user,
+              loggedIn: true, 
+              loading: false,
+              toggleLogin: false,
+              toggleLogout: true, 
+              toggleProfile: true, 
+              toggleSignUp: false,
+              toggleSignOut: true,
+              toggleOrders: true,
+              toggleMenu: true
+            });
             console.log("user info", user);
             navigate('/order');
           }

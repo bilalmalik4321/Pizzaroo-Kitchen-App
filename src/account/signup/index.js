@@ -312,7 +312,7 @@ const Signup = props => {
                 helperText={isEmpty(errors, 'country')? errors.country : ''}
               />
               
-              <TextField
+              {/* <TextField
                 InputProps={{style: {fontSize: 15}}}
                 size="small"
                 variant="outlined"
@@ -323,7 +323,7 @@ const Signup = props => {
                 // error={isEmpty(errors, 'registrationCode')}
                 // helperText={isEmpty(errors, 'registrationCode')? errors.registrationCode : ''}
               />
-       
+        */}
         
               <FormControlLabel
                 className={classes.checkButton}
