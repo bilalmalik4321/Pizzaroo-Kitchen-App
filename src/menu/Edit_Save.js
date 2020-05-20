@@ -23,26 +23,41 @@ const notEmpty = (e) => JSON.stringify(e) !== JSON.stringify({});
 
 const PizzaCard = subscribe()( props=> {
 
+  // pizza, side, drink, desserts
+  const { typeOfFood } = props;
   // add a new one or edit
   const { action } = props;
   const { uuid } = props;
+  const { toggle, setToggle } = props;
+  const { foodItem } = props;
 
-  const { addPizza, setAddPizza } = props;
-  const { pizzaItem } = props;
-  const [sizes, setSizes] = useState( action === 'edit'? pizzaItem.sizes : []);
-  const [name, setName] = useState(action === 'edit'? pizzaItem.name : '');
-  const [description, setDescription] = useState(action === 'edit'? pizzaItem.description : '');
+  // pizza
+  const [sizes, setSizes] = useState( action === 'edit'? foodItem.sizes : []);
   const [size, setSize] = useState('');
   const [price, setPrice] = useState('');
+
+  // pizza, dessert, dipping, drink, side
+  const [name, setName] = useState(action === 'edit'? foodItem.name : '');
+  const [description, setDescription] = useState(action === 'edit'? foodItem.description : '');
+
+  // dessert, dipping, drink, side
+  const [singlePrice, setSinglePrice] = useState( action ==="edit"? foodItem.price : '');
+
+  // drink type: bottle/can size: 500ml, 1L
+  const [drinkType, setDrinkType] = useState(action === 'edit' ? foodItem.type : ''); 
+  const [drinkSize, setDrinkSize] = useState(action === 'edit'? foodItem.size : '');
+ 
+
+
+
+
   const [errors , setErrors] = useState({});
 
 
   const { updateStore } = props;
   const [loading, setLoading] = useState(false);
-  console.log('sizes', sizes);
-  const validate = (sizes, name, description) => {
-
-  }
+  // console.log('sizes', sizes);
+ 
   const onAddSize = () => {
 
     let errs = validatePrice();
@@ -76,13 +91,30 @@ const PizzaCard = subscribe()( props=> {
     setSizes(newSizes);
   }
   const validateItem = () => {
-
+    const isNumberTwo = new RegExp(/^[-+]?[0-9]+(\.[0-9]+)?$/);
     let error = {};
 
-    if(sizes.length === 0) error.sizes = "Enter the size and price of item.";
     if(!name) error.name = "Enter the item name.";
-    if(!description) error.description = "Enter the item description.";
 
+    if( typeOfFood !== 'drinks' && typeOfFood !== 'dippings'){
+      if(!description) error.description = "Enter the item description.";
+    }
+      
+    if( typeOfFood === 'pizzas') {
+
+      if(sizes.length === 0) error.sizes = "Enter the size and price of item.";
+    
+    } else if ( typeOfFood === 'drinks') {
+
+      if(!drinkSize) error.drinkSize = "Enter the drink size. e.g 500ml.";
+      if(!drinkType) error.drinkType = "Enter the drink type. e.g bottle or can.";
+    }
+
+    if( typeOfFood !== 'pizzas') {
+      if(!singlePrice) error.singlePrice = "Enter the item price.";
+      if(!isNumberTwo.test(singlePrice.trim())) error.singlePrice = "Enter a valid price. e.g 10.99 or 10";
+    }
+    console.log("validation error =====", error);
     return error;
 
   }
@@ -104,21 +136,40 @@ const PizzaCard = subscribe()( props=> {
     if( action === 'add') {
     
       try {
-    
+        console.log("hello from saving, ", typeOfFood);
         const userId = props.restaurant.id;
         // const { menu } = await getStore(userId);
         const { menu } =props.restaurant;
         const newMenu = menu;
 
-        let newPizzas = newMenu.pizzas;
-        newPizzas.push({
-          uuid:  uuidv4(),
-          sizes,
-          name,
-          description
-        })
+        let newList = newMenu[typeOfFood];
 
-        newMenu.pizzas = newPizzas;
+        let newItem = {
+          uuid:  uuidv4(),
+          name,
+          
+        }
+        if(typeOfFood === 'pizzas') {
+          newItem.sizes = sizes
+        }
+
+        if(typeOfFood === 'drinks'){
+          newItem.size = drinkSize;
+          newItem.type = drinkType;
+        }
+
+        if(typeOfFood !== 'pizzas'){
+          newItem.price = singlePrice
+        }
+
+        if(typeOfFood !== 'drinks' && typeOfFood !== 'dipping') {
+          newItem.description = description;
+        }
+
+
+        newList.push(newItem);
+
+        newMenu[typeOfFood] = newList;
       
 
         await firebase.firestore()
@@ -133,6 +184,10 @@ const PizzaCard = subscribe()( props=> {
         setSize('');
         setSizes([]);
         setPrice('');
+        setDrinkSize('');
+        setDrinkType('');
+        setSinglePrice('');
+      
       
   
         } catch (error ) {
@@ -148,17 +203,31 @@ const PizzaCard = subscribe()( props=> {
           const { menu } = await getStore(userId);
           const newMenu = menu;
 
-          let newPizzas = newMenu.pizzas.filter( e => e.uuid !== uuid);
+          let newList = newMenu[typeOfFood].filter( e => e.uuid !== uuid);
 
           let newItem = {
-            uuid,
             name,
-            description,
-            sizes
+            
+          }
+          if(typeOfFood === 'pizzas') {
+            newItem.sizes = sizes
           }
 
-          newPizzas.push(newItem);
-          newMenu.pizzas = newPizzas;
+          if(typeOfFood === 'drinks'){
+            newItem.size = drinkSize;
+            newItem.type = drinkType;
+          }
+
+          if(typeOfFood !== 'pizzas'){
+            newItem.price = singlePrice
+          }
+
+          if(typeOfFood !== 'drinks' && typeOfFood !== 'dipping') {
+            newItem.description = description;
+          }
+
+          newList.push(newItem);
+          newMenu[typeOfFood] = newList;
 
           await firebase.firestore()
             .collection('stores')
@@ -178,11 +247,12 @@ const PizzaCard = subscribe()( props=> {
     
     // props.updateStore({loading: false});
     setLoading(false);
-    setAddPizza(!addPizza);
+    setToggle(!toggle);
   }
   return (
   <Card  >
     <CardActionArea>
+      { typeOfFood === 'pizzas' &&
       <CardMedia
         style={{ backgroundColor: '#dddddd', height: 250}}
         image={''}
@@ -204,6 +274,7 @@ const PizzaCard = subscribe()( props=> {
           </Button>
         </Grid>
       </CardMedia>
+      }
       <CardContent>
         <TextField
           inputProps={{ style:{fontSize: 25}}}
@@ -216,7 +287,8 @@ const PizzaCard = subscribe()( props=> {
           error={ notEmpty(errors) && errors.name !== undefined}
           helperText={notEmpty(errors) && errors.name !== undefined && "Please enter the item name."}
         />
-        <TextField
+        { typeOfFood !== 'drinks' && typeOfFood !=='dippings' &&
+         <TextField
           multiline={true}
           inputProps={{ style:{fontSize: 15, color: 'grey', marginTop: 20}}}
           style={{  width: '100%' }}
@@ -227,8 +299,56 @@ const PizzaCard = subscribe()( props=> {
           }}
           placeholder={`Description`}
           error={notEmpty(errors) && errors.description !==undefined}
-          helperText={notEmpty(errors) && errors.escription !== undefined && "Please enter the item description."}
+          helperText={notEmpty(errors) && errors.description !== undefined && "Please enter the item description."}
         />
+        }
+        { typeOfFood !== 'pizzas' &&
+         <TextField
+          inputProps={{ style:{fontSize: 15, marginTop: 20}}}
+          style={{  width: '100%' }}
+          value={singlePrice}
+          onChange={ e => {
+            setErrors({});
+            setSinglePrice(e.target.value)
+          }}
+          placeholder={`Price`}
+          error={notEmpty(errors) && errors.singlePrice !== undefined}
+          helperText={notEmpty(errors) && errors.singlePrice !== undefined && errors.singlePrice}
+        />
+        }
+        { typeOfFood === 'drinks' &&
+         <TextField
+          inputProps={{ style:{fontSize: 10, marginTop: 20}}}
+          style={{  width: '100%' }}
+          value={drinkSize}
+          placeholder="Size e.g 500ml."
+          onChange={ e => {
+            setErrors({});
+            setDrinkSize(e.target.value)
+          }}
+          error={notEmpty(errors) && errors.drinkSize !==undefined}
+          helperText={notEmpty(errors) && errors.drinkSize !== undefined && errors.drinkSize}
+        />
+        }
+        { typeOfFood === 'drinks' &&
+         <TextField
+          inputProps={{ style:{fontSize: 10, marginTop: 20}}}
+          style={{  width: '100%' }}
+          value={drinkType}
+          placeholder="Type e.g Bottle."
+          onChange={ e => {
+            setErrors({});
+            setDrinkType(e.target.value)
+          }}
+          error={notEmpty(errors) && errors.drinkType !==undefined}
+          helperText={notEmpty(errors) && errors.drinkType !== undefined && errors.drinkType}
+        />
+        }
+
+
+
+        { typeOfFood === 'pizzas' &&
+   
         <Grid container direction="column" style={{ marginTop: 20}}>
         { sizes.length === 0 && 
           <Grid container justify="center">
@@ -256,7 +376,8 @@ const PizzaCard = subscribe()( props=> {
          
           <Grid item xs>
             <Grid  container direction="row" justify="space-between" style={{ marginTop: 10}}>
-              <TextField
+        
+             <TextField
                 inputProps={{ style:{fontSize: 15}}}
                 style={{ width: 50}}
                 placeholder="Size"
@@ -266,7 +387,7 @@ const PizzaCard = subscribe()( props=> {
                   setSize(e.target.value);
                 }}
                 error={notEmpty(errors) && errors.size !== undefined}
-          helperText={notEmpty(errors) && errors.size !== undefined && errors.size}
+                helperText={notEmpty(errors) && errors.size !== undefined && errors.size}
               />
               <TextField
                 inputProps={{ style:{fontSize: 15}}}
@@ -279,11 +400,12 @@ const PizzaCard = subscribe()( props=> {
                 }}
                 error={notEmpty(errors) && errors.price !== undefined}
                 helperText={notEmpty(errors)&& errors.price !== undefined && errors.price}
-              />     
+              />  
               <Icon fontSize="large" color="primary" onClick={()=> onAddSize()} style={{ marginTop: 7}}>add_circle</Icon>
             </Grid>
           </Grid>
         </Grid>
+        }
         
       </CardContent>
     </CardActionArea>
@@ -301,7 +423,7 @@ const PizzaCard = subscribe()( props=> {
         }}>
           Save
         </Button>
-        <Button size="small" color="secondary" onClick={() => loading? {} : setAddPizza(false)}>
+        <Button size="small" color="secondary" onClick={() => loading? {} : setToggle(false)}>
           Cancel
         </Button>
       </Grid>

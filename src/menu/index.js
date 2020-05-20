@@ -20,9 +20,33 @@ import Backdrop from '@material-ui/core/Backdrop';
 import Fade from '@material-ui/core/Fade';
 import DeleteOutlinedIcon from '@material-ui/icons/DeleteOutlined';
 import PizzaCard from './pizzaCard';
+import { TextField} from '@material-ui/core';
+import EditSave from './Edit_Save';
+import 'date-fns';
+import ItemCard from './itemCard';
+import DateFnsUtils from '@date-io/date-fns';
+import BorderColorIcon from '@material-ui/icons/BorderColor';
+import SaveIcon from '@material-ui/icons/Save';
+import Tooltip from '@material-ui/core/Tooltip';
+import Fab from '@material-ui/core/Fab';
+import List from '@material-ui/core/List';
+import ListItem from '@material-ui/core/ListItem';
+import ListItemIcon from '@material-ui/core/ListItemIcon';
+import ListItemText from '@material-ui/core/ListItemText';
+import Divider from '@material-ui/core/Divider';
+import InboxIcon from '@material-ui/icons/Inbox';
+import DraftsIcon from '@material-ui/icons/Drafts';
+import CheckCircleOutlineIcon from '@material-ui/icons/CheckCircleOutline';
 
-import PizzaEditAndSave from './pizza_add_edit';
+import {
+  MuiPickersUtilsProvider,
+  KeyboardTimePicker,
+  KeyboardDatePicker,
+} from '@material-ui/pickers';
+import TimeKeeper from 'react-timekeeper';
 
+import { updateStoreHour } from '../api';
+import firebase from '../firebase';
 const useStyles = makeStyles((theme) => ({
   modal: {
     display: 'flex',
@@ -39,7 +63,33 @@ const useStyles = makeStyles((theme) => ({
 
 
 const Menu = subscribe()(props=> {
+  const fetchData =  async ()=>{
+    const {email} = firebase.auth().currentUser;
+ 
+    try {
+      await firebase.firestore()
+        .collection('stores')
+        .where('email', '==', email)
+        .onSnapshot(querySnapshot => {
+          querySnapshot.docChanges().forEach(change => {
+          if (change.type === 'modified') {
+            // console.log("changed----", change.doc.data());
+            props.updateStore({ ...change.doc.data(), loading: false})
+          }
+        })
+      })
+    } catch (err) {
+      console.log("error", err);
+    }
+  }
 
+  useEffect(()=>{
+
+ 
+    fetchData();
+
+  },[fetchData]);
+  const [loadingTime, setLoadingTime] = useState(false);
   const useStyles = makeStyles((theme) => ({
     root: {
       flexGrow: 1,
@@ -81,6 +131,26 @@ const Menu = subscribe()(props=> {
     photo : {
       backgroundColor: '#dddddd',
       height: 250
+    },
+    textField: {
+      width: 200,
+      height: 100,
+      padding: 20
+    },
+    absolute: {
+      // position: 'absolute',
+      // bottom: theme.spacing(2),
+      // right: theme.spacing(3),
+      backgroundColor: 'red'
+    },  
+    absoluteTwo: {
+      // position: 'absolute',
+      // bottom: theme.spacing(2),
+      // right: theme.spacing(3),
+      // backgroundColor: 'blue'
+    },
+    listText: {
+      fontSize: 20
     }
   
   }));
@@ -96,11 +166,21 @@ const Menu = subscribe()(props=> {
     setAnchorEl(null);
   };
 
+  const onSaveStoreHour = async () => {
+
+    setLoadingTime(true);
+
+    const result = await updateStoreHour({
+      open: openHour,
+      close: closeHour
+    });
+
+    setLoadingTime(false);
+    setToggleTime(false);
+  }
+
   const openI = Boolean(anchorEl);
   const id = openI ? 'simple-popover' : undefined;
-
-  const [edit, setEdit] = useState(true)
-  const [open, setOpen] = React.useState(false);
 
 
   const [addPizza, setAddPizza] = useState(false);
@@ -110,13 +190,113 @@ const Menu = subscribe()(props=> {
   const [addDipping, setAddDipping] = useState(false);
 
 
-  const { menu , loading } = props.restaurant;
+
+  const { menu , loading, hour } = props.restaurant;
+  const { open, close} = hour;
+
   const { pizzas, sides, drinks, desserts, dippings } = menu;
   
-  console.log("props ----", pizzas, 'loading', loading);
+  const [toggleTime, setToggleTime] = useState(false);
+
+  const [openHour, setOpenHour] = useState(!open? '12:00am' : open);
+  const [closeHour, setCloseHour ] = useState(!open? '12:00am' : close);
+ 
+  console.log("props ----",props);
   return (
     <div style={{ padding: 20}}>
-      <Grid container spacing={1} direction="column">
+      <Grid container spacing={1} direction="column" spacing={5}>
+        <Grid item xs >
+          <List component="nav" aria-label="main mailbox folders">
+            <ListItem button>
+              <ListItemIcon>
+                <CheckCircleOutlineIcon style={{fontSize:30 ,color: !hour ? '' : 'green'}}/>
+              </ListItemIcon>
+              <ListItemText  
+                primary={<Typography style={{fontSize: 20 }}>Store Hour</Typography>}
+              /> 
+            </ListItem>
+            <ListItem button>
+              <ListItemIcon>
+                <CheckCircleOutlineIcon style={{fontSize:30, color: !menu ? '':'green'}}/>
+              </ListItemIcon>
+              <ListItemText 
+                primary={<Typography style={{fontSize: 20 }}>Menu</Typography>}
+              />
+            </ListItem>
+          </List>        
+        </Grid>
+        <Grid item xs>
+          <Grid container direction="row" justify="flex-start" spacing={3}>
+            <Grid item>
+            
+              <TextField 
+                readOnly
+                value={open || ''}
+                inputProps={{ style: { fontSize: 20, width: 260}}}
+                InputLabelProps={{ style: {fontSize: 20}}}
+                id="outlined-basic" 
+                label="Open" 
+                variant="standard"
+
+              />
+              </Grid>
+            <Grid item>
+             <TextField 
+                readOnly
+                value={close || ''}
+                inputProps={{ style: { fontSize: 20, width: 260}}}
+                InputLabelProps={{ style: {fontSize: 20}}}
+                id="outlined-basic" 
+                label="Close" 
+                variant="standard"
+
+              />
+     
+            </Grid>
+            { toggleTime &&
+              <Grid item>
+              <Tooltip title="Add" aria-label="add" onClick={()=> onSaveStoreHour()}>
+                <Fab color="primary" className={classes.absoluteTwo}>
+                  <SaveIcon style={{ fontSize: 30}}/>
+                </Fab>
+              </Tooltip>
+            </Grid>
+            }
+            { !toggleTime &&
+              <Grid item>
+                <Tooltip title="Add" aria-label="add" onClick={() => setToggleTime(true)}>
+                  <Fab color="secondary" className={classes.absolute}>
+                    <BorderColorIcon style={{ fontSize: 30}}/>
+                  </Fab>
+                </Tooltip>
+              </Grid>
+            }
+            
+           
+          </Grid>
+        </Grid>
+
+        {toggleTime &&
+        <Grid item xs container direction="row" spacing={3}>
+          <Grid item >
+              <TimeKeeper
+                  defaultValue="10:00am"
+                  time={openHour}
+                  onChange={(data) => setOpenHour(data.formatted12)}
+                />
+              </Grid>
+              <Grid  item >
+          
+                <TimeKeeper
+                   defaultValue="11:00pm"
+                  time={closeHour}
+                  onChange={(data) => setCloseHour(data.formatted12)}
+                />   
+              </Grid>
+        </Grid>
+        
+        }
+       
         <Grid item xs >
           <Card>
 
@@ -132,7 +312,7 @@ const Menu = subscribe()(props=> {
           {pizzas.length !== 0 && pizzas.map((item, index)=> (
               
             <Grid item xs={3} sm={2} className={classes.pizzaCard} key={index} > 
-              <PizzaCard item={item}/>
+              <ItemCard typeOfFood="pizzas" item={item}/>
             </Grid>
 
           ))}
@@ -155,7 +335,7 @@ const Menu = subscribe()(props=> {
                 </Card>
                 }
                 { addPizza && 
-                  <PizzaEditAndSave addPizza={addPizza} action={'add'} setAddPizza={setAddPizza} />
+                  <EditSave toggle={addPizza} action={'add'} typeOfFood="pizzas" setToggle={setAddPizza} />
                 }
               </Grid>
 
@@ -166,8 +346,6 @@ const Menu = subscribe()(props=> {
           </Card>
         </Grid>
        
-
-
 
 
 
@@ -186,36 +364,31 @@ const Menu = subscribe()(props=> {
               {sides.length !== 0 && sides.map((item, index)=> (
                   
                 <Grid item xs={3} sm={2} className={classes.pizzaCard} key={index} > 
-                  <PizzaCard item={item}/>
+                  <ItemCard item={item} typeOfFood="sides" />
                 </Grid>
     
               ))}
-                
-            
+    
                           {/* add new pizza  */}
-  
-  
   
                 <Grid item xs={3} sm={2} className={classes.pizzaCard} >
   
                   { !addSide &&
                   
-                  <Card style={{ height: 380, width: 250}}>
+                  <Card style={{ height: 200, width: 250}}>
                     <CardContent>
-                      <Grid container direction="row" justify="center" alignContent="center" alignItems="center" style={{ height: 350}}>
+                      <Grid container direction="row" justify="center" alignContent="center" alignItems="center" style={{  height: 180}}>
                         <Icon onClick={()=> setAddSide(!addSide)} fontSize="large" color="primary" style={{ alignSelf: 'center'}}>add_circle</Icon>
                       </Grid>
                     </CardContent>
                   </Card>
                   }
                   { addSide && 
-                    <PizzaEditAndSave addSide={addSide} action={'add'} setAddSide={setAddSide} />
+                    <EditSave toggle={addSide} action={'add'} typeOfFood="sides" setToggle={setAddSide} />
                   }
                 </Grid>
   
                         {/*  end of add new pizza  */}
-  
-      
             </Grid>
     
            
@@ -225,32 +398,136 @@ const Menu = subscribe()(props=> {
 
         <Grid item xs>
           <Card>
-            <CardContent>
+           
               <Typography color="textSecondary" variant="h3" gutterBottom>
                Desserts 
               </Typography>
-            </CardContent>
+             
+             
+              <Grid container direction="row" spacing={3} style={{ padding: 20, backgroundColor: '#f7f7f7'}}>
+              
+              {desserts.length !== 0 && desserts.map((item, index)=> (
+                  
+                <Grid item xs={3} sm={2} className={classes.pizzaCard} key={index} > 
+                  <ItemCard item={item} typeOfFood="desserts" />
+                </Grid>
+    
+              ))}
+    
+                          {/* add new pizza  */}
+  
+                <Grid item xs={3} sm={2} className={classes.pizzaCard} >
+  
+                  { !addDessert &&
+                  
+                  <Card style={{ height: 200, width: 250}}>
+                    <CardContent>
+                      <Grid container direction="row" justify="center" alignContent="center" alignItems="center" style={{ height: 180}}>
+                        <Icon onClick={()=> setAddDessert(!addDessert)} fontSize="large" color="primary" style={{ alignSelf: 'center'}}>add_circle</Icon>
+                      </Grid>
+                    </CardContent>
+                  </Card>
+                  }
+
+                  { addDessert && 
+                    <EditSave toggle={addDessert} action={'add'} typeOfFood="desserts" setToggle={setAddDessert} />
+                  }
+                </Grid>
+  
+                        {/*  end of add new pizza  */}
+            </Grid>
+          
+          
           </Card>
         </Grid>
 
 
         <Grid item xs>
           <Card>
-            <CardContent>
+           
             <Typography color="textSecondary" variant="h3" gutterBottom>
                 Dippings
-              </Typography>
-            </CardContent>
+            </Typography>
+
+            <Grid container direction="row" spacing={3} style={{ padding: 20, backgroundColor: '#f7f7f7'}}>
+              
+              {dippings.length !== 0 && dippings.map((item, index)=> (
+                  
+                <Grid item xs={3} sm={2} className={classes.pizzaCard} key={index} > 
+                  <ItemCard item={item} typeOfFood="dippings" />
+                </Grid>
+    
+              ))}
+    
+                          {/* add new pizza  */}
+  
+                <Grid item xs={3} sm={2} className={classes.pizzaCard} >
+  
+                  { !addDipping &&
+                  
+                  <Card style={{ height: 200, width: 250}}>
+                    <CardContent>
+                      <Grid container direction="row" justify="center" alignContent="center" alignItems="center" style={{ height: 180}}>
+                        <Icon onClick={()=> setAddDipping(!addDipping)} fontSize="large" color="primary" style={{ alignSelf: 'center'}}>add_circle</Icon>
+                      </Grid>
+                    </CardContent>
+                  </Card>
+                  }
+
+                  { addDipping && 
+                    <EditSave toggle={setAddDipping} action={'add'} typeOfFood="dippings" setToggle={setAddDipping} />
+                  }
+                </Grid>
+  
+                        {/*  end of add new pizza  */}
+            </Grid>
+          
+
+           
           </Card>
         </Grid>
 
         <Grid item xs>
           <Card>
-            <CardContent>
+       
             <Typography color="textSecondary" variant="h3" gutterBottom>
                Drinks
-              </Typography>
-            </CardContent>
+            </Typography>
+
+            <Grid container direction="row" spacing={3} style={{ padding: 20, backgroundColor: '#f7f7f7'}}>
+              
+              {drinks.length !== 0 && drinks.map((item, index)=> (
+                  
+                <Grid item xs={3} sm={2} className={classes.pizzaCard} key={index} > 
+                  <ItemCard item={item} typeOfFood="drinks" />
+                </Grid>
+    
+              ))}
+    
+                          {/* add new pizza  */}
+  
+                <Grid item xs={3} sm={2} className={classes.pizzaCard} >
+  
+                  { !addDrink &&
+                  
+                  <Card style={{ height: 200, width: 250}}>
+                    <CardContent>
+                      <Grid container direction="row" justify="center" alignContent="center" alignItems="center" style={{ height: 180}}>
+                        <Icon onClick={()=> setAddDrink(!addDrink)} fontSize="large" color="primary" style={{ alignSelf: 'center'}}>add_circle</Icon>
+                      </Grid>
+                    </CardContent>
+                  </Card>
+                  }
+
+                  { addDrink && 
+                    <EditSave toggle={setAddDrink} action={'add'} typeOfFood="drinks" setToggle={setAddDrink} />
+                  }
+                </Grid>
+  
+                        {/*  end of add new pizza  */}
+            </Grid>
+          
+          
           </Card>
         </Grid>
 

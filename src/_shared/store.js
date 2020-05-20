@@ -29,8 +29,6 @@ export default {
       drinks: []
     },
     hour: {
-      open: '',
-      close: ''
     },
     toggleLogin: true,
     toggleLogout: false, 
@@ -38,7 +36,8 @@ export default {
     toggleMenu: false, 
     toggleSignUp: true,
     toggleOrders: false,
-    toggleSignOut: false
+    toggleSignOut: false,
+    toggleMenu: false
 
   },
   menu: {

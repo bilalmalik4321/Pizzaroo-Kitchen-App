@@ -24,3 +24,5 @@ yarn-error.log*
 src/serviceAccount.js
 serviceAccount.js
 src/googleAPI.js
+serviceAccount.js
+googleAPI.js

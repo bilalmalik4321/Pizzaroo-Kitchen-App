@@ -56,6 +56,16 @@ const ButtonAppBar = props => {
             </Button>
           </div>
           }
+          {toggleMenu && <div onClick={() => navigate('/menu')}>
+            <Button 
+              variant="contained" 
+              color="primary"
+              >
+              <Typography variant="h6">Menu</Typography>
+            </Button>
+          </div>
+          }
+         
          
           {toggleSignUp && <div onClick={() => navigate('/signup')}>
           <Button 

@@ -6,7 +6,7 @@ import Container from "@material-ui/core/Container";
 import Snackbar from "@material-ui/core/Snackbar";
 import MuiAlert from "@material-ui/lab/Alert";
 import Typography from "@material-ui/core/Typography";
-import { Input } from "@material-ui/core";
+import { Input, TextField, Grid } from "@material-ui/core";
 import { subscribe } from 'react-contextual';
 import { getStore } from "../../api";
 import { navigate } from 'hookrouter';
@@ -18,9 +18,26 @@ const Login = (props) => {
   const { loggedIn } = props.restaurant;
   console.log('user props app', props);
 
-  const [errorMessage, setError] = useState('');
+  const [errorMessage, setError] = useState({});
+
+  const isEmpty = (errors, key) => {
+    const result =  Object.keys(errors).length !== 0 && errors[key] !== undefined
+  
+    // console.log(`error - ${key} is`, result);
+    return result
+    
+    }
+  const validate = () => {
+    const { email, password } = props.restaurant;
+    let error = {};
+
+    if(!email || email.lenght < 6 ) error.email = "Enter a valid email.";
+    if(!password || password.length < 6) error.password = "Enter a valid password.";
+
+    return error;
+  }
+
   const onLogin = async e =>{
-    e.preventDefault();
 
     try {
       props.updateStore({loading: true})
@@ -31,70 +48,103 @@ const Login = (props) => {
           console.log("after login in userInfo", userInfo);
           if(userInfo) {
             const user = await getStore(userInfo.user.uid);
-            props.updateStore({...user, loggedIn: true, loading: false});
+            props.updateStore({
+              ...user,
+              loggedIn: true, 
+              loading: false,
+              toggleLogin: false,
+              toggleLogout: true, 
+              toggleProfile: true, 
+              toggleSignUp: false,
+              toggleSignOut: true,
+              toggleOrders: true,
+              toggleMenu: true
+            });
             console.log("user info", user);
             navigate('/order');
           }
-        })
+        }).catch(err => {
+          if(err.code === 'auth/invalid-email')
+            setError({
+              email: 'Enter a valid email address.'
+            });
+          else {
+            setError({
+              password: err.message
+            })
+           }
+        }) 
 
     } catch (error ){
-      setError(error.message);
+      if(error.code === 'auth/invalid-email')
+        setError({
+          email: 'Enter a valid email address.'
+        });
+      else {
+        setError({
+          password: error.message
+        })
+      }
     }
   }
     return (
-      <div className="Login">
-      
+      <div>
         <form> 
           <h1 style={styles.logoText}>Welcome</h1>
-          <Container maxWidth="sm">
-            <div className="form-group">
-              <Input
-                disableUnderline={true}
-                style={styles.loginFormTextInput}
-                value={props.restaurant.email}
-                onChange={e => props.updateStore({email: e.target.value})}
-                type="email"
-                name="email"
-                className="form-control"
-                id="exampleInputEmail1"
-                aria-describedby="emailHelp"
-                placeholder="Email"
-              />
-          
-              <Input
-                disableUnderline={true}
-                style={styles.loginFormTextInput}
-                value={props.restaurant.password}
-                onChange={e => props.updateStore({password: e.target.value})}
-                type="password"
-                name="password"
-                className="form-control"
-                id="exampleInputPassword1"
-                placeholder="Password"
-              />
-            </div>
+          <Grid  container direction="column"  justify="center" alignItems='center' >
+            <Grid item xs >
+              <TextField
+                  style={{ width: 500, marginTop: 20 , minWidth: 200, maxWidth: 600}}
+                  label="Email"
+                  // className={classes.input}
+                  value={props.restaurant.email || ''}
+                  onChange={e => props.updateStore({email: e.target.value})}
+                  type="email"
+                  placeholder="Email"
+                  size="medium"
+                  variant="outlined"
+                  error={isEmpty(errorMessage,'email') }
+                  helperText={isEmpty(errorMessage,'email')? errorMessage.email : ''}
+                />
+            </Grid>
+             
+            <Grid item xs>
+              <TextField
+                  style={{ width: 500, marginTop: 20 ,marginBottom: 20, minWidth: 200, maxWidth: 600}}
+                  variant="outlined"
+                  label="Password"
+                  size="medium"
+                  value={props.restaurant.password || ''}
+                  onChange={e => props.updateStore({password: e.target.value})}
+                  type="password"
+                  placeholder="Password"
+                  error={isEmpty(errorMessage,'password') }
+                  helperText={isEmpty(errorMessage,'password')? errorMessage.password : ''}
+                />
+
+            </Grid>
+              
+          </Grid>
+
             <div style={{ textAlign: "center" }}>
-              {false && (
-                <Snackbar open={true} autoHideDuration={1000}>
-                  <Alert severity="error">
-                    <Typography variant="h6">
-                      {this.state.errorMessage}
-                    </Typography>
-                  </Alert>
-                </Snackbar>
-              )}
               <button
                 style={styles.loginButton}
                 type="submit"
                 onClick={(e) => {
-                  onLogin(e);
+                  e.preventDefault();
+                  let err = validate();
+                  console.log("errr",err)
+                  if(Object.keys(err).length === 0)
+                    onLogin(e)
+                  else
+                    setError(err)
                 }}
                 className="btn btn-primary"
               >
                 Login
               </button>
             </div>
-          </Container>
+      
         </form>
       </div>
     );
