@@ -235,3 +235,20 @@ export const updateOrder = async(pushId, progressStep, status) => {
     console.log("error updateOrder", error);
   }
 }
+
+
+export const updateStoreHour = async (hour) => {
+  try{
+    const {uid} = firebase.auth().currentUser;
+
+    return await db
+      .collection('stores')
+      .doc(uid)
+      .update({
+        hour
+      });
+      
+  } catch (error) {
+    console.log("error update store hour", error);
+  }
+}

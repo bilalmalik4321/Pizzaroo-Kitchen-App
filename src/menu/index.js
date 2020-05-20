@@ -25,12 +25,28 @@ import EditSave from './Edit_Save';
 import 'date-fns';
 import ItemCard from './itemCard';
 import DateFnsUtils from '@date-io/date-fns';
+import BorderColorIcon from '@material-ui/icons/BorderColor';
+import SaveIcon from '@material-ui/icons/Save';
+import Tooltip from '@material-ui/core/Tooltip';
+import Fab from '@material-ui/core/Fab';
+import List from '@material-ui/core/List';
+import ListItem from '@material-ui/core/ListItem';
+import ListItemIcon from '@material-ui/core/ListItemIcon';
+import ListItemText from '@material-ui/core/ListItemText';
+import Divider from '@material-ui/core/Divider';
+import InboxIcon from '@material-ui/icons/Inbox';
+import DraftsIcon from '@material-ui/icons/Drafts';
+import CheckCircleOutlineIcon from '@material-ui/icons/CheckCircleOutline';
+
 import {
   MuiPickersUtilsProvider,
   KeyboardTimePicker,
   KeyboardDatePicker,
 } from '@material-ui/pickers';
 import TimeKeeper from 'react-timekeeper';
+
+import { updateStoreHour } from '../api';
+import firebase from '../firebase';
 const useStyles = makeStyles((theme) => ({
   modal: {
     display: 'flex',
@@ -47,7 +63,33 @@ const useStyles = makeStyles((theme) => ({
 
 
 const Menu = subscribe()(props=> {
+  const fetchData =  async ()=>{
+    const {email} = firebase.auth().currentUser;
+ 
+    try {
+      await firebase.firestore()
+        .collection('stores')
+        .where('email', '==', email)
+        .onSnapshot(querySnapshot => {
+          querySnapshot.docChanges().forEach(change => {
+          if (change.type === 'modified') {
+            // console.log("changed----", change.doc.data());
+            props.updateStore({ ...change.doc.data(), loading: false})
+          }
+        })
+      })
+    } catch (err) {
+      console.log("error", err);
+    }
+  }
 
+  useEffect(()=>{
+
+ 
+    fetchData();
+
+  },[fetchData]);
+  const [loadingTime, setLoadingTime] = useState(false);
   const useStyles = makeStyles((theme) => ({
     root: {
       flexGrow: 1,
@@ -94,6 +136,21 @@ const Menu = subscribe()(props=> {
       width: 200,
       height: 100,
       padding: 20
+    },
+    absolute: {
+      // position: 'absolute',
+      // bottom: theme.spacing(2),
+      // right: theme.spacing(3),
+      backgroundColor: 'red'
+    },  
+    absoluteTwo: {
+      // position: 'absolute',
+      // bottom: theme.spacing(2),
+      // right: theme.spacing(3),
+      // backgroundColor: 'blue'
+    },
+    listText: {
+      fontSize: 20
     }
   
   }));
@@ -109,11 +166,21 @@ const Menu = subscribe()(props=> {
     setAnchorEl(null);
   };
 
+  const onSaveStoreHour = async () => {
+
+    setLoadingTime(true);
+
+    const result = await updateStoreHour({
+      open: openHour,
+      close: closeHour
+    });
+
+    setLoadingTime(false);
+    setToggleTime(false);
+  }
+
   const openI = Boolean(anchorEl);
   const id = openI ? 'simple-popover' : undefined;
-
-  const [edit, setEdit] = useState(true)
-  const [open, setOpen] = React.useState(false);
 
 
   const [addPizza, setAddPizza] = useState(false);
@@ -123,35 +190,113 @@ const Menu = subscribe()(props=> {
   const [addDipping, setAddDipping] = useState(false);
 
 
-  const { menu , loading } = props.restaurant;
-  const { pizzas, sides, drinks, desserts, dippings } = menu;
-  const [openHour, setOpenHour] = useState('10:30am');
-  const [closeHour, setCloseHour ] = useState('11:00pm');
 
+  const { menu , loading, hour } = props.restaurant;
+  const { open, close} = hour;
+
+  const { pizzas, sides, drinks, desserts, dippings } = menu;
+  
+  const [toggleTime, setToggleTime] = useState(false);
+
+  const [openHour, setOpenHour] = useState(!open? '12:00am' : open);
+  const [closeHour, setCloseHour ] = useState(!open? '12:00am' : close);
  
-  console.log("props ----", pizzas, 'loading', loading);
+  console.log("props ----",props);
   return (
     <div style={{ padding: 20}}>
-      <Grid container spacing={1} direction="column" >
-        <Grid item xs>
-          <Grid container direction="row" justify="flex-start" spacing={4}>
-            <Grid item >
-              <TimeKeeper
-                
-                time={openHour}
-                onChange={(data) => setOpenHour(data.formatted12)}
+      <Grid container spacing={1} direction="column" spacing={5}>
+        <Grid item xs >
+          <List component="nav" aria-label="main mailbox folders">
+            <ListItem button>
+              <ListItemIcon>
+                <CheckCircleOutlineIcon style={{fontSize:30 ,color: !hour ? '' : 'green'}}/>
+              </ListItemIcon>
+              <ListItemText  
+                primary={<Typography style={{fontSize: 20 }}>Store Hour</Typography>}
+              /> 
+            </ListItem>
+            <ListItem button>
+              <ListItemIcon>
+                <CheckCircleOutlineIcon style={{fontSize:30, color: !menu ? '':'green'}}/>
+              </ListItemIcon>
+              <ListItemText 
+                primary={<Typography style={{fontSize: 20 }}>Menu</Typography>}
               />
+            </ListItem>
+          </List>        
+        </Grid>
+        <Grid item xs>
+          <Grid container direction="row" justify="flex-start" spacing={3}>
+            <Grid item>
+            
+              <TextField 
+                readOnly
+                value={open || ''}
+                inputProps={{ style: { fontSize: 20, width: 260}}}
+                InputLabelProps={{ style: {fontSize: 20}}}
+                id="outlined-basic" 
+                label="Open" 
+                variant="standard"
+
+              />
+              </Grid>
+            <Grid item>
+             <TextField 
+                readOnly
+                value={close || ''}
+                inputProps={{ style: { fontSize: 20, width: 260}}}
+                InputLabelProps={{ style: {fontSize: 20}}}
+                id="outlined-basic" 
+                label="Close" 
+                variant="standard"
+
+              />
+     
             </Grid>
-            <Grid  item >
-        
-              <TimeKeeper
-                time={closeHour}
-                onChange={(data) => setCloseHour(data.formatted12)}
-              />   
+            { toggleTime &&
+              <Grid item>
+              <Tooltip title="Add" aria-label="add" onClick={()=> onSaveStoreHour()}>
+                <Fab color="primary" className={classes.absoluteTwo}>
+                  <SaveIcon style={{ fontSize: 30}}/>
+                </Fab>
+              </Tooltip>
             </Grid>
-          
+            }
+            { !toggleTime &&
+              <Grid item>
+                <Tooltip title="Add" aria-label="add" onClick={() => setToggleTime(true)}>
+                  <Fab color="secondary" className={classes.absolute}>
+                    <BorderColorIcon style={{ fontSize: 30}}/>
+                  </Fab>
+                </Tooltip>
+              </Grid>
+            }
+            
+           
           </Grid>
         </Grid>
+
+        {toggleTime &&
+        <Grid item xs container direction="row" spacing={3}>
+          <Grid item >
+              <TimeKeeper
+                  defaultValue="10:00am"
+                  time={openHour}
+                  onChange={(data) => setOpenHour(data.formatted12)}
+                />
+              </Grid>
+              <Grid  item >
+          
+                <TimeKeeper
+                   defaultValue="11:00pm"
+                  time={closeHour}
+                  onChange={(data) => setCloseHour(data.formatted12)}
+                />   
+              </Grid>
+        </Grid>
+        
+        }
+       
         <Grid item xs >
           <Card>
 
