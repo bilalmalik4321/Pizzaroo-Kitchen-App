@@ -1,12 +1,17 @@
 import React from "react";
 import ReactDOM from "react-dom";
-import "./index.css";
-import App from "./App";
+import App from "./app";
 import * as serviceWorker from "./serviceWorker";
 import { BrowserRouter as Router } from "react-router-dom";
+import store from './_shared/store';
+import { Provider } from 'react-contextual';
+
 ReactDOM.render(
   <Router>
-    <App />
+    <Provider {...store}>
+      <App/>
+    </Provider>
+     
   </Router>,
   document.getElementById("root")
 );
