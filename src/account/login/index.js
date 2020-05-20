@@ -151,4 +151,3 @@ const Login = (props) => {
 }
 
 export default subscribe()(Login);
-
