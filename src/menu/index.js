@@ -158,13 +158,6 @@ const Menu = subscribe()(props=> {
 
   const [anchorEl, setAnchorEl] = React.useState(null);
 
-  const handleClick = (event) => {
-    setAnchorEl(event.currentTarget);
-  };
-
-  const handleClose = () => {
-    setAnchorEl(null);
-  };
 
   const onSaveStoreHour = async () => {
 
@@ -201,7 +194,7 @@ const Menu = subscribe()(props=> {
   const [openHour, setOpenHour] = useState(!open? '12:00am' : open);
   const [closeHour, setCloseHour ] = useState(!open? '12:00am' : close);
  
-  console.log("props ----",props);
+  console.log("props ----",open, 'close', close, '!open', !open);
   return (
     <div style={{ padding: 20}}>
       <Grid container spacing={1} direction="column" spacing={5}>
@@ -209,7 +202,7 @@ const Menu = subscribe()(props=> {
           <List component="nav" aria-label="main mailbox folders">
             <ListItem button>
               <ListItemIcon>
-                <CheckCircleOutlineIcon style={{fontSize:30 ,color: !hour ? '' : 'green'}}/>
+                <CheckCircleOutlineIcon style={{fontSize:30 ,color: !open && !close? '' : 'green'}}/>
               </ListItemIcon>
               <ListItemText  
                 primary={<Typography style={{fontSize: 20 }}>Store Hour</Typography>}
