@@ -159,7 +159,7 @@ export const getOrders = async (callback) => {
 				// const completed = [];
 
 				snapshot.forEach( doc => (
-					doc.data().status === 'open' && today === orderDate(doc.data().status)&& active.push({
+					doc.data().status === 'open' && today === orderDate(doc.data().status) && active.push({
 						id: doc.id,
 						...doc.data()
 					})
