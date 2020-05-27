@@ -145,16 +145,21 @@ export const getOrders = async (callback) => {
 
 		const userInfo = firebase.auth().currentUser;
 		const { uid } = userInfo;
-	  // .where('customerId', '==', uid)
+    // .where('customerId', '==', uid)
+    
+    const orderDate = (time) => moment(time,'YYYY-MM-DD').format('L');
+    const today = moment().format('MM/DD/YYYY');
 		return await db
       .collection('orders')
       .where('status', '==', 'open')
+      .where('storeId', '==', uid)
 			.onSnapshot( snapshot => {
+
 				const active = [];
 				// const completed = [];
 
 				snapshot.forEach( doc => (
-					doc.data().status === 'open' && active.push({
+					doc.data().status === 'open' && today === orderDate(doc.data().status) && active.push({
 						id: doc.id,
 						...doc.data()
 					})

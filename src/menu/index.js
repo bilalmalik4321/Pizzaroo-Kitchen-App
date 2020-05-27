@@ -158,13 +158,6 @@ const Menu = subscribe()(props=> {
 
   const [anchorEl, setAnchorEl] = React.useState(null);
 
-  const handleClick = (event) => {
-    setAnchorEl(event.currentTarget);
-  };
-
-  const handleClose = () => {
-    setAnchorEl(null);
-  };
 
   const onSaveStoreHour = async () => {
 
@@ -201,7 +194,7 @@ const Menu = subscribe()(props=> {
   const [openHour, setOpenHour] = useState(!open? '12:00am' : open);
   const [closeHour, setCloseHour ] = useState(!open? '12:00am' : close);
  
-  console.log("props ----",props);
+  console.log("props ----",open, 'close', close, '!open', !open);
   return (
     <div style={{ padding: 20}}>
       <Grid container spacing={1} direction="column" spacing={5}>
@@ -209,7 +202,7 @@ const Menu = subscribe()(props=> {
           <List component="nav" aria-label="main mailbox folders">
             <ListItem button>
               <ListItemIcon>
-                <CheckCircleOutlineIcon style={{fontSize:30 ,color: !hour ? '' : 'green'}}/>
+                <CheckCircleOutlineIcon style={{fontSize:30 ,color: !open && !close? '' : 'green'}}/>
               </ListItemIcon>
               <ListItemText  
                 primary={<Typography style={{fontSize: 20 }}>Store Hour</Typography>}
@@ -309,7 +302,7 @@ const Menu = subscribe()(props=> {
 
           <Grid container direction="row" spacing={3} style={{ padding: 20, backgroundColor: '#f7f7f7'}}>
             
-          {pizzas.length !== 0 && pizzas.map((item, index)=> (
+          {menu && pizzas.length !== 0 && pizzas.map((item, index)=> (
               
             <Grid item xs={3} sm={2} className={classes.pizzaCard} key={index} > 
               <ItemCard typeOfFood="pizzas" item={item}/>
@@ -361,7 +354,7 @@ const Menu = subscribe()(props=> {
 
             <Grid container direction="row" spacing={3} style={{ padding: 20, backgroundColor: '#f7f7f7'}}>
               
-              {sides.length !== 0 && sides.map((item, index)=> (
+              { menu && sides.length !== 0 && sides.map((item, index)=> (
                   
                 <Grid item xs={3} sm={2} className={classes.pizzaCard} key={index} > 
                   <ItemCard item={item} typeOfFood="sides" />
@@ -406,7 +399,7 @@ const Menu = subscribe()(props=> {
              
               <Grid container direction="row" spacing={3} style={{ padding: 20, backgroundColor: '#f7f7f7'}}>
               
-              {desserts.length !== 0 && desserts.map((item, index)=> (
+              {menu && desserts.length !== 0 && desserts.map((item, index)=> (
                   
                 <Grid item xs={3} sm={2} className={classes.pizzaCard} key={index} > 
                   <ItemCard item={item} typeOfFood="desserts" />
@@ -451,7 +444,7 @@ const Menu = subscribe()(props=> {
 
             <Grid container direction="row" spacing={3} style={{ padding: 20, backgroundColor: '#f7f7f7'}}>
               
-              {dippings.length !== 0 && dippings.map((item, index)=> (
+              {menu && dippings.length !== 0 && dippings.map((item, index)=> (
                   
                 <Grid item xs={3} sm={2} className={classes.pizzaCard} key={index} > 
                   <ItemCard item={item} typeOfFood="dippings" />
@@ -496,7 +489,7 @@ const Menu = subscribe()(props=> {
 
             <Grid container direction="row" spacing={3} style={{ padding: 20, backgroundColor: '#f7f7f7'}}>
               
-              {drinks.length !== 0 && drinks.map((item, index)=> (
+              {menu && drinks.length !== 0 && drinks.map((item, index)=> (
                   
                 <Grid item xs={3} sm={2} className={classes.pizzaCard} key={index} > 
                   <ItemCard item={item} typeOfFood="drinks" />
@@ -524,7 +517,7 @@ const Menu = subscribe()(props=> {
                   }
                 </Grid>
   
-                        {/*  end of add new pizza  */}
+                {/*  end of add new pizza  */}
             </Grid>
           
           
