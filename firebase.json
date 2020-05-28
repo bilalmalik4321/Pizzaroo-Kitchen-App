@@ -8,8 +8,7 @@
     ],
     "rewrites": [
       {
-        "source": "./src/payment/**",
-        "function": "getAuthLink",
+        "source": "**",
         "destination": "/index.html"
       }
     ]

@@ -31,15 +31,12 @@ const Payment = props => {
     setLoading(true);
    
     await firebase.auth().currentUser.getIdToken(true).then(async idToken => {
-      const result = await axios.post(`https://us-central1-pizzaro-staging.cloudfunctions.net/getAuthLink`,{
-        headers: { 
-          "Content-Type": "application/x-www-form-urlencoded"
-        },
-        customToken: idToken
+      const result = await callCloudFunctions(`https://us-central1-pizzaro-staging.cloudfunctions.net/getAuthLink`,{
+        customToken: idToken + '12'
       })
 
       console.log("result", result);
-      window.location = result.data.url
+      window.location = result.url
 
     }).catch( error =>{
       console.log('failed to get ID',error)
@@ -49,6 +46,19 @@ const Payment = props => {
 
     
   }
+  const callCloudFunctions = async (url, params = {} ) => {
+    try {
+      const res = await axios.post(url, {...params});
+
+      if(res.status!== 200 || !res.data)
+        return false;
+      return res.data;
+    } catch ( err ) {
+      console.log("error get Auth link", err);
+      return false;
+    }
+  }
+
     return(
       <Grid container direction="row" justify="center">
         <Grid xs item>
@@ -58,6 +68,8 @@ const Payment = props => {
         { !stripe_connected_account_id ? <Grid xs container item justify="center" direction="column">
 
           <Button
+            loading={loading.toString()}
+            disabled={loading}
            style={{ height: 50}}
             onClick={() => onRequest()}
             variant="contained"
@@ -69,6 +81,8 @@ const Payment = props => {
         <Grid xs container item justify="center" direction="column">
 
           <Button
+          loading={loading.toString()}
+          disabled={loading}
             style={{ height: 50}}
             variant="contained"
             color="primary"

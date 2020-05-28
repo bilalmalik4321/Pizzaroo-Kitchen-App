@@ -1,5 +1,7 @@
 {
   "projects": {
-    "default": "pizzaroo-testing"
+    "default": "pizzaro-staging",
+    "production": "pizzaroo",
+    "development": "pizzaro-staging"
   }
 }
