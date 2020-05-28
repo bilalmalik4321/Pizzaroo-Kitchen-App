@@ -58,7 +58,8 @@ const Login = (props) => {
               toggleSignUp: false,
               toggleSignOut: true,
               toggleOrders: true,
-              toggleMenu: true
+              toggleMenu: true,
+              toggleStripe: true
             });
             console.log("user info", user);
             navigate('/order');

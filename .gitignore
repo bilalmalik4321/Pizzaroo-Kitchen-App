@@ -26,3 +26,5 @@ serviceAccount.js
 src/googleAPI.js
 serviceAccount.js
 googleAPI.js
+
+.env
