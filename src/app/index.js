@@ -12,7 +12,7 @@ import Wrapper from './layout';
 import Order from '../orders/newIndex';
 import Menu from '../menu';
 import Payment from '../payment';
-
+import ConfirmAuth from '../payment/confirmOnboading'
 const App = () => {
 
   const routes = {
@@ -22,7 +22,8 @@ const App = () => {
     '/dashboard': ()=> <Protected component={OrdersSSS}/>,
     '/order': ()=> <Protected component={Order}/>,
     '/menu': ()=> <Protected component={Menu}/>,
-    '/connect': ()=> <Protected component={Payment}/>
+    '/connect': ()=> <Protected component={Payment}/>,
+    '/auth': () => <Protected component={ConfirmAuth}/>
   }
   
   const Routes = useRoutes(routes);

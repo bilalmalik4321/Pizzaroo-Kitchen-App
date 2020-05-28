@@ -19,62 +19,30 @@ const Payment = props => {
   const [beginConnect, setBeginConnect] = useState(false);
   const { stripe_connected_account_id } = props.restaurant;
   console.log("account ----", stripe_connected_account_id)
-  const verify = async (code, state) => {
-
-    try {
-      const verifyData = await axios.post(`http://localhost:5001/pizzaro-staging/us-central1/confirmAuth`,{
-        code,
-        state});
-  
-      const { isConnected, response, error } = verifyData.data;
-      setProfile(response.stripe_user_id);
-      setHasConnected(isConnected);
-      console.log("hi",  verifyData.data)
-    } catch( error ) {
-      console.log("failed", error);
-    }
-   
-    // }).then( hi => {
-    //   const { isConnected, response, error } = hi.data;
-    //   setProfile(response.stripe_user_id);
-    //   setHasConnected(isConnected);
-    //   console.log("hi", hi)
-    // }).catch( error => {
-    //   console.log("what is the error", error.message)
-    // })
-
-    
-  }
+ 
 
   const updateUser = async ()=> {
     const userInfo = await getStore();
     props.updateStore({...userInfo});
   }
-  useEffect(() => {
-   
-    if( state && code ) {
-      console.log("code:\n ", code ,'\n\nstate: \n',state ,'\n\n')
-      verify(code,state);
-      // updateUser();
-    }
- 
-   
-  }, [])
-   
+
   console.log("props params -----", query.get('code'));
   const onRequest = async () => {
     setLoading(true);
    
     await firebase.auth().currentUser.getIdToken(true).then(async idToken => {
-      const result = await axios.post(`http://localhost:5001/pizzaro-staging/us-central1/getAuthLink`,{
+      const result = await axios.post(`https://us-central1-pizzaro-staging.cloudfunctions.net/getAuthLink`,{
+        headers: { 
+          "Content-Type": "application/x-www-form-urlencoded"
+        },
         customToken: idToken
       })
 
-      // console.log("result", result);
+      console.log("result", result);
       window.location = result.data.url
 
     }).catch( error =>{
-      console.log('failed to get ID')
+      console.log('failed to get ID',error)
     }
     )
     setLoading(false);
@@ -90,6 +58,7 @@ const Payment = props => {
         { !stripe_connected_account_id ? <Grid xs container item justify="center" direction="column">
 
           <Button
+           style={{ height: 50}}
             onClick={() => onRequest()}
             variant="contained"
             color="secondary"
@@ -100,11 +69,11 @@ const Payment = props => {
         <Grid xs container item justify="center" direction="column">
 
           <Button
-       
+            style={{ height: 50}}
             variant="contained"
             color="primary"
           >Stripe is connected</Button>
-          <h1>{stripe_connected_account_id} </h1>
+          <h1>Stripe account is : {stripe_connected_account_id} </h1>
         </Grid>
         }
       </Grid>

@@ -82,7 +82,7 @@ const Protected = (props) => {
     setLoading(false);
   }, []);
 
-  console.log("protected", loggedIn);
+  // console.log("protected", loggedIn);
   const component = loading ? <></> : <props.component params={params} />;
 
   // if (!loggedIn && !loading ) return <NotFound/>;
