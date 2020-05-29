@@ -35,7 +35,7 @@
     "post_deploy:development": "./sendMessage.sh 'Development app Deployed to https://pizzaro-staging.web.app 💯💯💯'",
     "pre_deploy:production": "yarn run build",
     "deploy:production": "firebase use production && firebase deploy --only hosting",
-    "post_deploy:production": "./sendMessage.sh 'Production app Deployed to https://pizzaroo.web.app 💯💯💯'"
+    "post_deploy:production": "./sendMessage.sh 'Production app Deployed to https://pizzaroo-34b58.web.app 💯💯💯'"
   },
   "eslintConfig": {
     "extends": "react-app"

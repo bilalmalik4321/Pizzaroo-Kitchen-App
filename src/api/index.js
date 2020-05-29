@@ -257,3 +257,24 @@ export const updateStoreHour = async (hour) => {
     console.log("error update store hour", error);
   }
 }
+
+
+
+export const callCloudFunctions = async (href,funcName, params = {} ) => {
+
+  let isDevelopment = href.includes('pizzaroo-34b58') || href.includes('localhost') || href.includes('testing')
+
+  console.log("is developemnt", isDevelopment);
+  const url = `https://us-central1-${isDevelopment? 'pizzaro-staging' : 'pizzaroo-34b58'}.cloudfunctions.net/${funcName}`
+  try {
+  
+    const res = await axios.post(url, {...params});
+
+    if(res.status!== 200 || !res.data)
+      return false;
+    return res.data;
+  } catch ( err ) {
+    console.log("error get Auth link", err);
+    return false;
+  }
+}

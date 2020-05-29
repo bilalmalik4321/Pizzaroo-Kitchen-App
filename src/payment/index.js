@@ -30,9 +30,12 @@ const Payment = props => {
   const onRequest = async () => {
     setLoading(true);
    
+    const redirect_uri = window.location.origin + '/auth';
+
     await firebase.auth().currentUser.getIdToken(true).then(async idToken => {
-      const result = await callCloudFunctions(`https://us-central1-pizzaro-staging.cloudfunctions.net/getAuthLink`,{
-        customToken: idToken + '12'
+      const result = await callCloudFunctions(window.location.href,'getAuthLink',{
+        customToken: idToken,
+        redirect_uri
       })
 
       console.log("result", result);
