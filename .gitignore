@@ -28,3 +28,6 @@ serviceAccount.js
 googleAPI.js
 
 .env
+src/firebase.js
+firebase.js
+sendMessage.sh
