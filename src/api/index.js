@@ -265,11 +265,11 @@ export const callCloudFunctions = async (href,funcName, params = {} ) => {
   let isDevelopment = href.includes('staging') || href.includes('localhost') || href.includes('testing')
 
   console.log("is developemnt", isDevelopment);
-  const emulatorURL_development = `http://localhost:5001/pizzaro-staging/us-central1/${funcName}`
+  // const emulatorURL_development = `http://localhost:5001/pizzaro-staging/us-central1/${funcName}`
   const url = `https://us-central1-${isDevelopment? 'pizzaro-staging' : 'pizzaroo-34b58'}.cloudfunctions.net/${funcName}`
   try {
   
-    const res = await axios.post(emulatorURL_development, {...params});
+    const res = await axios.post(url, {...params});
 
     if(res.status!== 200 || !res.data)
       return false;
