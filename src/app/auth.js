@@ -20,7 +20,7 @@ const Auth = (props) => {
             if (user) {
             setLoading(false);
             setLoggedIn(true);
-            console.log("hello",user)
+            // console.log("hello",user)
             const { emailVerified } = user;
             const userDetails = await getStore(user.uid);
             if (!loggedIn)
@@ -35,7 +35,8 @@ const Auth = (props) => {
                 toggleSignUp: false,
                 toggleSignOut: true,
                 toggleOrders: true,
-                toggleMenu: true
+                toggleMenu: true,
+                toggleStripe: true
 
               });
           } else {

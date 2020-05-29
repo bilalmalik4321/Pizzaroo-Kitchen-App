@@ -33,7 +33,7 @@ const useStyles = makeStyles((theme) => ({
 
 const ButtonAppBar = props => {
 
-  const { toggleLogin, toggleLogout,toggleOrders, toggleProfile ,toggleMenu, toggleSignOut, toggleSignUp} = props.restaurant;
+  const { toggleStripe, toggleLogin, toggleLogout,toggleOrders, toggleProfile ,toggleMenu, toggleSignOut, toggleSignUp} = props.restaurant;
   
   
   const classes = useStyles();
@@ -49,6 +49,7 @@ const ButtonAppBar = props => {
           </LinkContainer>
           {toggleOrders && <div onClick={() => navigate('/order')}>
             <Button 
+                style={{ marginLeft: 20, marginRight: 20}}
               variant="contained" 
               color="primary"
               >
@@ -58,6 +59,7 @@ const ButtonAppBar = props => {
           }
           {toggleMenu && <div onClick={() => navigate('/menu')}>
             <Button 
+              style={{ marginLeft: 20, marginRight: 20}}
               variant="contained" 
               color="primary"
               >
@@ -65,10 +67,27 @@ const ButtonAppBar = props => {
             </Button>
           </div>
           }
+
+          {toggleStripe && <div onClick={() => {
+            
+            navigate('/connect')
+            
+          }}>
+          <Button 
+            style={{ marginLeft: 20, marginRight: 20}}
+            variant="contained" 
+            color="primary"
+            // onClick={()=>navigate('/login')}
+            >
+            <Typography variant="h6">Connect Stripe</Typography>
+          </Button>
+          </div>
+          }
          
          
           {toggleSignUp && <div onClick={() => navigate('/signup')}>
           <Button 
+            style={{ marginLeft: 20, marginRight: 20}}
             variant="contained" 
             color="primary"
             // onClick={navigate('/signup')}
@@ -79,6 +98,7 @@ const ButtonAppBar = props => {
          
           {toggleLogin && <div onClick={() => navigate('/login')}>
           <Button 
+            style={{ marginLeft: 20, marginRight: 20}}
             variant="contained" 
             color="primary"
             // onClick={()=>navigate('/login')}
@@ -96,6 +116,7 @@ const ButtonAppBar = props => {
             
           }}>
           <Button 
+            style={{ marginLeft: 20, marginRight: 20}}
             variant="contained" 
             color="primary"
             // onClick={()=>navigate('/login')}

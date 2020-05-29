@@ -1,0 +1,7 @@
+{
+  "projects": {
+    "default": "pizzaro-staging",
+    "production": "pizzaroo-34b58",
+    "development": "pizzaro-staging"
+  }
+}
