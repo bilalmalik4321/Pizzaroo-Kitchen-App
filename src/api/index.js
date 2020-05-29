@@ -262,9 +262,10 @@ export const updateStoreHour = async (hour) => {
 
 export const callCloudFunctions = async (href,funcName, params = {} ) => {
 
-  let isDevelopment = href.includes('pizzaroo-34b58') || href.includes('localhost') || href.includes('testing')
+  let isDevelopment = href.includes('staging') || href.includes('localhost') || href.includes('testing')
 
   console.log("is developemnt", isDevelopment);
+  // const emulatorURL_development = `http://localhost:5001/pizzaro-staging/us-central1/${funcName}`
   const url = `https://us-central1-${isDevelopment? 'pizzaro-staging' : 'pizzaroo-34b58'}.cloudfunctions.net/${funcName}`
   try {
   

@@ -3,30 +3,18 @@ import { subscribe } from 'react-contextual';
 
 import Grid from "@material-ui/core/Grid";
 import Button from "@material-ui/core/Button";
-import axios from 'axios';
 
 import firebase from 'firebase';
-import { getStore } from '../api';
+import { getStore, callCloudFunctions } from '../api';
+
 const Payment = props => {
    
   // console.log("props params -----", props);
   const query = new URLSearchParams(window.location.search);
-  const code = query.get('code');
-  const state = query.get('state');
   const [loading, setLoading ] = useState(false);
-  const [hasConnected, setHasConnected] = useState(false);
-  const [profile, setProfile] = useState('');
-  const [beginConnect, setBeginConnect] = useState(false);
   const { stripe_connected_account_id } = props.restaurant;
   console.log("account ----", stripe_connected_account_id)
  
-
-  const updateUser = async ()=> {
-    const userInfo = await getStore();
-    props.updateStore({...userInfo});
-  }
-
-  console.log("props params -----", query.get('code'));
   const onRequest = async () => {
     setLoading(true);
    
@@ -38,7 +26,7 @@ const Payment = props => {
         redirect_uri
       })
 
-      console.log("result", result);
+      console.log("result-------", result);
       window.location = result.url
 
     }).catch( error =>{
@@ -47,20 +35,8 @@ const Payment = props => {
     )
     setLoading(false);
 
-    
   }
-  const callCloudFunctions = async (url, params = {} ) => {
-    try {
-      const res = await axios.post(url, {...params});
 
-      if(res.status!== 200 || !res.data)
-        return false;
-      return res.data;
-    } catch ( err ) {
-      console.log("error get Auth link", err);
-      return false;
-    }
-  }
 
     return(
       <Grid container direction="row" justify="center">

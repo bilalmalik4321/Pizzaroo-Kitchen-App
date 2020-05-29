@@ -1,8 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { subscribe } from 'react-contextual';
-import axios from 'axios';
 import { navigate } from 'hookrouter';
-import { getStore } from '../api';
+import { getStore, callCloudFunctions } from '../api';
 import firebase from '../firebase';
 const Confirm = props => {
 
@@ -21,18 +20,17 @@ const Confirm = props => {
   const verify = async (code, state) => {
     setLoading(true);
     try {
-      const verifyData = await axios.post(`https://us-central1-pizzaro-staging.cloudfunctions.net/confirmAuth`,{
+      const verifyData = await callCloudFunctions(window.location.href,`confirmAuth`,{
         code,
         state});
   
-      const { isConnected, response, error, uid } = verifyData.data;
+      const { isConnected, response, uid } = verifyData;
     
-      console.log("hi",  verifyData.data)
-      if(isConnected){
-
+      console.log("hi",  verifyData)
+      if(verifyData && isConnected){
         await firebase.firestore().collection('stores').doc(uid).set({ stripe_connected_account_id: response.stripe_user_id}, { merge: true})
         updateUser(uid);
-        navigate('/connect')
+    
       }
       else {
         setIncorrectCode(true);
@@ -46,9 +44,9 @@ const Confirm = props => {
     
 
 
-    
+   
     setLoading(false);
-  
+    navigate('/connect')
   
   }
 
