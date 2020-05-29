@@ -43,21 +43,6 @@ import firebase from '../firebase';
 // numberOfItems,
 // total: total(items)
 const convertDate = (time) => moment(time,'YYYY-MM-DD hh:mm:ss a').add(1,'day').format('LLL');
-// var count = 1;
-// var rows = [];
-// var rowsIncoming = [
-//   createData(count, 2, "11am"),
-//   createData(++count, 2, "11.15am"),
-//   createData(++count, 2, "11.20am"),
-//   createData(++count, 2, "11.25am"),
-//   createData(++count, 2, "11.30am"),
-//   createData(++count, 2, "11.15am"),
-//   createData(++count, 2, "11.20am"),
-//   createData(++count, 2, "11.25am"),
-//   createData(++count, 2, "11.30am"),
-// ];
-// var rowsPrep = [];
-// var rowsCompleted = [];
 
 const Orders = subscribe()((props) =>  {
 

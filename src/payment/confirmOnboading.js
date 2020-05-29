@@ -28,7 +28,10 @@ const Confirm = props => {
     
       console.log("hi",  verifyData)
       if(verifyData && isConnected){
-        await firebase.firestore().collection('stores').doc(uid).set({ stripe_connected_account_id: response.stripe_user_id}, { merge: true})
+        await firebase.firestore().collection('stores').doc(uid).set({ 
+          stripe_connected_account_id: response.stripe_user_id,
+          isConnectedWithStripe: true
+        }, { merge: true})
         updateUser(uid);
     
       }
