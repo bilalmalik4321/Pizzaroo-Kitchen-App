@@ -1,7 +1,6 @@
 import firebase from "../firebase";
 import moment from 'moment';
 import axios from 'axios';
-import apiKey from '../googleAPI';
 import geohash from 'ngeohash';
 // access the database
 
@@ -50,18 +49,18 @@ export const createStore = async (payload) => {
 
     // user is created in auth but not in the collection
 
-    const  location = await geoCoding(payload.postalCode);
-    const { lat, lng } = location;
-    const latlon = geohash.encode( lat, lng );
+    // const  location = await geoCoding(payload.postalCode);
+    // const { lat, lng } = location;
+    // const latlon = geohash.encode( lat, lng );
     
     await db
       .collection("stores")
       .doc(signedUpStore.user.uid)
       .set({ 
         ...storeInfo,
-        lat,
-        lng,
-        latlon
+        // lat,
+        // lng,
+        // latlon
       }, { merge: true });
 
     // return true after success
@@ -98,30 +97,30 @@ export const getStore = async (uid) => {
   }
 };
 
-export const geoCoding = async(address) => {
-  try {
-    const key = apiKey;
-    const { data } = await axios.get(
-      'https://maps.googleapis.com/maps/api/geocode/json',
-      {
-        params: {
-          address,
-          key
-        }
-      }
-    );
+// export const geoCoding = async(address) => {
+//   try {
+//     const key = apiKey;
+//     const { data } = await axios.get(
+//       'https://maps.googleapis.com/maps/api/geocode/json',
+//       {
+//         params: {
+//           address,
+//           key
+//         }
+//       }
+//     );
 
-    const { lat, lng } = data.results[0].geometry.location;
-    console.log("lat",lat,'lng',lng )
-    return {
-        lat,
-        lng
-    }
-  } catch (error ) {
-    console.log("error geoCode", error)
-  }
+//     const { lat, lng } = data.results[0].geometry.location;
+//     console.log("lat",lat,'lng',lng )
+//     return {
+//         lat,
+//         lng
+//     }
+//   } catch (error ) {
+//     console.log("error geoCode", error)
+//   }
 
-}
+// }
 export function getDistanceFromLatLonInKm(lat1,lon1,lat2,lon2) {
   var R = 6371; // Radius of the earth in km
   var dLat = deg2rad(lat2-lat1);  // deg2rad below
