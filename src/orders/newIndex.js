@@ -173,9 +173,10 @@ const Orders = subscribe()((props) =>  {
 
   return (
     <div className={classes.root}>
-      <Grid 
+    <Container maxWidth="lg">
+      <Grid
         container
-        direction="row" 
+        direction="row"
         alignItems="center" justify="space-between"
       >
         <Typography  variant="h4" gutterBottom>
@@ -188,7 +189,7 @@ const Orders = subscribe()((props) =>  {
           onClick={(e) => handleClick(e)}
         >
         <Typography variant="h6">View Completed Orders</Typography>
-      </Button>  
+      </Button>
       <Popover
         id={id}
         open={open}
@@ -203,24 +204,24 @@ const Orders = subscribe()((props) =>  {
           horizontal: 'center',
         }}
       >
-        
+
           <Card variant="outlined">
               <CardContent>
                 <Grid container direction="row" alignItems="center" justify="space-evenly" >
                   <Typography color="textSecondary" variant="h3" gutterBottom>
-                      Completed/Enroute Orders:  
+                      Completed/Enroute Orders:
                   </Typography>
                   <Typography  variant="h3" gutterBottom>
                     {!loading ? countOrder(incomings, 'enroute') : ''}
                   </Typography>
                 </Grid>
-          
+
 
                 {!loading && incomings && incomings.length !== 0 && incomings.sort((a,b)=> a.createdAt < b.createdAt).map((order,index) => {
 
                 if(order.progressStep === 'enroute'){
                   return(
-                  
+
                   <div className={classes.orderBox} key={index}>
                   <Divider style={{ marginTop: 20, marginBottom: 20 }} />
                     <CustomerInfo order={order}/>
@@ -260,25 +261,25 @@ const Orders = subscribe()((props) =>  {
                                     )
                               })})}
 
-          
+
                                   <TableRow>
                                     <TableCell colSpan={2} >
                                       <h5>
                                       Subtotal
                                       </h5>
-                                    </TableCell>  
+                                    </TableCell>
                                     <TableCell align="right">
                                       <h4>
                                       {order.total.toFixed(2)}
                                       </h4>
                                     </TableCell>
                                   </TableRow>
-                            
-                    
-{/*                              
+
+
+{/*
                             <TableRow>
                               <TableCell colSpan={3}>
-                                <Grid 
+                                <Grid
                                   container
                                   direction="row"
                                   justify="space-around"
@@ -295,8 +296,8 @@ const Orders = subscribe()((props) =>  {
                                       <Typography variant="h6">Complete</Typography>
                                   </Button>
 
-                    
-                                </Grid> 
+
+                                </Grid>
                               </TableCell>
                             </TableRow> */}
                         </TableBody>
@@ -317,29 +318,29 @@ const Orders = subscribe()((props) =>  {
 
 
       </Popover>
-        
+
       </Grid>
 
-      
+
       <Grid container spacing={1}>
         <Grid item xs>
           <Card variant="outlined">
               <CardContent>
                 <Grid container direction="row" alignItems="center" justify="space-evenly">
                   <Typography color="textSecondary" variant="h3" gutterBottom>
-                      Incoming Orders:  
+                      Incoming Orders:
                   </Typography>
                   <Typography  variant="h3" gutterBottom>
                     {!loading ? countOrder(incomings, 'waiting') : ''}
                   </Typography>
                 </Grid>
-{/* 
+{/*
                 <Divider style={{ marginTop: 20, marginBottom: 20 }} /> */}
                 {!loading && incomings && incomings.length !== 0 && incomings.sort((a,b)=> a.createdAt < b.createdAt).map((order,index) => {
 
                   if(order.progressStep === 'waiting'){
                     return(
-                    
+
                     <div className={classes.orderBox} key={index}>
                     <Divider style={{ marginTop: 20, marginBottom: 20 }} />
                       <div style={{ paddingBottom: 20 }}>
@@ -376,8 +377,8 @@ const Orders = subscribe()((props) =>  {
                         <Typography color="textSecondary" variant="h6">
                           Address: { `${order.address.apt? " " : "Apt/Unit: " + order.address.apt}`  + " " + order.address.street +" "+ order.address.city+ " " + order.address.postalCode }
                         </Typography>
-                    
-              
+
+
                       </div>
                       <TableContainer component={Paper}>
                         <Table className={classes.table} aria-label="spanning table">
@@ -419,7 +420,7 @@ const Orders = subscribe()((props) =>  {
                                   <h5>
                                   Subtotal
                                   </h5>
-                                </TableCell>  
+                                </TableCell>
                                 <TableCell align="right">
                                   <h4>
                                   {order.total.toFixed(2)}
@@ -428,7 +429,7 @@ const Orders = subscribe()((props) =>  {
                               </TableRow>
                               <TableRow>
                                 <TableCell colSpan={3}>
-                                  <Grid 
+                                  <Grid
                                     container
                                     direction="row"
                                     justify="space-around"
@@ -454,14 +455,14 @@ const Orders = subscribe()((props) =>  {
                                         }}
                                       >
                                       <Typography variant="h6">Accept</Typography>
-                                    </Button>  
-                                  </Grid> 
+                                    </Button>
+                                  </Grid>
                                 </TableCell>
                               </TableRow>
                           </TableBody>
                         </Table>
                       </TableContainer>
-                
+
                   </div>
                 )}})}
             </CardContent>
@@ -476,19 +477,19 @@ const Orders = subscribe()((props) =>  {
               <CardContent>
                 <Grid container direction="row" alignItems="center" justify="space-evenly" >
                   <Typography color="textSecondary" variant="h3" gutterBottom>
-                      Preparing Orders:  
+                      Preparing Orders:
                   </Typography>
                   <Typography  variant="h3" gutterBottom>
                     {!loading ? countOrder(incomings, 'confirmed') : ''}
                   </Typography>
                 </Grid>
-          
+
 
                 {!loading && incomings && incomings.length !== 0 && incomings.sort((a,b)=> a.createdAt < b.createdAt).map((order,index) => {
 
                 if(order.progressStep === 'confirmed'){
                   return(
-                  
+
                   <div className={classes.orderBox} key={index}>
                   <Divider style={{ marginTop: 20, marginBottom: 20 }} />
                     <CustomerInfo order={order}/>
@@ -528,25 +529,25 @@ const Orders = subscribe()((props) =>  {
                                     )
                               })})}
 
-          
+
                                   <TableRow>
                                     <TableCell colSpan={2} >
                                       <h5>
                                       Subtotal
                                       </h5>
-                                    </TableCell>  
+                                    </TableCell>
                                     <TableCell align="right">
                                       <h4>
                                       {order.total.toFixed(2)}
                                       </h4>
                                     </TableCell>
                                   </TableRow>
-                            
-                    
-                             
+
+
+
                             <TableRow>
                               <TableCell colSpan={3}>
-                                <Grid 
+                                <Grid
                                   container
                                   direction="row"
                                   justify="space-around"
@@ -563,8 +564,8 @@ const Orders = subscribe()((props) =>  {
                                       <Typography variant="h6">Complete</Typography>
                                   </Button>
 
-                    
-                                </Grid> 
+
+                                </Grid>
                               </TableCell>
                             </TableRow>
                         </TableBody>
@@ -576,10 +577,11 @@ const Orders = subscribe()((props) =>  {
                 </CardContent>
               </Card>
             </Grid>
-    
-      
-      
+
+
+
       </Grid>
+      </Container>
     </div>
 
   );
@@ -599,7 +601,7 @@ const CustomerInfo = ({order}) => {
     <Typography color="textSecondary" variant="h6">
         Order #{order.id}
       </Typography>
-     
+
       <Typography color="textSecondary" variant="h6">
         Ordered At: {convertDate(order.createdAt)}
       </Typography>
@@ -609,7 +611,7 @@ const CustomerInfo = ({order}) => {
         onClick={() => setOpen(!open)}
       >
       <Typography variant="h6">{!open ?"Show Info":"Hide info"}</Typography>
-      </Button> 
+      </Button>
       { open &&
         <div>
           <Typography color="textSecondary">
@@ -641,7 +643,7 @@ const CustomerInfo = ({order}) => {
           </Typography>
         </div>
       }
-  
+
 
     </div>
   )

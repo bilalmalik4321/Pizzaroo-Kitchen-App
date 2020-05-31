@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from 'react';
 import { subscribe } from 'react-contextual';
-
+import Container from "@material-ui/core/Container";
 import Grid from "@material-ui/core/Grid";
 import Button from "@material-ui/core/Button";
 import Badge from '@material-ui/core/Badge';
@@ -8,7 +8,7 @@ import firebase from 'firebase';
 import { getStore, callCloudFunctions } from '../api';
 
 const Payment = props => {
-   
+
   // console.log("props params -----", props);
   const query = new URLSearchParams(window.location.search);
   const [loading, setLoading ] = useState(false);
@@ -30,7 +30,7 @@ const Payment = props => {
     })
     console.log("result login link", result)
     if(result) {
-     
+
       window.location = result.url
       setLoadingExpress(false)
     }
@@ -40,7 +40,7 @@ const Payment = props => {
     setLoadingDelete(true);
     const { uid } = firebase.auth().currentUser;
     try {
-      await firebase.firestore().doc(`stores/${uid}`).update({ 
+      await firebase.firestore().doc(`stores/${uid}`).update({
         stripe_connected_account_id : '',
         isConnectedWithStripe: false
       });
@@ -55,7 +55,7 @@ const Payment = props => {
   const onRequest = async () => {
 
     setLoading(true);
-   
+
     const redirect_uri = window.location.origin + '/auth';
 
     await firebase.auth().currentUser.getIdToken(true).then(async idToken => {
@@ -71,7 +71,7 @@ const Payment = props => {
       console.log('failed to get ID',error)
       setLoading(false);
     })
-   
+
 
   }
 
@@ -81,11 +81,12 @@ const Payment = props => {
     },[stripe_connected_account_id ]);
 
     return(
+      <Container maxWidth="lg">
       <Grid container direction="row" justify="center">
         <Grid xs item>
-          <h1>Profile</h1>
+          <h1>Stripe Profile</h1>
         </Grid>
-       
+
         { !stripe_connected_account_id ? <Grid xs container item justify="center" direction="column">
 
           <Button
@@ -122,6 +123,7 @@ const Payment = props => {
         </Grid>
         }
       </Grid>
+      </Container>
     )
 
 }

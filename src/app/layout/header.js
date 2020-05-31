@@ -9,9 +9,18 @@ import { navigate } from 'hookrouter';
 import { subscribe } from 'react-contextual';
 import AccountCircle from "@material-ui/icons/AccountCircle";
 import IconButton from "@material-ui/core/IconButton";
+import Drawer from '@material-ui/core/Drawer';
+import MenuIcon from '@material-ui/icons/Menu';
 import firebase from 'firebase';
-
-
+import InboxIcon from '@material-ui/icons/MoveToInbox';
+import MailIcon from '@material-ui/icons/Mail';
+import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
+import ChevronRightIcon from '@material-ui/icons/ChevronRight';
+import ListItem from '@material-ui/core/ListItem';
+import ListItemIcon from '@material-ui/core/ListItemIcon';
+import ListItemText from '@material-ui/core/ListItemText';
+import List from '@material-ui/core/List';
+import Divider from '@material-ui/core/Divider';
 const useStyles = makeStyles((theme) => ({
   root: {
     flexGrow: 1,
@@ -29,77 +38,57 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 
- 
+
 
 const ButtonAppBar = props => {
 
   const { toggleStripe, toggleLogin, toggleLogout,toggleOrders, toggleProfile ,toggleMenu, toggleSignOut, toggleSignUp} = props.restaurant;
-  
-  
+
+  const [open, setOpen] = React.useState(false);
+
+    const handleDrawerOpen = () => {
+      setOpen(true);
+    };
+
+    const handleDrawerClose = () => {
+      setOpen(false);
+    };
   const classes = useStyles();
 
   return (
     <div className={classes.root}>
       <AppBar position="static" className={classes.AppBar}>
         <Toolbar>
+        <IconButton
+            color="inherit"
+            aria-label="open drawer"
+            onClick={handleDrawerOpen}
+            edge="start"
+            style={{ width: 64, height: 64, padding: 0}}
+          >
+            <MenuIcon style={{ width: 24, height: 24 }}  />
+          </IconButton>
           <LinkContainer to="/">
             <Typography variant="h4" className={classes.title}>
               Pizzaroo
             </Typography>
           </LinkContainer>
-          {toggleOrders && <div onClick={() => navigate('/order')}>
-            <Button 
-                style={{ marginLeft: 20, marginRight: 20}}
-              variant="contained" 
-              color="primary"
-              >
-              <Typography variant="h6">Orders</Typography>
-            </Button>
-          </div>
-          }
-          {toggleMenu && <div onClick={() => navigate('/menu')}>
-            <Button 
-              style={{ marginLeft: 20, marginRight: 20}}
-              variant="contained" 
-              color="primary"
-              >
-              <Typography variant="h6">Menu</Typography>
-            </Button>
-          </div>
-          }
 
-          {toggleStripe && <div onClick={() => {
-            
-            navigate('/connect')
-            
-          }}>
-          <Button 
-            style={{ marginLeft: 20, marginRight: 20}}
-            variant="contained" 
-            color="primary"
-            // onClick={()=>navigate('/login')}
-            >
-            <Typography variant="h6">Connect Stripe</Typography>
-          </Button>
-          </div>
-          }
-         
-         
           {toggleSignUp && <div onClick={() => navigate('/signup')}>
-          <Button 
+          <Button
             style={{ marginLeft: 20, marginRight: 20}}
-            variant="contained" 
+            variant="contained"
             color="primary"
             // onClick={navigate('/signup')}
              >
             <Typography variant="h6">Signup</Typography>
           </Button>
           </div>}
-         
+
           {toggleLogin && <div onClick={() => navigate('/login')}>
-          <Button 
+          <Button
             style={{ marginLeft: 20, marginRight: 20}}
-            variant="contained" 
+            variant="contained"
             color="primary"
             // onClick={()=>navigate('/login')}
             >
@@ -109,15 +98,15 @@ const ButtonAppBar = props => {
           }
 
           {toggleSignOut && <div onClick={() => {
-            
+
             firebase.auth().signOut();
             props.resetStore()
             navigate('/')
-            
+
           }}>
-          <Button 
+          <Button
             style={{ marginLeft: 20, marginRight: 20}}
-            variant="contained" 
+            variant="contained"
             color="primary"
             // onClick={()=>navigate('/login')}
             >
@@ -140,6 +129,67 @@ const ButtonAppBar = props => {
           </div>}
         </Toolbar>
       </AppBar>
+      <Drawer
+        className={classes.drawer}
+        variant="temporary"
+        anchor="left"
+        open={open}
+        classes={{
+          paper: classes.drawerPaper,
+        }}
+      >
+        <div className={classes.drawerHeader}>
+          <IconButton onClick={handleDrawerClose}>
+             <ChevronLeftIcon style={{ width: 24, height: 24 }} />
+          </IconButton>
+        </div>
+        <Divider />
+        <List>
+
+            <ListItem button >
+            {toggleOrders && <div onClick={() => navigate('/order')}>
+              <Button
+                  style={{ marginLeft: 20, marginRight: 20}}
+                variant="contained"
+                color="primary"
+                >
+                <Typography variant="h6">Orders</Typography>
+              </Button>
+            </div>
+            }
+            </ListItem>
+            <ListItem button >
+            {toggleMenu && <div onClick={() => navigate('/menu')}>
+              <Button
+                style={{ marginLeft: 20, marginRight: 20}}
+                variant="contained"
+                color="primary"
+                >
+                <Typography variant="h6">Menu</Typography>
+              </Button>
+            </div>
+            }
+            </ListItem>
+            <ListItem button >
+            {toggleStripe && <div onClick={() => {
+
+              navigate('/connect')
+
+            }}>
+            <Button
+              style={{ marginLeft: 20, marginRight: 20}}
+              variant="contained"
+              color="primary"
+              // onClick={()=>navigate('/login')}
+              >
+              <Typography variant="h6">Connect Stripe</Typography>
+            </Button>
+            </div>
+            }
+            </ListItem>
+        </List>
+
+      </Drawer>
     </div>
   );
 }
