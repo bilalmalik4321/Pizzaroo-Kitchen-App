@@ -13,6 +13,7 @@ import Order from '../orders/newIndex';
 import Menu from '../menu';
 import Payment from '../payment';
 import ConfirmAuth from '../payment/confirmOnboading'
+import PastOrders from "../orders/pastOrders";
 const App = () => {
 
   const routes = {
@@ -23,7 +24,8 @@ const App = () => {
     '/order': ()=> <Protected component={Order}/>,
     '/menu': ()=> <Protected component={Menu}/>,
     '/connect': ()=> <Protected component={Payment}/>,
-    '/auth': () => <Protected component={ConfirmAuth}/>
+    '/auth': () => <Protected component={ConfirmAuth}/>,
+    '/history': () => <Protected component={PastOrders}/>
   }
   
   const Routes = useRoutes(routes);

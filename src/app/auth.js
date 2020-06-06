@@ -35,7 +35,7 @@ const Auth = (props) => {
                 toggleSignUp: false,
                 toggleSignOut: true,
                 toggleOrders: true,
-                toggleMenu: true,
+                toggleHistory: true,
                 toggleStripe: true
 
               });

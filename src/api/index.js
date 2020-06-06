@@ -139,15 +139,58 @@ function deg2rad(deg) {
   return deg * (Math.PI/180)
 }
 
+export const getAllOrders = async (days, setIncomings) => {
+	try {
+
+		const userInfo = firebase.auth().currentUser;
+		const { uid } = userInfo;
+    // .where('customerId', '==', uid)
+
+    const getDaysDiff = (date) => {
+      const current = moment().startOf('day');
+      const convert = moment(date,'YYYY-MM-DD')
+      return -1 * moment.duration(convert.diff(current)).asDays()
+    }
+  
+		return await db
+      .collection('orders')
+      .where('storeId', '==', uid)
+			.onSnapshot( snapshot => {
+
+				const active = [];
+				// const completed = [];
+
+				snapshot.forEach( doc => (
+					doc.data().status === 'open' &&  getDaysDiff(doc.data().createdAt) <= days && active.push({
+						id: doc.id,
+						...doc.data()
+					})
+				))
+          
+        console.log("active", active)
+        setIncomings(active)
+        // return active
+
+			})
+
+	} catch (error) {
+		console.log("getOrders error", error);
+	}
+}
+
 export const getOrders = async (callback) => {
 	try {
 
 		const userInfo = firebase.auth().currentUser;
 		const { uid } = userInfo;
     // .where('customerId', '==', uid)
-    
+    const ex = '2020-05-20 12:26:27:57:574 pm'
     const orderDate = (time) => moment(time,'YYYY-MM-DD').format('L');
     const today = moment().format('MM/DD/YYYY');
+    var given = moment(ex,'YYYY-MM-DD')
+    // console.log("given, exp", given);
+    var current = moment().startOf('day');
+    console.log("diff",moment.duration(given.diff(current)).asDays() + 1)
 		return await db
       .collection('orders')
       .where('status', '==', 'open')
@@ -158,19 +201,14 @@ export const getOrders = async (callback) => {
 				// const completed = [];
 
 				snapshot.forEach( doc => (
-					doc.data().status === 'open' && today === orderDate(doc.data().status) && active.push({
+					doc.data().status === 'open' && today === orderDate(doc.data().createdAt) && active.push({
 						id: doc.id,
 						...doc.data()
 					})
 				))
-				// snapshot.forEach( doc => (
-				// 	doc.data().status === 'closed' && completed.push({
-				// 		id: doc.id,
-				// 		...doc.data()
-				// 	})
-				// ))
-
-			callback(active);
+			
+        console.log("active", active)
+        callback(active);
 
 			})
 
