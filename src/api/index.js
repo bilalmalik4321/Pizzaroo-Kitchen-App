@@ -149,7 +149,7 @@ export const getAllOrders = async (days, setIncomings) => {
     const getDaysDiff = (date) => {
       const current = moment().startOf('day');
       const convert = moment(date,'YYYY-MM-DD')
-      return -1 * moment.duration(convert.diff(current)).asDays()
+      return -1 * moment.duration(convert.diff(current)).asMinutes()
     }
   
 		return await db
@@ -201,7 +201,7 @@ export const getOrders = async (callback) => {
 				// const completed = [];
 
 				snapshot.forEach( doc => (
-					doc.data().status === 'open' && today === orderDate(doc.data().createdAt) && active.push({
+					doc.data().status === 'open' && active.push({
 						id: doc.id,
 						...doc.data()
 					})
