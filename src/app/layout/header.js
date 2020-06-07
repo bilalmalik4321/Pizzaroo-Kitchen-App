@@ -13,6 +13,8 @@ import Drawer from '@material-ui/core/Drawer';
 import MenuIcon from '@material-ui/icons/Menu';
 import firebase from 'firebase';
 import InboxIcon from '@material-ui/icons/MoveToInbox';
+import AccountBalanceWalletIcon from '@material-ui/icons/AccountBalanceWallet';
+import MenuBook from '@material-ui/icons/MenuBook';
 import MailIcon from '@material-ui/icons/Mail';
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
 import ChevronRightIcon from '@material-ui/icons/ChevronRight';
@@ -21,6 +23,7 @@ import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
 import List from '@material-ui/core/List';
 import Divider from '@material-ui/core/Divider';
+import logo from '../../_assets/logo.png';
 const useStyles = makeStyles((theme) => ({
   root: {
     flexGrow: 1,
@@ -32,7 +35,7 @@ const useStyles = makeStyles((theme) => ({
     flexGrow: 1,
   },
   AppBar: {
-    backgroundColor: "#FBFF12",
+    backgroundColor: "transparent",
     color: "#2D2A32",
   },
 }));
@@ -42,7 +45,7 @@ const useStyles = makeStyles((theme) => ({
 
 const ButtonAppBar = props => {
 
-  const { toggleStripe, toggleLogin, toggleLogout,toggleOrders, toggleProfile ,toggleMenu, toggleSignOut, toggleSignUp} = props.restaurant;
+  const { toggleStripe, toggleLogin, toggleLogout,toggleOrders, toggleProfile ,toggleMenu, toggleSignOut, toggleSignUp, toggleSession,loggedIn} = props.restaurant;
 
   const [open, setOpen] = React.useState(false);
 
@@ -57,9 +60,9 @@ const ButtonAppBar = props => {
 
   return (
     <div className={classes.root}>
-      <AppBar position="static" className={classes.AppBar}>
+      <AppBar position="static" className={classes.AppBar} style={{  boxShadow: 'none'}}>
         <Toolbar>
-        <IconButton
+        {loggedIn && <IconButton
             color="inherit"
             aria-label="open drawer"
             onClick={handleDrawerOpen}
@@ -67,10 +70,10 @@ const ButtonAppBar = props => {
             style={{ width: 64, height: 64, padding: 0}}
           >
             <MenuIcon style={{ width: 24, height: 24 }}  />
-          </IconButton>
+          </IconButton>}
           <LinkContainer to="/">
             <Typography variant="h4" className={classes.title}>
-              Pizzaroo
+              <img src={logo} alt="Logo" width="150" />
             </Typography>
           </LinkContainer>
 
@@ -129,7 +132,7 @@ const ButtonAppBar = props => {
           </div>}
         </Toolbar>
       </AppBar>
-      <Drawer
+      {loggedIn && <Drawer
         className={classes.drawer}
         variant="temporary"
         anchor="left"
@@ -138,7 +141,7 @@ const ButtonAppBar = props => {
           paper: classes.drawerPaper,
         }}
       >
-        <div className={classes.drawerHeader}>
+         <div className={classes.drawerHeader}>
           <IconButton onClick={handleDrawerClose}>
              <ChevronLeftIcon style={{ width: 24, height: 24 }} />
           </IconButton>
@@ -147,49 +150,42 @@ const ButtonAppBar = props => {
         <List>
 
             <ListItem button >
+            <ListItemIcon><InboxIcon /> </ListItemIcon>
             {toggleOrders && <div onClick={() => navigate('/order')}>
-              <Button
-                  style={{ marginLeft: 20, marginRight: 20}}
-                variant="contained"
-                color="primary"
-                >
-                <Typography variant="h6">Orders</Typography>
-              </Button>
+
+                <Typography variant="h5">Orders</Typography>
+
             </div>
             }
             </ListItem>
+
             <ListItem button >
+              <ListItemIcon><MenuBook /> </ListItemIcon>
             {toggleMenu && <div onClick={() => navigate('/menu')}>
-              <Button
-                style={{ marginLeft: 20, marginRight: 20}}
-                variant="contained"
-                color="primary"
-                >
-                <Typography variant="h6">Menu</Typography>
-              </Button>
+
+                <Typography variant="h5">Menu</Typography>
+
             </div>
             }
             </ListItem>
+            <Divider style={{backgroundColor:"#fcba03"}} />
             <ListItem button >
+              <ListItemIcon><AccountBalanceWalletIcon /> </ListItemIcon>
             {toggleStripe && <div onClick={() => {
 
               navigate('/connect')
 
             }}>
-            <Button
-              style={{ marginLeft: 20, marginRight: 20}}
-              variant="contained"
-              color="primary"
-              // onClick={()=>navigate('/login')}
-              >
-              <Typography variant="h6">Connect Stripe</Typography>
-            </Button>
+
+              <Typography variant="h5">Stripe profile</Typography>
+
             </div>
             }
             </ListItem>
+            <Divider style={{backgroundColor:"#fcba03"}} />
         </List>
 
-      </Drawer>
+      </Drawer>}
     </div>
   );
 }

@@ -6,6 +6,7 @@ import Container from "@material-ui/core/Container";
 import Snackbar from "@material-ui/core/Snackbar";
 import MuiAlert from "@material-ui/lab/Alert";
 import Typography from "@material-ui/core/Typography";
+import ParticlesBg from "particles-bg";
 import { Input, TextField, Grid } from "@material-ui/core";
 import { subscribe } from 'react-contextual';
 import { getStore } from "../../api";
@@ -14,7 +15,7 @@ function Alert(props) {
   return <MuiAlert elevation={6} variant="filled" {...props} />;
 }
 const Login = (props) => {
-  
+
   const { loggedIn } = props.restaurant;
   console.log('user props app', props);
 
@@ -22,10 +23,10 @@ const Login = (props) => {
 
   const isEmpty = (errors, key) => {
     const result =  Object.keys(errors).length !== 0 && errors[key] !== undefined
-  
+
     // console.log(`error - ${key} is`, result);
     return result
-    
+
     }
   const validate = () => {
     const { email, password } = props.restaurant;
@@ -50,11 +51,11 @@ const Login = (props) => {
             const user = await getStore(userInfo.user.uid);
             props.updateStore({
               ...user,
-              loggedIn: true, 
+              loggedIn: true,
               loading: false,
               toggleLogin: false,
-              toggleLogout: true, 
-              toggleProfile: true, 
+              toggleLogout: true,
+              toggleProfile: true,
               toggleSignUp: false,
               toggleSignOut: true,
               toggleOrders: true,
@@ -74,7 +75,7 @@ const Login = (props) => {
               password: err.message
             })
            }
-        }) 
+        })
 
     } catch (error ){
       if(error.code === 'auth/invalid-email')
@@ -88,9 +89,41 @@ const Login = (props) => {
       }
     }
   }
+  let config = {
+    num: [4, 7],
+    rps: 0.1,
+    radius: [5, 40],
+    life: [1.5, 3],
+    v: [2, 3],
+    tha: [-40, 40],
+    alpha: [0.6, 0],
+    scale: [.1, 0.4],
+    position: "all",
+    color: ["#ffff00", "#ff0000"],
+    cross: "dead",
+    // emitter: "follow",
+    random: 15
+  };
+
+  if (Math.random() > 0.85) {
+    config = Object.assign(config, {
+      onParticleUpdate: (ctx, particle) => {
+        ctx.beginPath();
+        ctx.rect(
+          particle.p.x,
+          particle.p.y,
+          particle.radius * 2,
+          particle.radius * 2
+        );
+        ctx.fillStyle = particle.color;
+        ctx.fill();
+        ctx.closePath();
+      }
+    });
+  }
     return (
       <div>
-        <form> 
+        <form>
           <h1 style={styles.logoText}>Welcome</h1>
           <Grid  container direction="column"  justify="center" alignItems='center' >
             <Grid item xs >
@@ -108,7 +141,7 @@ const Login = (props) => {
                   helperText={isEmpty(errorMessage,'email')? errorMessage.email : ''}
                 />
             </Grid>
-             
+
             <Grid item xs>
               <TextField
                   style={{ width: 500, marginTop: 20 ,marginBottom: 20, minWidth: 200, maxWidth: 600}}
@@ -124,7 +157,7 @@ const Login = (props) => {
                 />
 
             </Grid>
-              
+
           </Grid>
 
             <div style={{ textAlign: "center" }}>
@@ -145,8 +178,9 @@ const Login = (props) => {
                 Login
               </button>
             </div>
-      
+
         </form>
+        <ParticlesBg color="#ffffff" num={20} type="custom" config={config} bg={true} />
       </div>
     );
 }

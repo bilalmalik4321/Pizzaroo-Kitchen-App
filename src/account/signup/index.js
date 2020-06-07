@@ -17,6 +17,7 @@ import FormControlLabel from '@material-ui/core/FormControlLabel';
 import { Link } from '@material-ui/core';
 import { FormLabel } from '@material-ui/core';
 import geoHash from 'ngeohash';
+import ParticlesBg from "particles-bg";
 
 
 const useStyles = makeStyles((theme) => ({
@@ -33,10 +34,10 @@ const useStyles = makeStyles((theme) => ({
   input: {
     margin: theme.spacing(1),
     // fontSize: 20,
-    // width: '100%',
+     width: '90%',
     marginTop: 30
     // height: 45,
-  
+
   },
   button: {
     alignSelf: 'center',
@@ -50,7 +51,7 @@ const useStyles = makeStyles((theme) => ({
 
   },
   checkButton: {
-  
+
     paddingLeft: 10,
     size: 30
   }
@@ -64,10 +65,10 @@ const Signup = props => {
   const [errors, setErrors] = useState({});
   const [accept, setAccept] = useState(false);
   const classes = useStyles();
-  
-  
-  
-  
+
+
+
+
   async function onRegister(e) {
     e.preventDefault();
     setLoading(true);
@@ -94,18 +95,18 @@ const Signup = props => {
         props.resetStore();
         navigate('/login');;
       } else {
-        
+
         console.log("error registrating a store", error);
       }
-  
+
     } catch (err) {
 
       console.log("error creating a store", err);
     }
-    
+
    setLoading(false);
 
-  
+
   }
   const [check, setCheck] = useState(false);
   const isEmpty = (errors, key) => {
@@ -113,7 +114,7 @@ const Signup = props => {
 
   // console.log(`error - ${key} is`, result);
   return result
-  
+
   }
   const inputProps = {
     disableUnderline: false,
@@ -125,13 +126,48 @@ const Signup = props => {
     props.updateStore(key,e);
   }
   const label = ( <div> <span>I accept the </span> <Link onClick={() => {}}>terms of use</Link> <span> and </span> <Link to={'/privacy'}>privacy policy</Link> </div> )
+  let config = {
+    num: [4, 7],
+    rps: 0.1,
+    radius: [5, 40],
+    life: [1.5, 3],
+    v: [2, 3],
+    tha: [-40, 40],
+    alpha: [0.6, 0],
+    scale: [.1, 0.4],
+    position: "all",
+    color: ["#ffff00", "#ff0000"],
+    cross: "dead",
+    // emitter: "follow",
+    random: 15
+  };
+
+  if (Math.random() > 0.85) {
+    config = Object.assign(config, {
+      onParticleUpdate: (ctx, particle) => {
+        ctx.beginPath();
+        ctx.rect(
+          particle.p.x,
+          particle.p.y,
+          particle.radius * 2,
+          particle.radius * 2
+        );
+        ctx.fillStyle = particle.color;
+        ctx.fill();
+        ctx.closePath();
+      }
+    });
+  }
     return (
 
-        <div className={classes.form}>
-          <h1 style={styles.logoText}>Welcome</h1>
-          <Container maxWidth={'sm'}>
+        <div >
+          <h1 style={styles.logoText}>Sign up</h1>
+          <Grid container spacing={1}>
+
+        <Grid item xs={6}>
+          <Container maxWidth='sm'>
           <Grid container direction="column" spacing={1}>
-         
+
              <TextField
                 label="Manager First Name"
                 InputProps={{style: {fontSize: 15}}}
@@ -140,15 +176,15 @@ const Signup = props => {
                 className={classes.input}
                 value={props.restaurant.firstName || ''}
                 onChange={ e => {
-                
+
                   onChangeValue('firstName', e.target.value)
-                  
+
                 }}
                 error={check && isEmpty(errors, 'firstName')}
                 helperText={isEmpty(errors, 'firstName')? errors.firstName : ''}
-                
+
               />
-            
+
               <TextField
                 label="Manager Last Name"
                 InputProps={{style: {fontSize: 15}}}
@@ -163,7 +199,7 @@ const Signup = props => {
 
                 error={isEmpty(errors, 'lastName')}
                 helperText={isEmpty(errors, 'lastName')? errors.lastName : ''}
-  
+
               />
 
               <TextField
@@ -224,18 +260,27 @@ const Signup = props => {
                 error={isEmpty(errors, 'storeEmail')}
                 helperText={isEmpty(errors, 'storeEmail')? errors.storeEmail : ''}
               />
-              <TextField
-                InputProps={{style: {fontSize: 15}}}
-                size="small"
-                variant="outlined"
-                className={classes.input}
-                value={props.restaurant.password || ''}
-                onChange={(e)=> onChangeValue('password', e.target.value)}
-                type="password"
-                label="Password"
-                error={isEmpty(errors, 'password')}
-                helperText={isEmpty(errors, 'password')? errors.password : ''}
-              />
+
+              </Grid>
+              </Container>
+              </Grid>
+
+
+              <Grid item xs={6}>
+                <Container maxWidth='sm'>
+                <Grid container direction="column" spacing={1}>
+                <TextField
+                  InputProps={{style: {fontSize: 15}}}
+                  size="small"
+                  variant="outlined"
+                  className={classes.input}
+                  value={props.restaurant.password || ''}
+                  onChange={(e)=> onChangeValue('password', e.target.value)}
+                  type="password"
+                  label="Password"
+                  error={isEmpty(errors, 'password')}
+                  helperText={isEmpty(errors, 'password')? errors.password : ''}
+                />
               <TextField
                 InputProps={{style: {fontSize: 15}}}
                 size="small"
@@ -248,7 +293,7 @@ const Signup = props => {
                 error={isEmpty(errors, 'repeatPassword')}
                 helperText={isEmpty(errors, 'repeatPassword')? errors.repeatPassword : ''}
               />
-            
+
               <TextField
                 InputProps={{style: {fontSize: 15}}}
                 size="small"
@@ -287,7 +332,7 @@ const Signup = props => {
               >
               <MenuItem value={'Ontario'}>Ontario</MenuItem>
               </TextField>
-            
+
               <TextField
                 InputProps={{style: {fontSize: 15}}}
                 size="small"
@@ -299,7 +344,7 @@ const Signup = props => {
                 error={isEmpty(errors, 'postalCode')}
                 helperText={isEmpty(errors, 'postalCode')? errors.postalCode : ''}
               />
-                 
+
               <TextField
                 InputProps={{style: {fontSize: 15}}}
                 size="small"
@@ -311,7 +356,7 @@ const Signup = props => {
                 error={isEmpty(errors, 'country')}
                 helperText={isEmpty(errors, 'country')? errors.country : ''}
               />
-              
+
               {/* <TextField
                 InputProps={{style: {fontSize: 15}}}
                 size="small"
@@ -324,7 +369,7 @@ const Signup = props => {
                 // helperText={isEmpty(errors, 'registrationCode')? errors.registrationCode : ''}
               />
         */}
-        
+
               <FormControlLabel
                 className={classes.checkButton}
                 control={<Checkbox color="primary" value={accept} onClick={() => setAccept(!accept)}/>}
@@ -336,7 +381,7 @@ const Signup = props => {
                 className={classes.button}
                 type="submit"
                 onClick={(e) => {
-                 
+
                   const err = validations.signup(props);
                   console.log("errors ", err);
                 if( Object.keys(err).length !== 0) {
@@ -348,19 +393,23 @@ const Signup = props => {
                   if(accept) {
                     onRegister(e)
                   }
-                    
+
                 }
-                  
+
                 }}
               >
                 {!loading ? 'Register' : 'Loading'}
               </button>
+
             </Grid>
           </Container>
+          </Grid>
+          </Grid>
+            <ParticlesBg color="#ffffff" num={20}  type="custom" config={config} bg={true} />
+
         </div>
-  
+
     );
   }
 
 export default subscribe()(Signup);
-
