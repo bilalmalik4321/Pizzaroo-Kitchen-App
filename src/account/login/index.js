@@ -6,34 +6,35 @@ import Container from "@material-ui/core/Container";
 import Snackbar from "@material-ui/core/Snackbar";
 import MuiAlert from "@material-ui/lab/Alert";
 import Typography from "@material-ui/core/Typography";
-import { Input, TextField, Grid } from "@material-ui/core";
+import { Input, TextField, Grid, Button } from "@material-ui/core";
+import { makeStyles } from "@material-ui/core/styles";
 import { subscribe } from 'react-contextual';
 import { getStore } from "../../api";
 import { navigate } from 'hookrouter';
-function Alert(props) {
-  return <MuiAlert elevation={6} variant="filled" {...props} />;
-}
+import './index.css';
+
+
+// function Alert(props) {
+//   return <MuiAlert elevation={6} variant="filled" {...props} />;
+// }
 const Login = (props) => {
   
   const { loggedIn } = props.restaurant;
-  console.log('user props app', props);
+  // console.log('user props app', props);
 
   const [errorMessage, setError] = useState({});
 
   const isEmpty = (errors, key) => {
     const result =  Object.keys(errors).length !== 0 && errors[key] !== undefined
-  
-    // console.log(`error - ${key} is`, result);
     return result
-    
-    }
+  }
   const validate = () => {
     const { email, password } = props.restaurant;
     let error = {};
 
     if(!email || email.lenght < 6 ) error.email = "Enter a valid email.";
     if(!password || password.length < 6) error.password = "Enter a valid password.";
-
+    
     return error;
   }
 
@@ -90,65 +91,155 @@ const Login = (props) => {
     }
   }
     return (
-      <div>
-        <form> 
-          <h1 style={styles.logoText}>Welcome</h1>
-          <Grid  container direction="column"  justify="center" alignItems='center' >
-            <Grid item xs >
-              <TextField
-                  style={{ width: 500, marginTop: 20 , minWidth: 200, maxWidth: 600}}
-                  label="Email"
-                  // className={classes.input}
-                  value={props.restaurant.email || ''}
-                  onChange={e => props.updateStore({email: e.target.value})}
-                  type="email"
-                  placeholder="Email"
-                  size="medium"
-                  variant="outlined"
-                  error={isEmpty(errorMessage,'email') }
-                  helperText={isEmpty(errorMessage,'email')? errorMessage.email : ''}
-                />
-            </Grid>
-             
-            <Grid item xs>
-              <TextField
-                  style={{ width: 500, marginTop: 20 ,marginBottom: 20, minWidth: 200, maxWidth: 600}}
-                  variant="outlined"
-                  label="Password"
-                  size="medium"
-                  value={props.restaurant.password || ''}
-                  onChange={e => props.updateStore({password: e.target.value})}
-                  type="password"
-                  placeholder="Password"
-                  error={isEmpty(errorMessage,'password') }
-                  helperText={isEmpty(errorMessage,'password')? errorMessage.password : ''}
-                />
+      <Grid container justify="center" className="root">
+        {/* <div className="home">
+        </div> */}
+       
+        <Grid container item justify='center' alignItems="center" className="home" >
+          <Grid container justify='center' >
+            <h1> HELLO</h1>
+          </Grid>
+        </Grid>
+          
+        <Grid container item justify="center" alignItems="flex-start" style={{marginTop: '10%'}}>
+        <Grid container className="center-box" direction="row" style={{borderRadius: 35, width: '80%'}}>
+          <Grid item xs={3} justify='center' className='image' style={{borderBottomLeftRadius: 35, borderTopLeftRadius: 35}}>
 
-            </Grid>
+          </Grid>
+          <Grid item xs={9}>
+            <form > 
+            <h1 style={styles.logoText}>Welcome</h1>
+            <Grid  container direction="column"  justify="center" alignItems='center' >
+              <Grid item xs >
+                <TextField
+                    style={{ width: 300, marginTop: 20 , minWidth: 50}}
+                    label="Email"
+                    // className={classes.input}
+                    value={props.restaurant.email || ''}
+                    onChange={e => props.updateStore({email: e.target.value})}
+                    type="email"
+                    placeholder="Email"
+                    size="medium"
+                    variant="outlined"
+                    error={isEmpty(errorMessage,'email') }
+                    helperText={isEmpty(errorMessage,'email')? errorMessage.email : ''}
+                  />
+              </Grid>
               
+              <Grid item xs>
+                <TextField
+                    style={{ width: 300, marginTop: 20 ,marginBottom: 20, minWidth: 50}}
+                    variant="outlined"
+                    label="Password"
+                    size="medium"
+                    value={props.restaurant.password || ''}
+                    onChange={e => props.updateStore({password: e.target.value})}
+                    type="password"
+                    placeholder="Password"
+                    error={isEmpty(errorMessage,'password') }
+                    helperText={isEmpty(errorMessage,'password')? errorMessage.password : ''}
+                  />
+
+              </Grid>
+                
+            </Grid>
+
+              <div style={{ textAlign: "center", marginTop: 100 }}>
+                <Button
+                  style={styles.onClickedButton}
+                  type="submit"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    let err = validate();
+                    console.log("errr",err)
+                    if(Object.keys(err).length === 0)
+                      onLogin(e)
+                    else
+                      setError(err)
+                  }}
+                  className="btn btn-primary"
+                >
+                  <Typography variant="h6">Login</Typography>
+                </Button>
+              </div>
+        
+          </form>
+        
+          </Grid>
+        </Grid>
+        </Grid>
+{/*        
+        <Grid container direction="row" style={{borderRadius: 35}}>
+          <Grid item xs={4} justify='flex-start' className='image' style={{borderBottomLeftRadius: 35, borderTopLeftRadius: 35}}>
+
+          </Grid>
+          <Grid item xs={8}>
+            <form > 
+            <h1 style={styles.logoText}>Welcome</h1>
+            <Grid  container direction="column"  justify="center" alignItems='center' >
+              <Grid item xs >
+                <TextField
+                    style={{ width: 500, marginTop: 20 , minWidth: 200, maxWidth: 600}}
+                    label="Email"
+                    // className={classes.input}
+                    value={props.restaurant.email || ''}
+                    onChange={e => props.updateStore({email: e.target.value})}
+                    type="email"
+                    placeholder="Email"
+                    size="medium"
+                    variant="outlined"
+                    error={isEmpty(errorMessage,'email') }
+                    helperText={isEmpty(errorMessage,'email')? errorMessage.email : ''}
+                  />
+              </Grid>
+              
+              <Grid item xs>
+                <TextField
+                    style={{ width: 500, marginTop: 20 ,marginBottom: 20, minWidth: 200, maxWidth: 600}}
+                    variant="outlined"
+                    label="Password"
+                    size="medium"
+                    value={props.restaurant.password || ''}
+                    onChange={e => props.updateStore({password: e.target.value})}
+                    type="password"
+                    placeholder="Password"
+                    error={isEmpty(errorMessage,'password') }
+                    helperText={isEmpty(errorMessage,'password')? errorMessage.password : ''}
+                  />
+
+              </Grid>
+                
+            </Grid>
+
+              <div style={{ textAlign: "center" }}>
+                <button
+                  style={styles.loginButton}
+                  type="submit"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    let err = validate();
+                    console.log("errr",err)
+                    if(Object.keys(err).length === 0)
+                      onLogin(e)
+                    else
+                      setError(err)
+                  }}
+                  className="btn btn-primary"
+                >
+                  Login
+                </button>
+              </div>
+        
+          </form>
+        
           </Grid>
 
-            <div style={{ textAlign: "center" }}>
-              <button
-                style={styles.loginButton}
-                type="submit"
-                onClick={(e) => {
-                  e.preventDefault();
-                  let err = validate();
-                  console.log("errr",err)
-                  if(Object.keys(err).length === 0)
-                    onLogin(e)
-                  else
-                    setError(err)
-                }}
-                className="btn btn-primary"
-              >
-                Login
-              </button>
-            </div>
-      
-        </form>
-      </div>
+        </Grid>
+         */}
+
+        {/* </Grid> */}
+        
+      </Grid>
     );
 }
 

@@ -1,4 +1,3 @@
-import React from 'react';
 
 export default {
   logoText: {
@@ -41,5 +40,14 @@ export default {
     textAlign: "center",
     color: "red",
     fontSize: 18,
+  },
+  onClickedButton :{
+    width: 200,
+    marginRight: 20,
+    marginLeft: 20,
+    background: `linear-gradient(152.04deg, #FFA500 29.77%, #D97400 102.89%)`,
+    borderRadius: 35,
+    color: 'white',
+    marginBottom: 200
   },
 };
