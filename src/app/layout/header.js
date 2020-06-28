@@ -15,6 +15,7 @@ import firebase from 'firebase';
 const useStyles = makeStyles((theme) => ({
   root: {
     flexGrow: 1,
+    zIndex: 10
   },
   menuButton: {
     marginRight: theme.spacing(2),
@@ -22,9 +23,16 @@ const useStyles = makeStyles((theme) => ({
   title: {
     flexGrow: 1,
   },
+  logo: {
+    width: 150,
+    height: 40
+  },
+
   AppBar: {
-    backgroundColor: "#FBFF12",
-    color: "#2D2A32",
+    height: 80,
+    backgroundColor: 'white',
+    padding: '10px 30px 10px 30px',
+    color: "red",
   },
 }));
 
@@ -39,17 +47,18 @@ const ButtonAppBar = props => {
   const classes = useStyles();
 
   return (
-    <div className={classes.root}>
+    <div style={{ zIndex: 10}}>
       <AppBar position="static" className={classes.AppBar}>
         <Toolbar>
-          <LinkContainer to="/">
-            <Typography variant="h4" className={classes.title}>
+          <div className={classes.title}>
+            <img src={require("../../_assets/eatco.png")} className={classes.logo}/>
+            {/* <Typography variant="h4" className={classes.title}>
               Pizzaroo
-            </Typography>
-          </LinkContainer>
+            </Typography> */}
+          </div>
           {toggleOrders && <div onClick={() => navigate('/order')}>
             <Button 
-                style={{ marginLeft: 20, marginRight: 20}}
+              style={{ marginLeft: 20, marginRight: 20}}
               variant="contained" 
               color="primary"
               >
