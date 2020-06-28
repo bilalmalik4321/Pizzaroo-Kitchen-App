@@ -33,7 +33,7 @@ const useStyles = makeStyles((theme) => ({
 
 const ButtonAppBar = props => {
 
-  const { toggleStripe, toggleLogin, toggleLogout,toggleOrders, toggleProfile ,toggleMenu, toggleSignOut, toggleSignUp} = props.restaurant;
+  const { toggleStripe, toggleLogin, toggleHistory, toggleLogout,toggleOrders, toggleProfile ,toggleMenu, toggleSignOut, toggleSignUp} = props.restaurant;
   
   
   const classes = useStyles();
@@ -80,6 +80,22 @@ const ButtonAppBar = props => {
             // onClick={()=>navigate('/login')}
             >
             <Typography variant="h6">Connect Stripe</Typography>
+          </Button>
+          </div>
+          }
+
+          {toggleHistory && <div onClick={() => {
+            
+            navigate('/history')
+            
+          }}>
+          <Button 
+            style={{ marginLeft: 20, marginRight: 20}}
+            variant="contained" 
+            color="primary"
+          
+            >
+            <Typography variant="h6">Past Orders</Typography>
           </Button>
           </div>
           }

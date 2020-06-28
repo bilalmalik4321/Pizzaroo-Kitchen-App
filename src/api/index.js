@@ -1,7 +1,6 @@
 import firebase from "../firebase";
 import moment from 'moment';
 import axios from 'axios';
-import apiKey from '../googleAPI';
 import geohash from 'ngeohash';
 // access the database
 
@@ -50,18 +49,18 @@ export const createStore = async (payload) => {
 
     // user is created in auth but not in the collection
 
-    const  location = await geoCoding(payload.postalCode);
-    const { lat, lng } = location;
-    const latlon = geohash.encode( lat, lng );
+    // const  location = await geoCoding(payload.postalCode);
+    // const { lat, lng } = location;
+    // const latlon = geohash.encode( lat, lng );
     
     await db
       .collection("stores")
       .doc(signedUpStore.user.uid)
       .set({ 
         ...storeInfo,
-        lat,
-        lng,
-        latlon
+        // lat,
+        // lng,
+        // latlon
       }, { merge: true });
 
     // return true after success
@@ -98,30 +97,30 @@ export const getStore = async (uid) => {
   }
 };
 
-export const geoCoding = async(address) => {
-  try {
-    const key = apiKey;
-    const { data } = await axios.get(
-      'https://maps.googleapis.com/maps/api/geocode/json',
-      {
-        params: {
-          address,
-          key
-        }
-      }
-    );
+// export const geoCoding = async(address) => {
+//   try {
+//     const key = apiKey;
+//     const { data } = await axios.get(
+//       'https://maps.googleapis.com/maps/api/geocode/json',
+//       {
+//         params: {
+//           address,
+//           key
+//         }
+//       }
+//     );
 
-    const { lat, lng } = data.results[0].geometry.location;
-    console.log("lat",lat,'lng',lng )
-    return {
-        lat,
-        lng
-    }
-  } catch (error ) {
-    console.log("error geoCode", error)
-  }
+//     const { lat, lng } = data.results[0].geometry.location;
+//     console.log("lat",lat,'lng',lng )
+//     return {
+//         lat,
+//         lng
+//     }
+//   } catch (error ) {
+//     console.log("error geoCode", error)
+//   }
 
-}
+// }
 export function getDistanceFromLatLonInKm(lat1,lon1,lat2,lon2) {
   var R = 6371; // Radius of the earth in km
   var dLat = deg2rad(lat2-lat1);  // deg2rad below
@@ -140,15 +139,58 @@ function deg2rad(deg) {
   return deg * (Math.PI/180)
 }
 
+export const getAllOrders = async (days, setIncomings) => {
+	try {
+
+		const userInfo = firebase.auth().currentUser;
+		const { uid } = userInfo;
+    // .where('customerId', '==', uid)
+
+    const getDaysDiff = (date) => {
+      const current = moment().startOf('day');
+      const convert = moment(date,'YYYY-MM-DD')
+      return -1 * moment.duration(convert.diff(current)).asMinutes()
+    }
+  
+		return await db
+      .collection('orders')
+      .where('storeId', '==', uid)
+			.onSnapshot( snapshot => {
+
+				const active = [];
+				// const completed = [];
+
+				snapshot.forEach( doc => (
+					doc.data().status === 'open' &&  getDaysDiff(doc.data().createdAt) <= days && active.push({
+						id: doc.id,
+						...doc.data()
+					})
+				))
+          
+        console.log("active", active)
+        setIncomings(active)
+        // return active
+
+			})
+
+	} catch (error) {
+		console.log("getOrders error", error);
+	}
+}
+
 export const getOrders = async (callback) => {
 	try {
 
 		const userInfo = firebase.auth().currentUser;
 		const { uid } = userInfo;
     // .where('customerId', '==', uid)
-    
+    const ex = '2020-05-20 12:26:27:57:574 pm'
     const orderDate = (time) => moment(time,'YYYY-MM-DD').format('L');
     const today = moment().format('MM/DD/YYYY');
+    var given = moment(ex,'YYYY-MM-DD')
+    // console.log("given, exp", given);
+    var current = moment().startOf('day');
+    console.log("diff",moment.duration(given.diff(current)).asDays() + 1)
 		return await db
       .collection('orders')
       .where('status', '==', 'open')
@@ -159,19 +201,14 @@ export const getOrders = async (callback) => {
 				// const completed = [];
 
 				snapshot.forEach( doc => (
-					doc.data().status === 'open' && today === orderDate(doc.data().status) && active.push({
+					doc.data().status === 'open' && active.push({
 						id: doc.id,
 						...doc.data()
 					})
 				))
-				// snapshot.forEach( doc => (
-				// 	doc.data().status === 'closed' && completed.push({
-				// 		id: doc.id,
-				// 		...doc.data()
-				// 	})
-				// ))
-
-			callback(active);
+			
+        console.log("active", active)
+        callback(active);
 
 			})
 
