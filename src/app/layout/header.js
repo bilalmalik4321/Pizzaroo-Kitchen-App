@@ -12,8 +12,8 @@ import firebase from 'firebase';
 
 function checkPath(route) {
   const path = window.location.pathname.split('/')
-  // console.log('path', path)
-  if (path.length === 1) 
+  console.log('path', window.location.pathname)
+  if (route === 'login' && window.location.pathname ==='/') 
     return true 
   return path[1].includes(route)
 }
@@ -131,7 +131,7 @@ const ButtonAppBar = props => {
         
           {toggleLogin && <div onClick={() => navigate('/login')}>
           <Button 
-            className={(checkPath('login') || checkPath('home')) ? classes.onClickedButton : classes.beforeButton}
+            className={(checkPath('login')) ? classes.onClickedButton : classes.beforeButton}
 
             >
             <Typography variant="h6">Login</Typography>

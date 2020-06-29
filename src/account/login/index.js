@@ -7,11 +7,25 @@ import Snackbar from "@material-ui/core/Snackbar";
 import MuiAlert from "@material-ui/lab/Alert";
 import Typography from "@material-ui/core/Typography";
 import { Input, TextField, Grid, Button } from "@material-ui/core";
-import { makeStyles } from "@material-ui/core/styles";
+import { makeStyles , withStyles} from "@material-ui/core/styles";
 import { subscribe } from 'react-contextual';
 import { getStore } from "../../api";
 import { navigate } from 'hookrouter';
 import './index.css';
+
+const makeCSS = makeStyles({
+  root: {
+    // "& .MuiOutlinedInput-root .MuiOutlinedInput-notchedOutline": {
+    //   borderColor: "green"
+    // },
+    "&:hover .MuiOutlinedInput-root .MuiOutlinedInput-notchedOutline": {
+      borderColor: "#FFA500"
+    },
+    "& .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline": {
+      borderColor: "#FFA500"
+    }
+  }
+});
 
 
 // function Alert(props) {
@@ -19,6 +33,7 @@ import './index.css';
 // }
 const Login = (props) => {
   
+  const classes = makeCSS()
   const { loggedIn } = props.restaurant;
   // console.log('user props app', props);
 
@@ -101,18 +116,22 @@ const Login = (props) => {
           </Grid>
         </Grid>
           
-        <Grid container item justify="center" alignItems="flex-start" style={{marginTop: '10%'}}>
+        <Grid container item justify="center" alignItems="flex-start" style={{marginTop: '8%'}}>
         <Grid container className="center-box" direction="row" style={{borderRadius: 35, width: '80%'}}>
-          <Grid item xs={3} justify='center' className='image' style={{borderBottomLeftRadius: 35, borderTopLeftRadius: 35}}>
+          <Grid item xs={3}  className='image' style={{borderBottomLeftRadius: 35, borderTopLeftRadius: 35}}>
 
           </Grid>
           <Grid item xs={9}>
             <form > 
-            <h1 style={styles.logoText}>Welcome</h1>
+            <h1 style={styles.logoText}>Login</h1>
             <Grid  container direction="column"  justify="center" alignItems='center' >
               <Grid item xs >
                 <TextField
-                    style={{ width: 300, marginTop: 20 , minWidth: 50}}
+                    inputProps={{
+                      style: {fontSize: 20} 
+                    }}
+                    className={classes.root}
+                    style={{ width: 300, marginTop: 20 , minWidth: 50 , borderColor: '#FFA500'}}
                     label="Email"
                     // className={classes.input}
                     value={props.restaurant.email || ''}
@@ -128,6 +147,10 @@ const Login = (props) => {
               
               <Grid item xs>
                 <TextField
+                    inputProps={{
+                      style: {fontSize: 20} 
+                    }}
+                    className={classes.root}
                     style={{ width: 300, marginTop: 20 ,marginBottom: 20, minWidth: 50}}
                     variant="outlined"
                     label="Password"
@@ -141,10 +164,14 @@ const Login = (props) => {
                   />
 
               </Grid>
+              <Grid item  xs >
+                <Typography  variant="h6" onClick={() => navigate('signup')}> Forgot Password?</Typography>
+              </Grid>
+             
                 
             </Grid>
 
-              <div style={{ textAlign: "center", marginTop: 100 }}>
+              <div style={{ textAlign: "center", marginTop: 50 }}>
                 <Button
                   style={styles.onClickedButton}
                   type="submit"
@@ -164,7 +191,12 @@ const Login = (props) => {
               </div>
         
           </form>
-        
+          <Grid container direction="row" justify="center" alignItems='center' style={{marginBottom: 100}}>
+            <Typography  variant="h6" style={{marginRight: 10}}>Don't have an account? </Typography> 
+            <Typography  variant="h6" className="link" onClick={() => navigate('signup')}> Register Now</Typography>
+            
+          </Grid>
+          
           </Grid>
         </Grid>
         </Grid>
