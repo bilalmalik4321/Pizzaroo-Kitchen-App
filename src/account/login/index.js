@@ -106,7 +106,7 @@ const Login = (props) => {
     }
   }
     return (
-      <Grid container justify="center" className="root">
+      <Grid container justify="center" className="root" style={{height: '100%'}}>
         {/* <div className="home">
         </div> */}
        
@@ -116,10 +116,9 @@ const Login = (props) => {
           </Grid>
         </Grid>
           
-        <Grid container item justify="center" alignItems="flex-start" style={{marginTop: '8%'}}>
-        <Grid container className="center-box" direction="row" style={{borderRadius: 35, width: '80%'}}>
-          <Grid item xs={3}  className='image' style={{borderBottomLeftRadius: 35, borderTopLeftRadius: 35}}>
-
+        <Grid container className="shell" item justify="center" alignItems="flex-start" style={{marginTop: '8%', height: 550}}>
+        <Grid container className="center-box" direction="row" style={{borderRadius: 35, width: '80%',height: 550}}>
+          <Grid item xs={3}  className='image' style={{borderBottomLeftRadius: 35, borderTopLeftRadius: 35,height: 550}}>
           </Grid>
           <Grid item xs={9}>
             <form > 
