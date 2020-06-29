@@ -26,7 +26,7 @@ const useStyles = makeStyles((theme) => ({
   beforeButton: {
     marginRight: 20,
     marginLeft: 20,
-    color: 'black'
+    color: '#FFA500'
   },
 
   onClickedButton :{
