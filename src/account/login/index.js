@@ -164,14 +164,14 @@ const Login = (props) => {
                   />
 
               </Grid>
-              <Grid item  xs >
-                <Typography  variant="h6" onClick={() => navigate('signup')}> Forgot Password?</Typography>
-              </Grid>
+              {/* <Grid item  xs >
+                <Typography  className="forgot" variant="h6" onClick={() => navigate('signup')}> Forgot Password?</Typography>
+              </Grid> */}
              
                 
             </Grid>
 
-              <div style={{ textAlign: "center", marginTop: 50 }}>
+              <div style={{ textAlign: "center", marginTop: 30 }}>
                 <Button
                   style={styles.onClickedButton}
                   type="submit"
@@ -191,86 +191,20 @@ const Login = (props) => {
               </div>
         
           </form>
-          <Grid container direction="row" justify="center" alignItems='center' style={{marginBottom: 100}}>
+          <Grid container direction="row" justify="center" alignItems='center' style={{marginBottom: 10}}>
             <Typography  variant="h6" style={{marginRight: 10}}>Don't have an account? </Typography> 
             <Typography  variant="h6" className="link" onClick={() => navigate('signup')}> Register Now</Typography>
+            
+          </Grid>
+          <Grid container direction="row" justify="center" alignItems='center' style={{marginBottom: 100}}>
+            <Typography  variant="h6" style={{marginRight: 10}}>Forgot your password? </Typography> 
+            <Typography  variant="h6" className="link" onClick={() => navigate('signup')}> Recover password</Typography>
             
           </Grid>
           
           </Grid>
         </Grid>
         </Grid>
-{/*        
-        <Grid container direction="row" style={{borderRadius: 35}}>
-          <Grid item xs={4} justify='flex-start' className='image' style={{borderBottomLeftRadius: 35, borderTopLeftRadius: 35}}>
-
-          </Grid>
-          <Grid item xs={8}>
-            <form > 
-            <h1 style={styles.logoText}>Welcome</h1>
-            <Grid  container direction="column"  justify="center" alignItems='center' >
-              <Grid item xs >
-                <TextField
-                    style={{ width: 500, marginTop: 20 , minWidth: 200, maxWidth: 600}}
-                    label="Email"
-                    // className={classes.input}
-                    value={props.restaurant.email || ''}
-                    onChange={e => props.updateStore({email: e.target.value})}
-                    type="email"
-                    placeholder="Email"
-                    size="medium"
-                    variant="outlined"
-                    error={isEmpty(errorMessage,'email') }
-                    helperText={isEmpty(errorMessage,'email')? errorMessage.email : ''}
-                  />
-              </Grid>
-              
-              <Grid item xs>
-                <TextField
-                    style={{ width: 500, marginTop: 20 ,marginBottom: 20, minWidth: 200, maxWidth: 600}}
-                    variant="outlined"
-                    label="Password"
-                    size="medium"
-                    value={props.restaurant.password || ''}
-                    onChange={e => props.updateStore({password: e.target.value})}
-                    type="password"
-                    placeholder="Password"
-                    error={isEmpty(errorMessage,'password') }
-                    helperText={isEmpty(errorMessage,'password')? errorMessage.password : ''}
-                  />
-
-              </Grid>
-                
-            </Grid>
-
-              <div style={{ textAlign: "center" }}>
-                <button
-                  style={styles.loginButton}
-                  type="submit"
-                  onClick={(e) => {
-                    e.preventDefault();
-                    let err = validate();
-                    console.log("errr",err)
-                    if(Object.keys(err).length === 0)
-                      onLogin(e)
-                    else
-                      setError(err)
-                  }}
-                  className="btn btn-primary"
-                >
-                  Login
-                </button>
-              </div>
-        
-          </form>
-        
-          </Grid>
-
-        </Grid>
-         */}
-
-        {/* </Grid> */}
-        
       </Grid>
     );
 }

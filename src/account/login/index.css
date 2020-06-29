@@ -72,8 +72,14 @@
 
 .link {
   color: #FFA500;
+  cursor:pointer;
 }
 
 .p {
   font-size: 10;
+}
+
+.forgot {
+  cursor:pointer;
+  font-weight: 200;
 }
