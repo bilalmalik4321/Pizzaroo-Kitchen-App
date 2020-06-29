@@ -1,10 +1,9 @@
-import React from 'react';
 
 export default {
   logoText: {
     fontSize: 40,
     fontWeight: "800",
-    marginTop: 150,
+    marginTop: 125,
     marginBottom: 30,
     textAlign: "center",
   },
@@ -42,4 +41,14 @@ export default {
     color: "red",
     fontSize: 18,
   },
+  onClickedButton :{
+    width: 200,
+    marginRight: 20,
+    marginLeft: 20,
+    background: `linear-gradient(152.04deg, #FFA500 29.77%, #D97400 102.89%)`,
+    borderRadius: 35,
+    color: 'white',
+    marginBottom: 50
+  },
+
 };

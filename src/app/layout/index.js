@@ -6,7 +6,7 @@ import HeaderBar from './header';
 const Wrapper = props => {
 
   return(
-    <div>
+    <div style={{}}>
       <HeaderBar/>
       <div>
         {props.children}

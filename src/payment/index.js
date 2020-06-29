@@ -3,7 +3,6 @@ import { subscribe } from 'react-contextual';
 
 import Grid from "@material-ui/core/Grid";
 import Button from "@material-ui/core/Button";
-import Badge from '@material-ui/core/Badge';
 import firebase from 'firebase';
 import { getStore, callCloudFunctions } from '../api';
 
@@ -11,11 +10,13 @@ const Payment = props => {
    
   // console.log("props params -----", props);
   const query = new URLSearchParams(window.location.search);
+
   const [loading, setLoading ] = useState(false);
   const [loadingDelete, setLoadingDelete ] = useState(false);
   const [loadingExpress, setLoadingExpress ] = useState(false);
+
   const { stripe_connected_account_id } = props.restaurant;
-  console.log("account ----", stripe_connected_account_id)
+ 
   const updateUser = async (uid)=> {
     const userInfo = await getStore(uid);
     props.updateStore({...userInfo});
@@ -91,14 +92,14 @@ const Payment = props => {
           <Button
             loading={loading.toString()}
             disabled={loading}
-           style={{ height: 50}}
+            style={{ height: 50}}
             onClick={() => onRequest()}
             variant="contained"
             color="secondary"
           >Set up payouts</Button>
           <p> You'll be redireced to stripe to complete the onboarding process</p>
         </Grid>
-      :
+        : 
         <Grid xs container item justify="center" direction="column">
 
           <Button
@@ -108,17 +109,22 @@ const Payment = props => {
             style={{ height: 50}}
             variant="contained"
             color="primary"
-          >Click here to Payout to your Bank account</Button>
+          >
+            Click here to Payout to your Bank account
+          </Button>
+          
           <h1>Stripe account is : {stripe_connected_account_id} </h1>
 
           <Button
             onClick={() => onDelete()}
             loading={loadingDelete.toString()}
             disabled={loadingDelete}
-              style={{ height: 50}}
-              variant="contained"
-              color="secondary"
-            >Delete stripe account id from database</Button>
+            style={{ height: 50}}
+            variant="contained"
+            color="secondary"
+          >
+            Delete stripe account id from database
+          </Button>
         </Grid>
         }
       </Grid>

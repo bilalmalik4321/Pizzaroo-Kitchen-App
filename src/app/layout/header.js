@@ -4,27 +4,55 @@ import AppBar from "@material-ui/core/AppBar";
 import Toolbar from "@material-ui/core/Toolbar";
 import Typography from "@material-ui/core/Typography";
 import Button from "@material-ui/core/Button";
-import { LinkContainer } from "react-router-bootstrap";
 import { navigate } from 'hookrouter';
 import { subscribe } from 'react-contextual';
 import AccountCircle from "@material-ui/icons/AccountCircle";
 import IconButton from "@material-ui/core/IconButton";
 import firebase from 'firebase';
 
-
+function checkPath(route) {
+  const path = window.location.pathname.split('/')
+  console.log('path', window.location.pathname)
+  if (route === 'login' && window.location.pathname ==='/') 
+    return true 
+  return path[1].includes(route)
+}
 const useStyles = makeStyles((theme) => ({
   root: {
     flexGrow: 1,
+    zIndex: 10,
+    // minWidth: 700
   },
+  beforeButton: {
+    marginRight: 20,
+    marginLeft: 20,
+    color: '#FFA500'
+  },
+
+  onClickedButton :{
+    marginRight: 20,
+    marginLeft: 20,
+    background: `linear-gradient(152.04deg, #FFA500 29.77%, #D97400 102.89%)`,
+    borderRadius: 35,
+    color: 'white'
+  },
+
   menuButton: {
     marginRight: theme.spacing(2),
   },
   title: {
     flexGrow: 1,
   },
+  logo: {
+    width: 150,
+    height: 40
+  },
+
   AppBar: {
-    backgroundColor: "#FBFF12",
-    color: "#2D2A32",
+    height: 80,
+    backgroundColor: 'white',
+    padding: '10px 30px 10px 30px',
+    color: "red",
   },
 }));
 
@@ -39,19 +67,22 @@ const ButtonAppBar = props => {
   const classes = useStyles();
 
   return (
-    <div className={classes.root}>
+    // <div style={{ zIndex: 10, minWidth: 700}}>
       <AppBar position="static" className={classes.AppBar}>
         <Toolbar>
-          <LinkContainer to="/">
-            <Typography variant="h4" className={classes.title}>
+          <div className={classes.title}>
+            <img src={require("../../_assets/eatco.png")} className={classes.logo}
+
+              onClick={()=> navigate('/')}
+            />
+            {/* <Typography variant="h4" className={classes.title}>
               Pizzaroo
-            </Typography>
-          </LinkContainer>
+            </Typography> */}
+          </div>
           {toggleOrders && <div onClick={() => navigate('/order')}>
             <Button 
-                style={{ marginLeft: 20, marginRight: 20}}
-              variant="contained" 
-              color="primary"
+              className={checkPath('order') ? classes.onClickedButton : classes.beforeButton}
+             
               >
               <Typography variant="h6">Orders</Typography>
             </Button>
@@ -59,9 +90,8 @@ const ButtonAppBar = props => {
           }
           {toggleMenu && <div onClick={() => navigate('/menu')}>
             <Button 
-              style={{ marginLeft: 20, marginRight: 20}}
-              variant="contained" 
-              color="primary"
+              className={checkPath('menu') ? classes.onClickedButton : classes.beforeButton}
+          
               >
               <Typography variant="h6">Menu</Typography>
             </Button>
@@ -74,9 +104,8 @@ const ButtonAppBar = props => {
             
           }}>
           <Button 
-            style={{ marginLeft: 20, marginRight: 20}}
-            variant="contained" 
-            color="primary"
+            className={checkPath('connect') ? classes.onClickedButton : classes.beforeButton}
+        
             // onClick={()=>navigate('/login')}
             >
             <Typography variant="h6">Connect Stripe</Typography>
@@ -90,10 +119,8 @@ const ButtonAppBar = props => {
             
           }}>
           <Button 
-            style={{ marginLeft: 20, marginRight: 20}}
-            variant="contained" 
-            color="primary"
-          
+            className={checkPath('history') ? classes.onClickedButton : classes.beforeButton}
+  
             >
             <Typography variant="h6">Past Orders</Typography>
           </Button>
@@ -101,28 +128,28 @@ const ButtonAppBar = props => {
           }
          
          
+        
+          {toggleLogin && <div onClick={() => navigate('/login')}>
+          <Button 
+            className={(checkPath('login')) ? classes.onClickedButton : classes.beforeButton}
+
+            >
+            <Typography variant="h6">Login</Typography>
+          </Button>
+          </div>
+          }
+
+
           {toggleSignUp && <div onClick={() => navigate('/signup')}>
           <Button 
-            style={{ marginLeft: 20, marginRight: 20}}
-            variant="contained" 
-            color="primary"
+            className={checkPath('signup') ? classes.onClickedButton : classes.beforeButton}
+          
             // onClick={navigate('/signup')}
              >
             <Typography variant="h6">Signup</Typography>
           </Button>
           </div>}
          
-          {toggleLogin && <div onClick={() => navigate('/login')}>
-          <Button 
-            style={{ marginLeft: 20, marginRight: 20}}
-            variant="contained" 
-            color="primary"
-            // onClick={()=>navigate('/login')}
-            >
-            <Typography variant="h6">Login</Typography>
-          </Button>
-          </div>
-          }
 
           {toggleSignOut && <div onClick={() => {
             
@@ -132,9 +159,8 @@ const ButtonAppBar = props => {
             
           }}>
           <Button 
-            style={{ marginLeft: 20, marginRight: 20}}
-            variant="contained" 
-            color="primary"
+            className={checkPath('signout') ? classes.onClickedButton : classes.beforeButton}
+           
             // onClick={()=>navigate('/login')}
             >
             <Typography variant="h6">Sign Out</Typography>
@@ -156,7 +182,7 @@ const ButtonAppBar = props => {
           </div>}
         </Toolbar>
       </AppBar>
-    </div>
+    // </div>
   );
 }
 export default subscribe()(ButtonAppBar);

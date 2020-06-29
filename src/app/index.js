@@ -17,7 +17,7 @@ import PastOrders from "../orders/pastOrders";
 const App = () => {
 
   const routes = {
-    '/': ()=> <Home/>,
+    '/': ()=> <Login/>,
     '/login': ()=> <Login/>,
     '/signup': ()=> <Signup/>,
     '/dashboard': ()=> <Protected component={OrdersSSS}/>,
