@@ -1,10 +1,7 @@
 import React, { useEffect, useState } from "react";
 import fire from "../../firebase";
-import styles from "./style";
-import Main from "../../app/layout/header";
-import Container from "@material-ui/core/Container";
-import Snackbar from "@material-ui/core/Snackbar";
-import MuiAlert from "@material-ui/lab/Alert";
+
+import styles from "../style";
 import Typography from "@material-ui/core/Typography";
 import {geoCoding,getDistanceFromLatLonInKm, createStore } from '../../api';
 import { Input, Select, MenuItem , TextField, Grid, Button} from '@material-ui/core';
@@ -15,9 +12,7 @@ import Checkbox from '@material-ui/core/Checkbox';
 import * as validations from './validations'
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import { Link } from '@material-ui/core';
-import { FormLabel } from '@material-ui/core';
-import geoHash from 'ngeohash';
-import './index.css';
+import './signup.css';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -130,13 +125,13 @@ const Signup = props => {
       <Grid container justify="center" className="root" style={{height: '100%', marginBottom: 400}}>
       <Grid container item justify='center' alignItems="center" className="home" >
         <Grid container justify='center' >
-          <h1></h1>
+          <h1>Hello</h1>
         </Grid>
       </Grid>
         
       <Grid container className="shell" item justify="center" alignItems="flex-start" style={{marginTop: '8%'}}>
       <Grid container className="center-box" direction="row" style={{borderRadius: 35, width: '80%'}}>
-        <Grid item xs={false} sm={3}  className='image' style={{borderBottomLeftRadius: 35, borderTopLeftRadius: 35}}>
+        <Grid item xs={false} sm={3}  className='image-signup' style={{borderBottomLeftRadius: 35, borderTopLeftRadius: 35}}>
         </Grid>
         <Grid container item xs={12} sm={9} justify="center" alignItems="center" >
           <form > 

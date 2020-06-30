@@ -9,11 +9,11 @@
   /* position:relative; */
 }
 
-.home  {
-  /* height: '100%'; */
+.home{
+  height: '100%';
   width: '100%';
   position: absolute;
-  background-image: url('../../_assets/small-burger.png');
+  background-image: url('../../_assets/sushi-shrimp-landscape.png');
   background-position: center;
   background-repeat: no-repeat;
   background-size: cover;
@@ -34,7 +34,6 @@
 
 .center-box{
 
-
   backdrop-filter: blur(0);
   background-color: rgba(255,255,255,1);/* Fallback color */
   color: black;
@@ -53,7 +52,7 @@
  
 }
 
-.image {
+.image-signup {
   /* height: 100hv; */
   background-image: url('../../_assets/small-burger.png');
   background-position: center;
