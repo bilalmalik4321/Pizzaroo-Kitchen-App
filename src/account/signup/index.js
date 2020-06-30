@@ -130,7 +130,7 @@ const Signup = props => {
       <Grid container justify="center" className="root" style={{height: '100%', marginBottom: 400}}>
       <Grid container item justify='center' alignItems="center" className="home" >
         <Grid container justify='center' >
-          <h1> HELLO</h1>
+          <h1></h1>
         </Grid>
       </Grid>
         
@@ -140,7 +140,7 @@ const Signup = props => {
         </Grid>
         <Grid container item xs={12} sm={9} justify="center" alignItems="center" >
           <form > 
-          <h1 style={{marginTop: 30, marginInline: 30, color: '#FFA500' }}>Register</h1>
+          <h1 style={{marginTop: 70, marginBottom: 30, color: '#FFA500', fontWeight: 800 }}>Register</h1>
           <Grid  container style={{ width: 500}} justify="center" alignItems="center" >
           <Grid item xs={12} sm={6}  >
             <TextField
@@ -239,20 +239,7 @@ const Signup = props => {
                 // helperText={isEmpty(errors, 'website')? errors.website : ''}
               />
               </Grid>
-              <Grid item xs={12} sm={6} >
-              <TextField
-                InputProps={{style: {fontSize: 15}}}
-                style={{ width: 200, marginTop: 20 ,marginBottom: 20, minWidth: 50}}
-                size="medium"
-                variant="outlined"
-                className={classes.input}
-                value={props.restaurant.storeEmail || ''}
-                onChange={(e)=> onChangeValue('storeEmail', e.target.value)}
-                label="Store Email"
-                error={isEmpty(errors, 'storeEmail')}
-                helperText={isEmpty(errors, 'storeEmail')? errors.storeEmail : ''}
-              />
-              </Grid>
+              
               <Grid item xs={12} sm={6} >
               <TextField
                 InputProps={{style: {fontSize: 15}}}
@@ -281,6 +268,20 @@ const Signup = props => {
                 type="password"
                 error={isEmpty(errors, 'repeatPassword')}
                 helperText={isEmpty(errors, 'repeatPassword')? errors.repeatPassword : ''}
+              />
+              </Grid>
+              <Grid item xs={12} sm={6} >
+              <TextField
+                InputProps={{style: {fontSize: 15}}}
+                style={{ width: 200, marginTop: 20 ,marginBottom: 20, minWidth: 50}}
+                size="medium"
+                variant="outlined"
+                className={classes.input}
+                value={props.restaurant.storeEmail || ''}
+                onChange={(e)=> onChangeValue('storeEmail', e.target.value)}
+                label="Store Email"
+                error={isEmpty(errors, 'storeEmail')}
+                helperText={isEmpty(errors, 'storeEmail')? errors.storeEmail : ''}
               />
               </Grid>
               <Grid item xs={12} sm={6} >
