@@ -66,8 +66,6 @@ const Signup = props => {
   const classes = useStyles();
   
   
-  
-  
   async function onRegister(e) {
     e.preventDefault();
     setLoading(true);

@@ -95,7 +95,7 @@ function Login(props) {
         </Grid>
           
         <Grid container className="shell" item justify="center" alignItems="flex-start" style={{marginTop: '8%', height: 550}}>
-        <Grid container className="center-box" direction="row" style={{borderRadius: 35, width: '80%',height: 550}}>
+        <Grid container className="center-box" direction="row" style={{borderRadius: 35, width: '60%',height: 550}}>
           <Grid item xs={3}  className='image' style={{borderBottomLeftRadius: 35, borderTopLeftRadius: 35,height: 550}}>
           </Grid>
           <Grid item xs={9}>
@@ -105,7 +105,7 @@ function Login(props) {
               <Grid item xs >
                 <TextField
                   inputProps={{
-                    style: {fontSize: 20} 
+                    style: {fontSize: 15} 
                   }}
                   className={classes.root}
                   style={{ width: 300, marginTop: 20 , minWidth: 50 , borderColor: '#FFA500'}}
@@ -124,7 +124,7 @@ function Login(props) {
               <Grid item xs>
                 <TextField
                   inputProps={{
-                    style: {fontSize: 20} 
+                    style: {fontSize: 15} 
                   }}
                   className={classes.root}
                   style={{ width: 300, marginTop: 20 ,marginBottom: 20, minWidth: 50}}
