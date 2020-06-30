@@ -10,10 +10,10 @@
 }
 
 .home  {
-  height: '100%';
+  /* height: '100%'; */
   width: '100%';
   position: absolute;
-  background-image: url('../../_assets/sushi-shrimp-landscape.png');
+  background-image: url('../../_assets/small-burger.png');
   background-position: center;
   background-repeat: no-repeat;
   background-size: cover;
@@ -55,7 +55,7 @@
 
 .image {
   /* height: 100hv; */
-  background-image: url('../../_assets/sushi-shrimp.png');
+  background-image: url('../../_assets/small-burger.png');
   background-position: center;
   background-repeat: no-repeat;
   border-bottom-left-radius: 35;
@@ -65,7 +65,8 @@
 
     background: linear-gradient(152.04deg, #FFA500 29.77%, #D97400 102.89%);
     border-radius: 35;
-    color: 'white'
+    color: 'white';
+    width: 200;
 
 }
 

@@ -17,13 +17,12 @@ import FormControlLabel from '@material-ui/core/FormControlLabel';
 import { Link } from '@material-ui/core';
 import { FormLabel } from '@material-ui/core';
 import geoHash from 'ngeohash';
-
+import './index.css';
 
 const useStyles = makeStyles((theme) => ({
   root: {
     '& .MuiTextField-root': {
       margin: theme.spacing(1),
-      // width: 200,
     },
   },
 
@@ -32,10 +31,14 @@ const useStyles = makeStyles((theme) => ({
   },
   input: {
     margin: theme.spacing(1),
-    // fontSize: 20,
-    // width: '100%',
-    marginTop: 30
-    // height: 45,
+
+    "&:hover .MuiOutlinedInput-root .MuiOutlinedInput-notchedOutline": {
+      borderColor: "#FFA500"
+    },
+    "& .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline": {
+      borderColor: "#FFA500"
+    }
+
   
   },
   button: {
@@ -64,8 +67,6 @@ const Signup = props => {
   const [errors, setErrors] = useState({});
   const [accept, setAccept] = useState(false);
   const classes = useStyles();
-  
-  
   
   
   async function onRegister(e) {
@@ -126,16 +127,27 @@ const Signup = props => {
   }
   const label = ( <div> <span>I accept the </span> <Link onClick={() => {}}>terms of use</Link> <span> and </span> <Link to={'/privacy'}>privacy policy</Link> </div> )
     return (
-
-        <div className={classes.form}>
-          <h1 style={styles.logoText}>Welcome</h1>
-          <Container maxWidth={'sm'}>
-          <Grid container direction="column" spacing={1}>
-         
-             <TextField
+      <Grid container justify="center" className="root" style={{height: '100%', marginBottom: 400}}>
+      <Grid container item justify='center' alignItems="center" className="home" >
+        <Grid container justify='center' >
+          <h1> HELLO</h1>
+        </Grid>
+      </Grid>
+        
+      <Grid container className="shell" item justify="center" alignItems="flex-start" style={{marginTop: '8%'}}>
+      <Grid container className="center-box" direction="row" style={{borderRadius: 35, width: '80%'}}>
+        <Grid item xs={false} sm={3}  className='image' style={{borderBottomLeftRadius: 35, borderTopLeftRadius: 35}}>
+        </Grid>
+        <Grid container item xs={12} sm={9} justify="center" alignItems="center" >
+          <form > 
+          <h1 style={{marginTop: 30, marginInline: 30, color: '#FFA500' }}>Register</h1>
+          <Grid  container style={{ width: 500}} justify="center" alignItems="center" >
+          <Grid item xs={12} sm={6}  >
+            <TextField
                 label="Manager First Name"
+                style={{ width: 200, marginTop: 20 ,marginBottom: 20, minWidth: 50}}
                 InputProps={{style: {fontSize: 15}}}
-                size="small"
+                size="medium"
                 variant="outlined"
                 className={classes.input}
                 value={props.restaurant.firstName || ''}
@@ -148,11 +160,14 @@ const Signup = props => {
                 helperText={isEmpty(errors, 'firstName')? errors.firstName : ''}
                 
               />
-            
+            </Grid>
+            <Grid item xs={12} sm={6} >
               <TextField
+
                 label="Manager Last Name"
+                style={{ width: 200, marginTop: 20 ,marginBottom: 20, minWidth: 50}}
                 InputProps={{style: {fontSize: 15}}}
-                size="small"
+                size="medium"
                 variant="outlined"
                 className={classes.input}
                 value={props.restaurant.lastName || ''}
@@ -165,10 +180,12 @@ const Signup = props => {
                 helperText={isEmpty(errors, 'lastName')? errors.lastName : ''}
   
               />
-
+            </Grid>
+            <Grid item xs={12} sm={6} >
               <TextField
                 InputProps={{style: {fontSize: 15}}}
-                size="small"
+                style={{ width: 200, marginTop: 20 ,marginBottom: 20, minWidth: 50}}
+                size="medium"
                 variant="outlined"
                 className={classes.input}
                 value={props.restaurant.email || ''}
@@ -177,10 +194,12 @@ const Signup = props => {
                 error={isEmpty(errors,'email')}
                 helperText={isEmpty(errors, 'email')? errors.email : ''}
               />
-
+            </Grid>
+            <Grid item xs={12} sm={6} >
               <TextField
                 InputProps={{style: {fontSize: 15}}}
-                size="small"
+                style={{ width: 200, marginTop: 20 ,marginBottom: 20, minWidth: 50}}
+                size="medium"
                 variant="outlined"
                 className={classes.input}
                 value={props.restaurant.storeName || ''}
@@ -190,9 +209,12 @@ const Signup = props => {
                 error={isEmpty(errors, 'storeName')}
                 helperText={isEmpty(errors, 'storeName')? errors.storeName : ''}
               />
+              </Grid>
+              <Grid item xs={12} sm={6} >
               <TextField
                 InputProps={{style: {fontSize: 15}}}
-                size="small"
+                style={{ width: 200, marginTop: 20 ,marginBottom: 20, minWidth: 50}}
+                size="medium"
                 variant="outlined"
                 className={classes.input}
                 value={props.restaurant.storePhone || ''}
@@ -202,9 +224,12 @@ const Signup = props => {
                 error={isEmpty(errors, 'storePhone')}
                 helperText={isEmpty(errors, 'storePhone')? errors.storePhone : ''}
               />
+              </Grid>
+              <Grid item xs={12} sm={6} >
               <TextField
                 InputProps={{style: {fontSize: 15}}}
-                size="small"
+                style={{ width: 200, marginTop: 20 ,marginBottom: 20, minWidth: 50}}
+                size="medium"
                 variant="outlined"
                 className={classes.input}
                 value={props.restaurant.website || ''}
@@ -213,9 +238,12 @@ const Signup = props => {
                 // error={isEmpty(errors, 'website')}
                 // helperText={isEmpty(errors, 'website')? errors.website : ''}
               />
+              </Grid>
+              <Grid item xs={12} sm={6} >
               <TextField
                 InputProps={{style: {fontSize: 15}}}
-                size="small"
+                style={{ width: 200, marginTop: 20 ,marginBottom: 20, minWidth: 50}}
+                size="medium"
                 variant="outlined"
                 className={classes.input}
                 value={props.restaurant.storeEmail || ''}
@@ -224,9 +252,12 @@ const Signup = props => {
                 error={isEmpty(errors, 'storeEmail')}
                 helperText={isEmpty(errors, 'storeEmail')? errors.storeEmail : ''}
               />
+              </Grid>
+              <Grid item xs={12} sm={6} >
               <TextField
                 InputProps={{style: {fontSize: 15}}}
-                size="small"
+                style={{ width: 200, marginTop: 20 ,marginBottom: 20, minWidth: 50}}
+                size="medium"
                 variant="outlined"
                 className={classes.input}
                 value={props.restaurant.password || ''}
@@ -236,9 +267,12 @@ const Signup = props => {
                 error={isEmpty(errors, 'password')}
                 helperText={isEmpty(errors, 'password')? errors.password : ''}
               />
+              </Grid>
+              <Grid item xs={12} sm={6} >
               <TextField
                 InputProps={{style: {fontSize: 15}}}
-                size="small"
+                style={{ width: 200, marginTop: 20 ,marginBottom: 20, minWidth: 50}}
+                size="medium"
                 variant="outlined"
                 className={classes.input}
                 value={props.restaurant.repeatPassword || ''}
@@ -248,10 +282,12 @@ const Signup = props => {
                 error={isEmpty(errors, 'repeatPassword')}
                 helperText={isEmpty(errors, 'repeatPassword')? errors.repeatPassword : ''}
               />
-            
+              </Grid>
+              <Grid item xs={12} sm={6} >
               <TextField
                 InputProps={{style: {fontSize: 15}}}
-                size="small"
+                style={{ width: 200, marginTop: 20 ,marginBottom: 20, minWidth: 50}}
+                size="medium"
                 variant="outlined"
                 className={classes.input}
                 value={props.restaurant.street || ''}
@@ -260,9 +296,12 @@ const Signup = props => {
                 error={isEmpty(errors, 'street')}
                 helperText={isEmpty(errors, 'street')? errors.street : ''}
               />
+              </Grid>
+              <Grid item xs={12} sm={6} >
               <TextField
                 InputProps={{style: {fontSize: 15}}}
-                size="small"
+                style={{ width: 200, marginTop: 20 ,marginBottom: 20, minWidth: 50}}
+                size="medium"
                 variant="outlined"
                 className={classes.input}
                 value={props.restaurant.city || ''}
@@ -271,12 +310,14 @@ const Signup = props => {
                 error={isEmpty(errors, 'city')}
                 helperText={isEmpty(errors, 'city')? errors.city : ''}
               />
-
+              </Grid>
+              <Grid item xs={12} sm={6} >
 
               <TextField
                 label="Province"
-                InputProps={{style: {fontSize: 15}}}
-                size="small"
+                InputProps={{style: {fontSize: 15, textAlign: 'left'}}}
+                style={{ width: 200, marginTop: 20 ,marginBottom: 20, minWidth: 50}}
+                size="medium"
                 variant="outlined"
                 className={classes.input}
                 select
@@ -285,12 +326,16 @@ const Signup = props => {
                 error={isEmpty(errors, 'province ')}
                 helperText={isEmpty(errors, 'province ')? errors.province  : ''}
               >
-              <MenuItem value={'Ontario'}>Ontario</MenuItem>
-              </TextField>
             
+          
+              <MenuItem value={'Ontario'} style={{textAlign: 'left', alignSelf: 'left'}} >Ontario</MenuItem>
+              </TextField>
+              </Grid>
+              <Grid item xs={12} sm={6} >
               <TextField
+                style={{ width: 200, marginTop: 20 ,marginBottom: 20, minWidth: 50}}
                 InputProps={{style: {fontSize: 15}}}
-                size="small"
+                size="medium"
                 variant="outlined"
                 className={classes.input}
                 value={props.restaurant.postalCode || ''}
@@ -299,10 +344,12 @@ const Signup = props => {
                 error={isEmpty(errors, 'postalCode')}
                 helperText={isEmpty(errors, 'postalCode')? errors.postalCode : ''}
               />
-                 
+                </Grid>
+                <Grid item xs={12} sm={6} >
               <TextField
                 InputProps={{style: {fontSize: 15}}}
-                size="small"
+                style={{ width: 200, marginTop: 20 ,marginBottom: 20, minWidth: 50}}
+                size="medium"
                 variant="outlined"
                 className={classes.input}
                 value={props.restaurant.country || ''}
@@ -311,10 +358,10 @@ const Signup = props => {
                 error={isEmpty(errors, 'country')}
                 helperText={isEmpty(errors, 'country')? errors.country : ''}
               />
-              
+              </Grid>
               {/* <TextField
                 InputProps={{style: {fontSize: 15}}}
-                size="small"
+                size="medium"
                 variant="outlined"
                 className={classes.input}
                 value={props.restaurant.registrationCode || ''}
@@ -323,20 +370,23 @@ const Signup = props => {
                 // error={isEmpty(errors, 'registrationCode')}
                 // helperText={isEmpty(errors, 'registrationCode')? errors.registrationCode : ''}
               />
-        */}
-        
+           */}
+           <Grid item xs={12} sm={12} >
               <FormControlLabel
                 className={classes.checkButton}
-                control={<Checkbox color="primary" value={accept} onClick={() => setAccept(!accept)}/>}
+                control={<Checkbox style={{color:'#FFA500'}} value={accept} onClick={() => setAccept(!accept)}/>}
 
                 label={label}
               />
-              <button
+            </Grid>
+            <Grid item xs={12} sm={12} >
+            <div style={{ textAlign: "center", marginTop: 30 }}>
+            <Button
                 disabled={loading}
-                className={classes.button}
+                style={styles.onClickedButton}
                 type="submit"
                 onClick={(e) => {
-                 
+                  e.preventDefault()
                   const err = validations.signup(props);
                   console.log("errors ", err);
                 if( Object.keys(err).length !== 0) {
@@ -348,17 +398,30 @@ const Signup = props => {
                   if(accept) {
                     onRegister(e)
                   }
-                    
-                }
-                  
-                }}
-              >
-                {!loading ? 'Register' : 'Loading'}
-              </button>
+                }}}
+               >
+                  <Typography variant="h6">{!loading ? 'Register' : 'Loading'}</Typography>
+              </Button>
+            </div>
             </Grid>
-          </Container>
-        </div>
-  
+          </Grid>
+      
+        </form>
+{/* 
+        <Grid container direction="row" justify="center" alignItems='center' style={{marginBottom: 10}}>
+          <Typography  variant="h6" style={{marginRight: 10}}>Don't have an account? </Typography> 
+          <Typography  variant="h6" className="link" onClick={() => navigate('signup')}> Register Now</Typography>
+        </Grid>
+        <Grid container direction="row" justify="center" alignItems='center' style={{marginBottom: 100}}>
+          <Typography  variant="h6" style={{marginRight: 10}}>Forgot your password? </Typography> 
+          <Typography  variant="h6" className="link" onClick={() => navigate('signup')}> Recover password</Typography>
+        </Grid> */}
+
+        </Grid>
+      </Grid>
+    </Grid>
+  </Grid>
+   
     );
   }
 

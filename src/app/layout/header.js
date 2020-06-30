@@ -49,6 +49,7 @@ const useStyles = makeStyles((theme) => ({
   },
 
   AppBar: {
+    cursor: 'pointer',
     height: 80,
     backgroundColor: 'white',
     padding: '10px 30px 10px 30px',

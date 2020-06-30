@@ -2,6 +2,7 @@
 export default {
   logoText: {
     fontSize: 40,
+    color: '#FFA500',
     fontWeight: "800",
     marginTop: 80,
     marginBottom: 30,

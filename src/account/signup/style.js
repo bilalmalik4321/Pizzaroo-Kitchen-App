@@ -36,6 +36,15 @@ export default {
     color: "red",
     fontSize: 18,
   },
+  onClickedButton :{
+    width: 200,
+    marginRight: 20,
+    marginLeft: 20,
+    background: `linear-gradient(152.04deg, #FFA500 29.77%, #D97400 102.89%)`,
+    borderRadius: 35,
+    color: 'white',
+    marginBottom: 50
+  },
   selectBox: {
     border: `1px solid #2D2A32`,
     height: 43,
