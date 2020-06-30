@@ -96,9 +96,9 @@ function Login(props) {
           
         <Grid container className="shell" item justify="center" alignItems="flex-start" style={{marginTop: '8%', height: 550}}>
         <Grid container className="center-box" direction="row" style={{borderRadius: 35, width: '60%',height: 550}}>
-          <Grid item xs={3}  className='image' style={{borderBottomLeftRadius: 35, borderTopLeftRadius: 35,height: 550}}>
+          <Grid item xs={false} sm={3}  className='image' style={{borderBottomLeftRadius: 35, borderTopLeftRadius: 35,height: 550}}>
           </Grid>
-          <Grid item xs={9}>
+          <Grid item xs={12} sm={9}>
             <form > 
             <h1 style={styles.logoText}>Login</h1>
             <Grid  container direction="column"  justify="center" alignItems='center' >
