@@ -29,10 +29,13 @@ import { navigate } from 'hookrouter';
 import Popover from '@material-ui/core/Popover';
 import { subscribe } from 'react-contextual';
 import moment from 'moment';
-
+import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
+import ExpandLessIcon from '@material-ui/icons/ExpandLess';
+import './order.css'
 import { updateOrder } from '../api';
 import firebase from '../firebase';
 
+import ArrowDropDownCircleRoundedIcon from '@material-ui/icons/ArrowDropDownCircleRounded';
 const convertDate = (time) => moment(time,'YYYY-MM-DD hh:mm:ss a').add(1,'day').format('LLL');
 
 const useStyles = makeStyles((theme) => ({
@@ -63,6 +66,44 @@ const useStyles = makeStyles((theme) => ({
   buttonInfo: {
     padding: 0,
     margin: 0
+  },
+  text: {
+    alignItems: 'center',
+    color: 'white',
+    alignSelf: 'center',
+    fontSize: 25
+  },
+  statusText: {
+    alignItems: 'center',
+    color: 'white',
+    alignSelf: 'center',
+    fontSize: 35,
+    fontWeight: 500,
+    marginBottom: 50
+  },
+  incomingTitle: {
+    padding: 10,
+    background: `linear-gradient(174.93deg, #FFA500 19.5%, #D97400 151.92%)`,
+    borderRadius: 30,
+    height: 200,
+    /* align-items: center; */
+    alignContent: 'center',
+  },
+  preparingTitle: {
+    padding: 10,
+    background: `linear-gradient(174.93deg, #32CD32 19.5%, #139D13 151.92%)`,
+    borderRadius: 30,
+    height: 200,
+    /* align-items: center; */
+    alignContent: 'center',
+  },
+  listWrapper: {
+    // background: `linear-gradient(174.93deg, #EEEEEE 19.5%, #139D13 151.92%)`,
+    background: '#EEEEEE',
+    borderRadius: 30,
+    padding: 20,
+    marginTop: -30,
+    width: '90%'
   }
 
 }));
@@ -173,168 +214,236 @@ const Orders = subscribe()((props) =>  {
 
   return (
     <div className={classes.root}>
+    {/* Order coutner */}
+      <Grid container spacing={0} className="counter" justify="space-evenly">
+        <Grid container item xs={12} sm={5} className="today-total" direction="row" justify="center" alignItems="center">
+          <Grid item xs={8} sm={6}>
+            <h4 className={classes.text}>
+              Total Orders:  
+            </h4>
+          
+          </Grid>
+          <Grid item xs={3}>
+            <h4 className="text2">
+              32  
+            </h4>
+          
+          </Grid>
+          <Grid item xs={1}>
+            <ArrowDropDownCircleRoundedIcon style={{fontSize: 30, color: 'white'}}/>
+          </Grid> 
+        </Grid>
+
+        {/* Status bar */}
+
+        <Grid container item xs={12} sm={5} direction="row" justify="center" alignItems="center" className="completed-total" >
+          <Grid item xs={8} sm={6}>
+              <h4 className={classes.text}>
+                Completed Orders:  
+              </h4>
+            
+            </Grid>
+            <Grid item xs={3}>
+              <h4 className="text2">
+                32  
+              </h4>
+            
+            </Grid>
+            <Grid item xs={1}>
+              {!open? <ExpandMoreIcon
+                style={{fontSize: 45, color: 'white'}}
+                onClick={(e) => handleClick(e)}
+              />:
+               <ExpandLessIcon
+                style={{fontSize: 45, color: 'white'}}
+                onClick={(e) => handleClick(e)}
+              />
+              }
+            </Grid> 
+        </Grid>
+      </Grid>
+            
+      <Grid container className="counter" justify="space-evenly" direction="row">
+          <Grid container item xs={12} sm={5}  direction="column" justify="center" alignItems="center">
+              <Grid container item className={classes.incomingTitle} >
+                  <Grid item justify="center" container alignItems="center">
+                    <p className={classes.statusText}>
+                      Incomnig orders
+                    </p>
+                  </Grid>
+              </Grid>
+
+              <Grid container item className={classes.listWrapper} justify="center" alignItems="center">
+                <Card variant="outlined" style={{width: '100%'}}>
+                  <CardContent>
+                    <Grid container direction="row" alignItems="center" justify="space-evenly" >
+                      <Typography color="textSecondary" variant="h3" gutterBottom>
+                          Preparing Orders:  
+                      </Typography>
+                      <Typography  variant="h3" gutterBottom>
+                        {!loading ? countOrder(incomings, 'confirmed') : ''}
+                      </Typography>
+                    </Grid>
+              
+
+                    {!loading && incomings && incomings.length !== 0 && incomings.sort((a,b)=> a.createdAt < b.createdAt).map((order,index) => {
+
+                    if(order.progressStep === 'confirmed'){
+                      return(
+                      
+                      <div className={classes.orderBox} key={index}>
+                      <Divider style={{ marginTop: 20, marginBottom: 20 }} />
+                        <CustomerInfo order={order}/>
+                        <TableContainer component={Paper}>
+                          <Table className={classes.table} aria-label="spanning table">
+                            <TableHead>
+                              <TableRow>
+                                <TableCell className={classes.itemName}>Item</TableCell>
+                                <TableCell align="right" className={classes.itemSizeCell}>Size</TableCell>
+                                <TableCell align="right" className={classes.itemSizeCell}>Sum</TableCell>
+                              </TableRow>
+                            </TableHead>
+                            <TableBody>
+                            { order.items && Object.keys(order.items).map((typeOfFood, i)=>{
+                                return order.items[typeOfFood].map((anItem, ii ) => {
+                                  return (
+                                      <TableRow key={ii }>
+                                        <TableCell >
+                                          <h5>
+                                          {anItem.quantity} x {anItem.name}
+                                          </h5>
+                                          <h5 style={{ fontWeight: 'normal', color: 'grey'}}>
+                                            {anItem.instruction}
+                                          </h5>
+                                        </TableCell>
+                                        <TableCell align="right">
+                                          <h5>
+                                          {anItem.size}
+                                          </h5>
+                                        </TableCell>
+                                        <TableCell align="right">
+                                          <h5>
+                                          {anItem.price}
+                                          </h5>
+                                      </TableCell>
+                                      </TableRow>
+                                        )
+                                  })})}
+
+              
+                                      <TableRow>
+                                        <TableCell colSpan={2} >
+                                          <h5>
+                                          Subtotal
+                                          </h5>
+                                        </TableCell>  
+                                        <TableCell align="right">
+                                          <h4>
+                                          {order.total.toFixed(2)}
+                                          </h4>
+                                        </TableCell>
+                                      </TableRow>
+                                
+                        
+                                
+                                <TableRow>
+                                  <TableCell colSpan={3}>
+                                    <Grid 
+                                      container
+                                      direction="row"
+                                      justify="space-around"
+                                      alignItems="center"
+                                    >
+                                      <Button
+                                        className={classes.button}
+                                        variant="contained"
+                                        color="secondary"
+                                        onClick={() => {
+                                          onCompleteOrder(order.id)
+                                        }}
+                                      >
+                                          <Typography variant="h6">Complete</Typography>
+                                      </Button>
+
+                        
+                                    </Grid> 
+                                  </TableCell>
+                                </TableRow>
+                            </TableBody>
+                          </Table>
+                        </TableContainer>
+
+                    </div>
+                    )}})}
+                    </CardContent>
+                  </Card>
+                </Grid>
+
+
+                
+              </Grid>
+          
+
+       
+        <Grid container item xs={12} sm={5} direction="row" justify="center" alignItems="column" className={classes.preparingTitle} >
+          <Grid item sm={12} justify="center" container alignItems="center">
+              <p className={classes.statusText}>
+                Preparing Orders
+              </p>
+            
+            </Grid>
+            {/* <Grid item xs={3}>
+              <h4 className="text2">
+                32  
+              </h4>
+            
+            </Grid>
+            <Grid item xs={1}>
+              <ArrowDropDownCircleRoundedIcon style={{fontSize: 30, color: 'white'}}/>
+            </Grid>  */}
+        </Grid>
+      </Grid>
+
       <Grid 
         container
         direction="row" 
         alignItems="center" justify="space-between"
       >
-        <Typography  variant="h4" gutterBottom>
+        {/* <Typography  variant="h4" gutterBottom>
           Date: {moment().format('MMMM Do YYYY, h:mm:ss a')}
-        </Typography>
-        <Button
+        </Typography> */}
+        {/* <Button
           style={{marginBottom: 20}}
           variant="contained"
           color="secondary"
           onClick={(e) => handleClick(e)}
         >
         <Typography variant="h6">View Completed Orders</Typography>
-      </Button>  
-      <Popover
-        id={id}
-        open={open}
-        anchorEl={anchorEl}
-        onClose={handleClose}
-        anchorOrigin={{
-          vertical: 'bottom',
-          horizontal: 'center',
-        }}
-        transformOrigin={{
-          vertical: 'top',
-          horizontal: 'center',
-        }}
-      >
-        
-          <Card variant="outlined">
-              <CardContent>
-                <Grid container direction="row" alignItems="center" justify="space-evenly" >
-                  <Typography color="textSecondary" variant="h3" gutterBottom>
-                      Completed/Enroute Orders:  
-                  </Typography>
-                  <Typography  variant="h3" gutterBottom>
-                    {!loading ? countOrder(incomings, 'enroute') : ''}
-                  </Typography>
-                </Grid>
-          
-
-                {!loading && incomings && incomings.length !== 0 && incomings.sort((a,b)=> a.createdAt < b.createdAt).map((order,index) => {
-
-                if(order.progressStep === 'enroute'){
-                  return(
-                  
-                  <div className={classes.orderBox} key={index}>
-                  <Divider style={{ marginTop: 20, marginBottom: 20 }} />
-                    <CustomerInfo order={order}/>
-                    <TableContainer component={Paper}>
-                      <Table className={classes.table} aria-label="spanning table">
-                        <TableHead>
-                          <TableRow>
-                            <TableCell className={classes.itemName}>Item</TableCell>
-                            <TableCell align="right" className={classes.itemSizeCell}>Size</TableCell>
-                            <TableCell align="right" className={classes.itemSizeCell}>Sum</TableCell>
-                          </TableRow>
-                        </TableHead>
-                        <TableBody>
-                        { order.items && Object.keys(order.items).map((typeOfFood, i)=>{
-                            return order.items[typeOfFood].sort((a,b)=> a.price < b.price).map((anItem, ii ) => {
-                              return (
-                                  <TableRow key={ii }>
-                                    <TableCell >
-                                      <h5>
-                                      {anItem.quantity} x {anItem.name}
-                                      </h5>
-                                      <h5 style={{ fontWeight: 'normal', color: 'grey'}}>
-                                        {anItem.instruction}
-                                      </h5>
-                                    </TableCell>
-                                    <TableCell align="right">
-                                      <h5>
-                                      {anItem.size}
-                                      </h5>
-                                    </TableCell>
-                                    <TableCell align="right">
-                                      <h5>
-                                      {anItem.price}
-                                      </h5>
-                                  </TableCell>
-                                  </TableRow>
-                                    )
-                              })})}
-
-          
-                                  <TableRow>
-                                    <TableCell colSpan={2} >
-                                      <h5>
-                                      Subtotal
-                                      </h5>
-                                    </TableCell>  
-                                    <TableCell align="right">
-                                      <h4>
-                                      {order.total.toFixed(2)}
-                                      </h4>
-                                    </TableCell>
-                                  </TableRow>
-                            
-                    
-{/*                              
-                            <TableRow>
-                              <TableCell colSpan={3}>
-                                <Grid 
-                                  container
-                                  direction="row"
-                                  justify="space-around"
-                                  alignItems="center"
-                                >
-                                  <Button
-                                    className={classes.button}
-                                    variant="contained"
-                                    color="secondary"
-                                    onClick={() => {
-                                      onCompleteOrder(order.id)
-                                    }}
-                                  >
-                                      <Typography variant="h6">Complete</Typography>
-                                  </Button>
-
-                    
-                                </Grid> 
-                              </TableCell>
-                            </TableRow> */}
-                        </TableBody>
-                      </Table>
-                    </TableContainer>
-
-                </div>
-                )}})}
-                </CardContent>
-              </Card>
-
-
-
-
-
-
-
-
-
-      </Popover>
-        
+      </Button>   */}
+      
       </Grid>
 
       
-      <Grid container spacing={1}>
-        <Grid item xs>
+      <Grid container spacing={1} style={{marginTop: 100}}>
+        <Grid item xs container >
+          <Grid container item xs={12} sm={5} className={classes.incomingTitle} direction="column" justify="center" alignItems="center">
+                <Grid item xs={12}  justify="center" container alignItems="center">
+                  <p className={classes.statusText}>
+                    Incomnig orders
+                  </p>
+                </Grid>
+            </Grid>
           <Card variant="outlined">
               <CardContent>
-                <Grid container direction="row" alignItems="center" justify="space-evenly">
+                {/* <Grid container direction="row" alignItems="center" justify="space-evenly">
                   <Typography color="textSecondary" variant="h3" gutterBottom>
                       Incoming Orders:  
                   </Typography>
                   <Typography  variant="h3" gutterBottom>
                     {!loading ? countOrder(incomings, 'waiting') : ''}
                   </Typography>
-                </Grid>
-{/* 
-                <Divider style={{ marginTop: 20, marginBottom: 20 }} /> */}
+                </Grid> */}
+
                 {!loading && incomings && incomings.length !== 0 && incomings.sort((a,b)=> a.createdAt < b.createdAt).map((order,index) => {
 
                   if(order.progressStep === 'waiting'){
@@ -580,6 +689,127 @@ const Orders = subscribe()((props) =>  {
       
       
       </Grid>
+
+      <Popover
+        id={id}
+        open={open}
+        anchorEl={anchorEl}
+        onClose={handleClose}
+        anchorOrigin={{
+          vertical: 'bottom',
+          horizontal: 'center',
+        }}
+        transformOrigin={{
+          vertical: 'top',
+          horizontal: 'center',
+        }}
+      >
+        
+          <Card variant="outlined">
+              <CardContent>
+                <Grid container direction="row" alignItems="center" justify="space-evenly" >
+                  <Typography color="textSecondary" variant="h3" gutterBottom>
+                      Completed/Enroute Orders:  
+                  </Typography>
+                  <Typography  variant="h3" gutterBottom>
+                    {!loading ? countOrder(incomings, 'enroute') : ''}
+                  </Typography>
+                </Grid>
+          
+
+                {!loading && incomings && incomings.length !== 0 && incomings.sort((a,b)=> a.createdAt < b.createdAt).map((order,index) => {
+
+                if(order.progressStep === 'enroute'){
+                  return(
+                  
+                  <div className={classes.orderBox} key={index}>
+                  <Divider style={{ marginTop: 20, marginBottom: 20 }} />
+                    <CustomerInfo order={order}/>
+                    <TableContainer component={Paper}>
+                      <Table className={classes.table} aria-label="spanning table">
+                        <TableHead>
+                          <TableRow>
+                            <TableCell className={classes.itemName}>Item</TableCell>
+                            <TableCell align="right" className={classes.itemSizeCell}>Size</TableCell>
+                            <TableCell align="right" className={classes.itemSizeCell}>Sum</TableCell>
+                          </TableRow>
+                        </TableHead>
+                        <TableBody>
+                        { order.items && Object.keys(order.items).map((typeOfFood, i)=>{
+                            return order.items[typeOfFood].sort((a,b)=> a.price < b.price).map((anItem, ii ) => {
+                              return (
+                                  <TableRow key={ii }>
+                                    <TableCell >
+                                      <h5>
+                                      {anItem.quantity} x {anItem.name}
+                                      </h5>
+                                      <h5 style={{ fontWeight: 'normal', color: 'grey'}}>
+                                        {anItem.instruction}
+                                      </h5>
+                                    </TableCell>
+                                    <TableCell align="right">
+                                      <h5>
+                                      {anItem.size}
+                                      </h5>
+                                    </TableCell>
+                                    <TableCell align="right">
+                                      <h5>
+                                      {anItem.price}
+                                      </h5>
+                                  </TableCell>
+                                  </TableRow>
+                                    )
+                              })})}
+
+          
+                                  <TableRow>
+                                    <TableCell colSpan={2} >
+                                      <h5>
+                                      Subtotal
+                                      </h5>
+                                    </TableCell>  
+                                    <TableCell align="right">
+                                      <h4>
+                                      {order.total.toFixed(2)}
+                                      </h4>
+                                    </TableCell>
+                                  </TableRow>
+                            
+                    
+{/*                              
+                            <TableRow>
+                              <TableCell colSpan={3}>
+                                <Grid 
+                                  container
+                                  direction="row"
+                                  justify="space-around"
+                                  alignItems="center"
+                                >
+                                  <Button
+                                    className={classes.button}
+                                    variant="contained"
+                                    color="secondary"
+                                    onClick={() => {
+                                      onCompleteOrder(order.id)
+                                    }}
+                                  >
+                                      <Typography variant="h6">Complete</Typography>
+                                  </Button>
+
+                    
+                                </Grid> 
+                              </TableCell>
+                            </TableRow> */}
+                        </TableBody>
+                      </Table>
+                    </TableContainer>
+
+                </div>
+                )}})}
+                </CardContent>
+              </Card>
+      </Popover>
+        
     </div>
 
   );

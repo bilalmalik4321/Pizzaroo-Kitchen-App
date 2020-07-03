@@ -22,32 +22,33 @@ import TableContainer from "@material-ui/core/TableContainer";
 import TableHead from "@material-ui/core/TableHead";
 import TableRow from "@material-ui/core/TableRow";
 import Paper from "@material-ui/core/Paper";
-import KeyboardArrowDownIcon from "@material-ui/icons/KeyboardArrowDown";
-import KeyboardArrowUpIcon from "@material-ui/icons/KeyboardArrowUp";
-import OrdersNav from "../app/layout/ordersNav";
-import { navigate } from 'hookrouter';
+// import KeyboardArrowDownIcon from "@material-ui/icons/KeyboardArrowDown";
+// import KeyboardArrowUpIcon from "@material-ui/icons/KeyboardArrowUp";
+// import OrdersNav from "../app/layout/ordersNav";
+// import { navigate } from 'hookrouter';
 import { subscribe } from 'react-contextual';
 import moment from 'moment';
 
+import './order.css'
 import { updateOrder } from '../api';
 import firebase from '../firebase';
-// customerName: props.user.name,
-// customerPhone: props.user.phone,
-// customerEmail: props.user.email,
-// items,
-// address,
-// instruction,
-// payment,
-// storeId: store.id,
-// store,
-// numberOfItems,
-// total: total(items)
-const convertDate = (time) => moment(time,'YYYY-MM-DD hh:mm:ss a').add(1,'day').format('LLL');
+
+
+// convert date format
+function convertDate(time) {
+  return moment(time,'YYYY-MM-DD hh:mm:ss a').add(1,'day').format('LLL');
+}
+
+const useStyles = makeStyles((theme) => ({
+  root: {
+    flexGrow: 1,
+  },
+}));
 
 const Orders = subscribe()((props) =>  {
 
+  // console.log("today",moment().format('MMMM-Do-YYYY'));
 
-  console.log("today",moment().format('MMMM-Do-YYYY'));
   const [expanded, setExpanded] = React.useState("panel1");
   const handleChange = (panel) => (event, newExpanded) => {
     setExpanded(newExpanded ? panel : false);
@@ -55,8 +56,6 @@ const Orders = subscribe()((props) =>  {
   const classes = useStyles();
 
   const { loading } = props.orders;
-
-  // new work
 
   // get all the orders from firestore
   const fetchData =  async ()=>{
@@ -81,13 +80,7 @@ const Orders = subscribe()((props) =>  {
   }, [props.getCustomerOrders])
 
   const { incomings } = props.orders;
-  const list = {
-    hi: [1,2,3],
-    hello: [3,4,5]
-  }
-
-  console.log("incomings", props.orders);
-
+  // console.log("incomings", props.orders);
   const onRejectOrder = async (pushId) => {
     await updateOrder(pushId,'confirmed', 'closed');
   }
@@ -106,9 +99,6 @@ const Orders = subscribe()((props) =>  {
   }
   return (
     <div className={classes.root}>
-      {/* <div>
-        <OrdersNav />
-      </div> */}
       <div>
         <Grid container spacing={2}>
           <Grid item xs={4}>
@@ -236,16 +226,6 @@ const Orders = subscribe()((props) =>  {
           </Grid>
           <Grid item xs={8}>
             <Container maxWidth="lg" style={{ marginTop: 20 }}>
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -522,11 +502,6 @@ const Orders = subscribe()((props) =>  {
 
 export default Orders;
 
-const useStyles = makeStyles((theme) => ({
-  root: {
-    flexGrow: 1,
-  },
-}));
 
 
 

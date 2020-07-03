@@ -2,7 +2,7 @@
   /** 
   hide the overflow to get clean border
   **/
-  height: 100hv;
+  height: 200hv;
   /* min-width: 700px; */
   overflow: hidden;
   max-width: 1950;
@@ -10,7 +10,7 @@
 }
 
 .home{
-  height: '100%';
+  height: 100vh;
   width: '100%';
   position: absolute;
   background-image: url('../../_assets/sushi-shrimp-landscape.png');

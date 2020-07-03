@@ -122,7 +122,7 @@ const Signup = props => {
   }
   const label = ( <div> <span>I accept the </span> <Link onClick={() => {}}>terms of use</Link> <span> and </span> <Link to={'/privacy'}>privacy policy</Link> </div> )
     return (
-      <Grid container justify="center" className="root" style={{height: '100%', marginBottom: 400}}>
+      <Grid container justify="center" className="root" style={{height: '100%'}}>
       <Grid container item justify='center' alignItems="center" className="home" >
         <Grid container justify='center' >
           <h1>Hello</h1>
@@ -130,7 +130,7 @@ const Signup = props => {
       </Grid>
         
       <Grid container className="shell" item justify="center" alignItems="flex-start" style={{marginTop: '8%'}}>
-      <Grid container className="center-box" direction="row" style={{borderRadius: 35, width: '80%'}}>
+      <Grid container className="center-box" direction="row" style={{borderRadius: 35, width: '70%'}}>
         <Grid item xs={false} sm={3}  className='image-signup' style={{borderBottomLeftRadius: 35, borderTopLeftRadius: 35}}>
         </Grid>
         <Grid container item xs={12} sm={9} justify="center" alignItems="center" >
